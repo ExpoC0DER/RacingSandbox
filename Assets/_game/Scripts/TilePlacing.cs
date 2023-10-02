@@ -83,7 +83,7 @@ namespace _game.Scripts
             MyCollisions();
         }
 
-        void MyCollisions()
+        private void MyCollisions()
         {
             if (_activeTile) 
                 _isColliding = Physics.OverlapBoxNonAlloc(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.45f, _overlapBuffer, _rotation, ~(1 << 6)) > 0;
