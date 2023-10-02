@@ -98,10 +98,10 @@ namespace _game.Scripts
             Gizmos.DrawWireCube(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.9f);
         }
 
-        private void ChangeLayer(GameObject gameObject, int layer)
+        private void ChangeLayer(GameObject gO, int layer)
         {
-            gameObject.layer = layer;
-            foreach (Transform t in gameObject.transform)
+            gO.layer = layer;
+            foreach (Transform t in gO.transform)
                 t.gameObject.layer = layer;
         }
 
