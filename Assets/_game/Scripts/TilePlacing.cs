@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using DG.Tweening;
 
 namespace _game.Scripts
 {
@@ -6,14 +8,20 @@ namespace _game.Scripts
     {
         [SerializeField] private GameObject[] _tiles;
         [SerializeField] private GameObject _editorCanvas;
+        [SerializeField] private Transform _hideArrow;
         private Transform _activeTile;
         private Vector3 _mousePos;
         private int _lastId;
         private bool _isColliding;
         private Quaternion _rotation;
         private EditorMode _editorMode = EditorMode.Place;
-        private Collider[] _overlapBuffer = new Collider[1];
+        private readonly Collider[] _overlapBuffer = new Collider[1];
+        private RectTransform _rectTransform;
 
+        private void Awake()
+        {
+            _rectTransform = GetComponent<RectTransform>();
+        }
 
         private void Update()
         {
@@ -31,7 +39,7 @@ namespace _game.Scripts
             if (!_activeTile)
                 return;
 
-            _activeTile.position = ExtensionMethods.RoundToMultiple(Camera.main.ScreenToWorldPoint(_mousePos), 10);
+            _activeTile.position = Camera.main.ScreenToWorldPoint(_mousePos).RoundToMultiple(10);
 
             if (Input.GetMouseButtonUp(0)) {
 
@@ -42,8 +50,7 @@ namespace _game.Scripts
                 _rotation = _activeTile.transform.rotation;
             }
             if (Input.GetKeyDown(KeyCode.Escape)) {
-                if (_activeTile)
-                    Destroy(_activeTile.gameObject);
+                Destroy(_activeTile.gameObject);
                 _activeTile = null;
             }
         }
@@ -78,14 +85,14 @@ namespace _game.Scripts
             _lastId = id;
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             MyCollisions();
         }
 
         private void MyCollisions()
         {
-            if (_activeTile) 
+            if (_activeTile)
                 _isColliding = Physics.OverlapBoxNonAlloc(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.45f, _overlapBuffer, _rotation, ~(1 << 6)) > 0;
         }
 
@@ -115,11 +122,23 @@ namespace _game.Scripts
                 _editorCanvas.SetActive(false);
         }
 
-        private enum EditorMode : int
+        private enum EditorMode
         {
             Place = 0,
             Destroy = 1,
             Off = 2
+        }
+
+        public void HideTileMenu(bool value)
+        {
+            if (value) {
+                _rectTransform.DOAnchorPosY(-245, 0.5f);
+                _hideArrow.DORotate(Vector3.zero, 0.5f);
+            }
+            else {
+                _rectTransform.DOAnchorPosY(0, 0.5f);
+                _hideArrow.DORotate(new(0, 0, -180), 0.5f);
+            }
         }
     }
 }
