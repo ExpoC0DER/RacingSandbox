@@ -7,26 +7,29 @@ namespace _game.Scripts
     public class TilePlacing : MonoBehaviour
     {
         [SerializeField] private GameObject[] _tiles;
-        [SerializeField] private GameObject _editorCanvas;
+        [SerializeField] private Canvas _editorCanvas;
         [SerializeField] private Transform _hideArrow;
         private Transform _activeTile;
         private Vector3 _mousePos;
-        private int _lastId;
+        [SerializeField] private int _selectedId;
         private bool _isColliding;
         private Quaternion _rotation;
         private EditorMode _editorMode = EditorMode.Place;
         private readonly Collider[] _overlapBuffer = new Collider[1];
         private RectTransform _rectTransform;
+        private Camera _cameraMain;
+        private GameObject _startTile, _endTile;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
+            _cameraMain = Camera.main;
         }
 
         private void Update()
         {
             _mousePos = Input.mousePosition;
-            _mousePos.z = Camera.main.nearClipPlane + Camera.main.transform.position.y;
+            _mousePos.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
 
             if (_editorMode == EditorMode.Place)
                 HandlePlaceMode();
@@ -39,17 +42,15 @@ namespace _game.Scripts
             if (!_activeTile)
                 return;
 
-            _activeTile.position = Camera.main.ScreenToWorldPoint(_mousePos).RoundToMultiple(10);
+            _activeTile.position = _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10);
 
-            if (Input.GetMouseButtonUp(0)) {
-
-            }
-
-            if (Input.GetKeyDown(KeyCode.R)) {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
                 _activeTile.transform.Rotate(new(0, 90, 0));
                 _rotation = _activeTile.transform.rotation;
             }
-            if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
                 Destroy(_activeTile.gameObject);
                 _activeTile = null;
             }
@@ -57,19 +58,31 @@ namespace _game.Scripts
 
         public void EditorPointerUp()
         {
-            if (!_activeTile || _isColliding || _editorMode != EditorMode.Place || Input.GetMouseButtonUp(1)) return;
+            if (!_activeTile || _isColliding || _editorMode != EditorMode.Place || !Input.GetMouseButtonUp(0)) return;
             ChangeLayer(_activeTile.gameObject, 0);
             if (_activeTile.TryGetComponent(out TileController tileController))
                 tileController.SetActiveArrows(false);
-            _activeTile = Instantiate(_tiles[_lastId], Camera.main.ViewportToWorldPoint(Input.mousePosition), _rotation).transform;
+            if (_selectedId == 4) //4 is StartTileId
+            {
+                DestroyImmediate(_startTile);
+                _startTile = _activeTile.gameObject;
+            }
+            if (_selectedId == 5) //5 is EndTileId
+            {
+                DestroyImmediate(_endTile);
+                _endTile = _activeTile.gameObject;
+            }
+            _activeTile = Instantiate(_tiles[_selectedId], _cameraMain.ViewportToWorldPoint(Input.mousePosition), _rotation).transform;
             ChangeLayer(_activeTile.gameObject, 6);
         }
 
         private void HandleDestroyMode()
         {
-            if (Input.GetMouseButtonUp(0)) {
-                Ray ray = Camera.main.ScreenPointToRay(_mousePos);
-                if (Physics.Raycast(ray, out RaycastHit hit)) {
+            if (Input.GetMouseButtonUp(0))
+            {
+                Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
                     Destroy(hit.transform.gameObject);
                 }
             }
@@ -80,15 +93,12 @@ namespace _game.Scripts
             SetEditorMode(0);
             if (_activeTile)
                 Destroy(_activeTile.gameObject);
-            _activeTile = Instantiate(_tiles[id], Camera.main.ScreenToWorldPoint(_mousePos).RoundToMultiple(10), Quaternion.identity).transform;
+            _activeTile = Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10), Quaternion.identity).transform;
             ChangeLayer(_activeTile.gameObject, 6);
-            _lastId = id;
+            _selectedId = id;
         }
 
-        private void FixedUpdate()
-        {
-            MyCollisions();
-        }
+        private void FixedUpdate() { MyCollisions(); }
 
         private void MyCollisions()
         {
@@ -105,7 +115,7 @@ namespace _game.Scripts
             Gizmos.DrawWireCube(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.9f);
         }
 
-        private void ChangeLayer(GameObject gO, int layer)
+        private static void ChangeLayer(GameObject gO, int layer)
         {
             gO.layer = layer;
             foreach (Transform t in gO.transform)
@@ -119,8 +129,11 @@ namespace _game.Scripts
                 Destroy(_activeTile.gameObject);
             _activeTile = null;
             if (_editorMode == EditorMode.Off)
-                _editorCanvas.SetActive(false);
+                _editorCanvas.enabled = false;
+            else
+                _editorCanvas.enabled = true;
         }
+        private void SetEditorMode(EditorMode mode) { SetEditorMode((int)mode); }
 
         private enum EditorMode
         {
@@ -131,14 +144,31 @@ namespace _game.Scripts
 
         public void HideTileMenu(bool value)
         {
-            if (value) {
+            if (value)
+            {
                 _rectTransform.DOAnchorPosY(-245, 0.5f);
                 _hideArrow.DORotate(Vector3.zero, 0.5f);
             }
-            else {
+            else
+            {
                 _rectTransform.DOAnchorPosY(0, 0.5f);
                 _hideArrow.DORotate(new(0, 0, -180), 0.5f);
             }
         }
+
+        private void OnGameStateChanged(GameState gameState)
+        {
+            if (gameState == GameState.Editing)
+            {
+                SetEditorMode(EditorMode.Place);
+            }
+            else
+            {
+                SetEditorMode(EditorMode.Off);
+            }
+        }
+
+        private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
+        private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
     }
 }

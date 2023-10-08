@@ -1,50 +1,74 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using _game.Scripts;
 using UnityEngine;
 using Cinemachine;
+using DG.Tweening;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class CarController : MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera _carCam;
+    [SerializeField] private Transform _followPoint;
+    [SerializeField] private float _rewindPosMulti, _rewindRotMulti;
     private Rigidbody _rb;
 
     private float _horizontalInput, _verticalInput;
-    private float _currentSteerAngle, _currentbreakForce;
-    private bool _isBreaking, _isPlaying;
+    private float _currentSteerAngle, _currentBreakForce;
+    private bool _isBreaking, _isPlaying, _isRewinding, _isResetting;
     [SerializeField] private bool _testing;
+    private CarTransform _startTransform;
+    private readonly Stack<CarTransform> _positions = new();
 
     // Settings
-    [SerializeField] private float motorForce, breakForce, maxSteerAngle;
+    [SerializeField] private float _motorForce, _breakForce, _maxSteerAngle, _finishBreakForce;
 
     // Wheel Colliders
-    [SerializeField] private WheelCollider frontLeftWheelCollider, frontRightWheelCollider;
-    [SerializeField] private WheelCollider rearLeftWheelCollider, rearRightWheelCollider;
+    [SerializeField] private WheelCollider _frontLeftWheelCollider, _frontRightWheelCollider, _rearLeftWheelCollider, _rearRightWheelCollider;
 
     // Wheels
-    [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
-    [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
+    [SerializeField] private Transform _frontLeftWheelTransform, _frontRightWheelTransform, _rearLeftWheelTransform, _rearRightWheelTransform;
 
-    void Awake()
-    {
-        _rb = GetComponent<Rigidbody>();
-    }
+    private void Awake() { _rb = GetComponent<Rigidbody>(); }
 
     private void Start()
     {
         if (_testing)
-            OnPlay();
+            GameManager.GameState = GameState.Playing;
+        _startTransform = new(transform);
     }
 
     private void FixedUpdate()
     {
         if (!_isPlaying)
+        {
+            ApplyBreaking(float.MaxValue);
             return;
+        }
 
-        GetInput();
         HandleMotor();
         HandleSteering();
         UpdateWheels();
+        HandleStopping();
+    }
+
+    private void Update()
+    {
+        if (!_isPlaying)
+            return;
+
+        GetInput();
+        HandleRewinding();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Finish"))
+        {
+            GameManager.GameState = GameState.Editing;
+        }
     }
 
     private void GetInput()
@@ -57,58 +81,144 @@ public class CarController : MonoBehaviour
 
         // Breaking Input
         _isBreaking = Input.GetKey(KeyCode.Space);
+
+        _isRewinding = Input.GetKey(KeyCode.R);
+
+        if (Input.GetKeyDown(KeyCode.C) && !_isResetting)
+            Reset();
+    }
+
+    private void Reset() { StartCoroutine(nameof(ResetCoroutine)); }
+    private IEnumerator ResetCoroutine()
+    {
+        bool tempIsPlaying = _isPlaying;
+        _isPlaying = true;
+
+        _isResetting = true;
+        transform.SetPositionAndRotation(_startTransform.Position, _startTransform.Rotation);
+        _positions.Clear();
+        _positions.Push(_startTransform);
+
+        yield return new WaitForSeconds(.5f);
+        _isResetting = false;
+        _isPlaying = tempIsPlaying;
+    }
+
+    private void HandleRewinding()
+    {
+        if (_isRewinding)
+        {
+            if (_positions.Count > 1 && Vector3.Distance(transform.position, _positions.Peek().Position) < .1f)
+                _positions.Pop();
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, _positions.Peek().Rotation, Time.deltaTime * _rewindRotMulti);
+            transform.position = Vector3.MoveTowards(transform.position, _positions.Peek().Position, Time.deltaTime * _rewindPosMulti);
+        }
+        else
+        {
+            if (Vector3.Distance(transform.position, _positions.Peek().Position) > 0.5f)
+                _positions.Push(new(transform));
+        }
+    }
+
+    private void HandleStopping()
+    {
+        if (_isResetting || _isRewinding)
+        {
+            _rb.isKinematic = true;
+            _frontRightWheelCollider.rotationSpeed = 0;
+            _frontLeftWheelCollider.rotationSpeed = 0;
+            _rearLeftWheelCollider.rotationSpeed = 0;
+            _rearRightWheelCollider.rotationSpeed = 0;
+        }
+        else
+        {
+            _rb.isKinematic = false;
+        }
     }
 
     private void HandleMotor()
     {
-        frontLeftWheelCollider.motorTorque = _verticalInput * motorForce;
-        frontRightWheelCollider.motorTorque = _verticalInput * motorForce;
-        _currentbreakForce = _isBreaking ? breakForce : 0f;
-        ApplyBreaking();
+        _frontLeftWheelCollider.motorTorque = _verticalInput * _motorForce;
+        _frontRightWheelCollider.motorTorque = _verticalInput * _motorForce;
+        _currentBreakForce = _isBreaking ? _breakForce : 0f;
+        ApplyBreaking(_currentBreakForce);
     }
 
-    private void ApplyBreaking()
+    private void ApplyBreaking(float value)
     {
-        frontRightWheelCollider.brakeTorque = _currentbreakForce;
-        frontLeftWheelCollider.brakeTorque = _currentbreakForce;
-        rearLeftWheelCollider.brakeTorque = _currentbreakForce;
-        rearRightWheelCollider.brakeTorque = _currentbreakForce;
+        _frontRightWheelCollider.brakeTorque = value;
+        _frontLeftWheelCollider.brakeTorque = value;
+        _rearLeftWheelCollider.brakeTorque = value;
+        _rearRightWheelCollider.brakeTorque = value;
     }
 
     private void HandleSteering()
     {
-        _currentSteerAngle = maxSteerAngle * _horizontalInput;
-        frontLeftWheelCollider.steerAngle = _currentSteerAngle;
-        frontRightWheelCollider.steerAngle = _currentSteerAngle;
+        _currentSteerAngle = _maxSteerAngle * _horizontalInput;
+        _frontLeftWheelCollider.steerAngle = _currentSteerAngle;
+        _frontRightWheelCollider.steerAngle = _currentSteerAngle;
     }
 
     private void UpdateWheels()
     {
-        UpdateSingleWheel(frontLeftWheelCollider, frontLeftWheelTransform);
-        UpdateSingleWheel(frontRightWheelCollider, frontRightWheelTransform);
-        UpdateSingleWheel(rearRightWheelCollider, rearRightWheelTransform);
-        UpdateSingleWheel(rearLeftWheelCollider, rearLeftWheelTransform);
+        UpdateSingleWheel(_frontLeftWheelCollider, _frontLeftWheelTransform);
+        UpdateSingleWheel(_frontRightWheelCollider, _frontRightWheelTransform);
+        UpdateSingleWheel(_rearRightWheelCollider, _rearRightWheelTransform);
+        UpdateSingleWheel(_rearLeftWheelCollider, _rearLeftWheelTransform);
     }
 
-    private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
+    private static void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
     {
         wheelCollider.GetWorldPose(out Vector3 pos, out Quaternion rot);
         wheelTransform.SetPositionAndRotation(pos, rot);
     }
 
-    private void OnPlay()
+    private void OnGameStateChanged(GameState gameState)
     {
-        _carCam.Priority = 20;
-        _rb.isKinematic = false;
-        _isPlaying = true;
+        if (gameState == GameState.Playing)
+        {
+            _startTransform = new(transform);
+            SwitchCamera(true);
+
+            _rb.isKinematic = false;
+            _isPlaying = true;
+            _positions.Push(new(transform));
+        }
+        else
+        {
+            SwitchCamera(false);
+            _isPlaying = false;
+            Reset();
+        }
     }
 
-    void OnEnable()
+    private void SwitchCamera(bool value)
     {
-        GameManager.PressPlay += OnPlay;
+        if (value)
+        {
+            _carCam.m_Follow = _followPoint;
+            _carCam.m_LookAt = _followPoint;
+            _carCam.Priority = 20;
+        }
+        else
+        {
+            _carCam.m_Follow = null;
+            _carCam.m_LookAt = null;
+            _carCam.Priority = 0;
+        }
     }
-    void OnDisable()
+
+    private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
+    private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
+}
+
+public struct CarTransform
+{
+    public Vector3 Position;
+    public Quaternion Rotation;
+    public CarTransform(Transform t)
     {
-        GameManager.PressPlay -= OnPlay;
+        Position = t.position;
+        Rotation = t.rotation;
     }
 }

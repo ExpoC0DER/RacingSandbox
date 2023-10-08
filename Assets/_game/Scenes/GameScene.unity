@@ -2735,8 +2735,9 @@ MonoBehaviour:
   - {fileID: 2403047715860921947, guid: 5524a6a4866313149b15e34a4ab8dc38, type: 3}
   - {fileID: 2403047715860921947, guid: 82733ec878d906644a98f98f27ed6746, type: 3}
   - {fileID: 2403047715860921947, guid: 64a64b992fcb4d14583377b6866839b6, type: 3}
-  _editorCanvas: {fileID: 347350380}
+  _editorCanvas: {fileID: 347350383}
   _hideArrow: {fileID: 1857566154}
+  _selectedId: 0
 --- !u!1 &1248170720
 GameObject:
   m_ObjectHideFlags: 0
@@ -3128,22 +3129,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1232624448}
-        m_TargetAssemblyTypeName: TilePlacing, Assembly-CSharp
-        m_MethodName: SetEditorMode
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 490987510}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: InvokePressPlay
-        m_Mode: 1
+        m_TargetAssemblyTypeName: _game.Scripts.GameManager, Assembly-CSharp
+        m_MethodName: SetGameState
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
