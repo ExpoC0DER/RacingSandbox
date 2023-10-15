@@ -471,6 +471,7 @@ GameObject:
   - component: {fileID: 1832405802601727274}
   - component: {fileID: 5319759891141063608}
   - component: {fileID: 6938047218454832537}
+  - component: {fileID: 330393016609333887}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -573,6 +574,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &330393016609333887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4419321437978943103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1801520409
+      Data2: 1208297307
+      Data3: 1060599736
+      Data4: -70716399
+    Path: event:/Vehicles/Car Engine
+  Event: 
+  PlayEvent: 1
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &4577328477150150384
 GameObject:
   m_ObjectHideFlags: 0

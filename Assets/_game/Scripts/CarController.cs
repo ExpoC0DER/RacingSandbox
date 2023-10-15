@@ -14,6 +14,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private Transform _followPoint;
     [SerializeField] private float _rewindPosMulti, _rewindRotMulti;
     private Rigidbody _rb;
+    private FMODUnity.StudioEventEmitter _engineSound;
 
     private float _horizontalInput, _verticalInput;
     private float _currentSteerAngle, _currentBreakForce;
@@ -38,6 +39,7 @@ public class CarController : MonoBehaviour
         if (_testing)
             GameManager.GameState = GameState.Playing;
         _startTransform = new(transform);
+        _engineSound = GetComponent<FMODUnity.StudioEventEmitter>();
     }
 
     private void FixedUpdate()
@@ -61,6 +63,13 @@ public class CarController : MonoBehaviour
 
         GetInput();
         HandleRewinding();
+        HandleAudio();
+    }
+
+    private void HandleAudio()
+    {
+        float speed = (_rb.velocity.magnitude * 3.6f).Remap(0, 300, 0, 9000);
+        _engineSound.SetParameter("RPM", speed);
     }
 
     private void OnTriggerExit(Collider other)

@@ -1,14 +1,20 @@
 using System;
+using System.Collections.Generic;
+using _game.Scripts.UIScripts;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 namespace _game.Scripts
 {
     public class TilePlacing : MonoBehaviour
     {
         [SerializeField] private GameObject[] _tiles;
-        [SerializeField] private Canvas _editorCanvas;
-        [SerializeField] private Transform _hideArrow;
+        [SerializeField] private EditorUIController _editorUI;
+        [SerializeField] private LayerMask _collisionCheck;
+        [ColorUsage(true, true), SerializeField]
+        private Color _collidingColor, _notCollidingColor;
+        [SerializeField] private Material _previewMaterial;
         private Transform _activeTile;
         private Vector3 _mousePos;
         [SerializeField] private int _selectedId;
@@ -16,15 +22,11 @@ namespace _game.Scripts
         private Quaternion _rotation;
         private EditorMode _editorMode = EditorMode.Place;
         private readonly Collider[] _overlapBuffer = new Collider[1];
-        private RectTransform _rectTransform;
         private Camera _cameraMain;
         private GameObject _startTile, _endTile;
+        private GameObject _lastDestroyTarget;
 
-        private void Awake()
-        {
-            _rectTransform = GetComponent<RectTransform>();
-            _cameraMain = Camera.main;
-        }
+        private void Awake() { _cameraMain = Camera.main; }
 
         private void Update()
         {
@@ -58,8 +60,13 @@ namespace _game.Scripts
 
         public void EditorPointerUp()
         {
-            if (!_activeTile || _isColliding || _editorMode != EditorMode.Place || !Input.GetMouseButtonUp(0)) return;
-            ChangeLayer(_activeTile.gameObject, 0);
+            if (!_activeTile || _editorMode != EditorMode.Place || !Input.GetMouseButtonUp(0)) return;
+            if (_isColliding)
+            {
+                _editorUI.DisplayWarning(0);
+                return;
+            }
+            ChangeLayer(_activeTile.gameObject, 8);
             if (_activeTile.TryGetComponent(out TileController tileController))
                 tileController.SetActiveArrows(false);
             if (_selectedId == 4) //4 is StartTileId
@@ -78,12 +85,32 @@ namespace _game.Scripts
 
         private void HandleDestroyMode()
         {
-            if (Input.GetMouseButtonUp(0))
+            // if (Input.GetMouseButtonUp(0))
+            // {
+            //     Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
+            //     if (Physics.Raycast(ray, out RaycastHit hit))
+            //     {
+            //         Destroy(hit.transform.gameObject);
+            //     }
+            // }
+            Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
-                if (Physics.Raycast(ray, out RaycastHit hit))
+                _previewMaterial.SetColor("_baseColor", _collidingColor);
+                if (_lastDestroyTarget && _lastDestroyTarget != hit.transform.gameObject)
+                    ChangeLayer(_lastDestroyTarget, 8);
+                _lastDestroyTarget = hit.transform.gameObject;
+                ChangeLayer(_lastDestroyTarget, 6);
+                if (Input.GetMouseButtonUp(0))
                 {
-                    Destroy(hit.transform.gameObject);
+                    Destroy(_lastDestroyTarget);
+                }
+            }
+            else
+            {
+                if (_lastDestroyTarget)
+                {
+                    ChangeLayer(_lastDestroyTarget, 8);
                 }
             }
         }
@@ -93,6 +120,7 @@ namespace _game.Scripts
             SetEditorMode(0);
             if (_activeTile)
                 Destroy(_activeTile.gameObject);
+            if (id == -1) return;
             _activeTile = Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10), Quaternion.identity).transform;
             ChangeLayer(_activeTile.gameObject, 6);
             _selectedId = id;
@@ -103,7 +131,10 @@ namespace _game.Scripts
         private void MyCollisions()
         {
             if (_activeTile)
-                _isColliding = Physics.OverlapBoxNonAlloc(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.45f, _overlapBuffer, _rotation, ~(1 << 6)) > 0;
+            {
+                _isColliding = Physics.OverlapBoxNonAlloc(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.45f, _overlapBuffer, _rotation, _collisionCheck) > 0;
+                _previewMaterial.SetColor("_baseColor", _isColliding ? _collidingColor : _notCollidingColor);
+            }
         }
 
         void OnDrawGizmos()
@@ -118,8 +149,18 @@ namespace _game.Scripts
         private static void ChangeLayer(GameObject gO, int layer)
         {
             gO.layer = layer;
-            foreach (Transform t in gO.transform)
-                t.gameObject.layer = layer;
+            for(int i = 0; i < gO.transform.childCount; i++)
+            {
+                if (layer == 8)
+                    SetLayerRecursively(gO.transform.GetChild(i), 0);
+                else
+                    SetLayerRecursively(gO.transform.GetChild(i), layer);
+            }
+        }
+        private static void SetLayerRecursively(Transform trans, int layer)
+        {
+            trans.gameObject.layer = layer;
+            for(int i = 0; i < trans.childCount; i++) { SetLayerRecursively(trans.GetChild(i), layer); }
         }
 
         public void SetEditorMode(int value)
@@ -128,12 +169,10 @@ namespace _game.Scripts
             if (_activeTile)
                 Destroy(_activeTile.gameObject);
             _activeTile = null;
-            if (_editorMode == EditorMode.Off)
-                _editorCanvas.enabled = false;
-            else
-                _editorCanvas.enabled = true;
+            _editorUI.EditorEnabled(_editorMode != EditorMode.Off);
         }
         private void SetEditorMode(EditorMode mode) { SetEditorMode((int)mode); }
+        public void SetEditorMode(bool value) { SetEditorMode(value ? 1 : 0); }
 
         private enum EditorMode
         {
@@ -142,30 +181,15 @@ namespace _game.Scripts
             Off = 2
         }
 
-        public void HideTileMenu(bool value)
-        {
-            if (value)
-            {
-                _rectTransform.DOAnchorPosY(-245, 0.5f);
-                _hideArrow.DORotate(Vector3.zero, 0.5f);
-            }
-            else
-            {
-                _rectTransform.DOAnchorPosY(0, 0.5f);
-                _hideArrow.DORotate(new(0, 0, -180), 0.5f);
-            }
-        }
 
-        private void OnGameStateChanged(GameState gameState)
+        private void OnGameStateChanged(GameState gameState) { SetEditorMode(gameState == GameState.Editing ? EditorMode.Place : EditorMode.Off); }
+
+        public void OnPressPlay()
         {
-            if (gameState == GameState.Editing)
-            {
-                SetEditorMode(EditorMode.Place);
-            }
+            if (_startTile && _endTile)
+                GameManager.GameState = 0;
             else
-            {
-                SetEditorMode(EditorMode.Off);
-            }
+                _editorUI.DisplayWarning(1);
         }
 
         private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }

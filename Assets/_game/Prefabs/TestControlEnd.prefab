@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 862939618534722053}
   - component: {fileID: 6596090753499127283}
-  m_Layer: 0
+  - component: {fileID: 3980591132120760299}
+  m_Layer: 8
   m_Name: TestControlEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,6 +52,27 @@ MonoBehaviour:
   _arrows:
   - {fileID: 4092731266472269891}
   _time: 0.3
+--- !u!65 &3980591132120760299
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2403047715860921947}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 4, z: 0}
 --- !u!1 &2696031620316250189
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,6 +1077,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 8b0e76a26b521a343b8665aec8a3087b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
