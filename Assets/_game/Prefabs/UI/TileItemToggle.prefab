@@ -153,7 +153,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 5417938699621966191}
-  toggleTransition: 1
+  toggleTransition: 0
   graphic: {fileID: 6677975497946318785}
   m_Group: {fileID: 0}
   onValueChanged:
@@ -163,18 +163,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TileItemToggle, Assembly-CSharp
         m_MethodName: OnClick
         m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6420670670673541289}
-        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
-        m_MethodName: Play
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -236,7 +224,7 @@ MonoBehaviour:
       Data4: 102280984
     Path: event:/UI/Toggle
   Event: 
-  PlayEvent: 0
+  PlayEvent: 19
   StopEvent: 0
   AllowFadeout: 1
   TriggerOnce: 0

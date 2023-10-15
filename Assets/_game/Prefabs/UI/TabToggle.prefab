@@ -263,18 +263,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 6979451707716592273}
-        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   m_IsOn: 1
 --- !u!114 &-8191488943204658171
 MonoBehaviour:
@@ -328,7 +316,7 @@ MonoBehaviour:
       Data4: 102280984
     Path: event:/UI/Toggle
   Event: 
-  PlayEvent: 0
+  PlayEvent: 19
   StopEvent: 0
   AllowFadeout: 1
   TriggerOnce: 0
