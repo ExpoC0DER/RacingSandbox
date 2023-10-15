@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{64b53b13-0c4a-49e0-a375-687ea2f42a15}">
+		<property name="assetPath">
+			<value>Rypak_Matus_Main_Menu_Toggle_New.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.44408163265306122</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{e77a9e16-f4c0-4200-a55f-78539e0f8aa2}</destination>
+		</relationship>
+	</object>
+</objects>

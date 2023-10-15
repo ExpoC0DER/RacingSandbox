@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{ffe34004-aaa1-4fde-a6ea-17c7140d1c26}">
+		<property name="assetPath">
+			<value>Rypak_Matus_Engine_loop.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.0710204081632653</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{e77a9e16-f4c0-4200-a55f-78539e0f8aa2}</destination>
+		</relationship>
+	</object>
+</objects>
