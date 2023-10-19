@@ -898,7 +898,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 400 km/h
+  m_text: 0 km/h
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2338,8 +2338,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1510994691}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16085401, y: 0.000000015852633, z: -0.0000000025836024, w: 0.98697823}
-  m_LocalPosition: {x: -0.000000030439296, y: 2.3795598, z: -2.5475688}
+  m_LocalRotation: {x: 0.16085401, y: 0.000000015852631, z: -0.0000000025836022, w: 0.98697823}
+  m_LocalPosition: {x: -0.000000030439292, y: 2.3795598, z: -2.5475688}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2685,7 +2685,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1819324082}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Roads
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3410,8 +3410,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7430983457987849554}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.16085401, y: 0.000000015852633, z: -0.0000000025836024, w: 0.98697823}
-  m_LocalPosition: {x: -0.000000030439296, y: 1.3795598, z: -2.5475688}
+  m_LocalRotation: {x: 0.16085401, y: 0.000000015852631, z: -0.0000000025836022, w: 0.98697823}
+  m_LocalPosition: {x: -0.000000030439292, y: 1.3795598, z: -2.5475688}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3862,13 +3862,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e04300889f03a44d853aabb70b7a2c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  control: 0
-  maxAcceleration: 200
-  brakeAcceleration: 300
-  turnSensitivity: 0.5
-  maxSteerAngle: 30
-  _centerOfMass: {x: 0, y: 0, z: 0}
-  wheels:
+  _controlScheme: 0
+  _carParameters: {fileID: 11400000, guid: 42c347c14303c134d85e0821c03dd863, type: 2}
+  _wheels:
   - wheelModel: {fileID: 3840677237412387499}
     wheelCollider: {fileID: 200453281323523299}
     wheelEffectObj: {fileID: 0}
@@ -4068,7 +4064,7 @@ GameObject:
   - component: {fileID: 3091456955816195118}
   - component: {fileID: 7034986771780672206}
   m_Layer: 0
-  m_Name: Virtual Camera
+  m_Name: Car Follow Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
