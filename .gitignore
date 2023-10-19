@@ -9,7 +9,10 @@
 /IOSBuilds/
 /[Bb]uilds/
 /[Ll]ogs/
-/[Mm]emoryCaptures/
+[Mm]emoryCaptures/
+FMODProject/.cache/
+FMODProject/.user/
+FMODProject/.unsaved/
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
