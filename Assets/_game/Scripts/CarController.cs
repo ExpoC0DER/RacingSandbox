@@ -68,7 +68,7 @@ public class CarController : MonoBehaviour
 
     private void HandleAudio()
     {
-        float speed = (_rb.velocity.magnitude * 3.6f).Remap(0, 200, 0, 9000);
+        float speed = (_rb.velocity.magnitude * 3.6f).Remap(0, 200, 0, 1);
         _engineSound.SetParameter("RPM", speed);
     }
 
