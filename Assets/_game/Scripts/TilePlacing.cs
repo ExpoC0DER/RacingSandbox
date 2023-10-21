@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using _game.Scripts.UIScripts;
 using UnityEngine;
-using DG.Tweening;
-using TMPro;
 
 namespace _game.Scripts
 {
@@ -13,7 +10,7 @@ namespace _game.Scripts
         [SerializeField] private EditorUIController _editorUI;
         [SerializeField] private LayerMask _collisionCheck;
         [ColorUsage(true, true), SerializeField]
-        private Color _collidingColor, _notCollidingColor;
+        private Color _collidingColor, _notCollidingColor, _editingColor;
         [SerializeField] private Material _previewMaterial;
         private Transform _activeTile;
         private Vector3 _mousePos;
@@ -24,19 +21,92 @@ namespace _game.Scripts
         private readonly Collider[] _overlapBuffer = new Collider[1];
         private Camera _cameraMain;
         private GameObject _startTile, _endTile;
-        private GameObject _lastDestroyTarget;
+        private GameObject _lastDestroyTarget, _lastEditTarget;
+        public bool EditorViewPressed { get; set; }
+
+        public static event Action<EditorMode> OnEditorModeChanged;
 
         private void Awake() { _cameraMain = Camera.main; }
 
         private void Update()
         {
-            _mousePos = Input.mousePosition;
-            _mousePos.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
+            HandleInput();
 
             if (_editorMode == EditorMode.Place)
                 HandlePlaceMode();
             if (_editorMode == EditorMode.Destroy)
                 HandleDestroyMode();
+            if (_editorMode == EditorMode.Edit)
+                HandleEditMode();
+
+            EditorViewPressed = false;
+        }
+
+        private void HandleInput()
+        {
+            _mousePos = Input.mousePosition;
+            _mousePos.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                SetEditorMode(EditorMode.Place);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                SetEditorMode(EditorMode.Edit);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                SetEditorMode(EditorMode.Destroy);
+            }
+        }
+
+        private void HandleEditMode()
+        {
+            if (_activeTile)
+            {
+                _activeTile.position = _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10);
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    _activeTile.transform.Rotate(new(0, 90, 0));
+                    _rotation = _activeTile.transform.rotation;
+                }
+                if (EditorViewPressed)
+                {
+                    if (_isColliding)
+                        _editorUI.DisplayWarning(0);
+                    else
+                    {
+                        if (_activeTile.TryGetComponent(out TileController tileController))
+                            tileController.SetActiveArrows(false);
+                        ChangeLayer(_activeTile.gameObject, 8);
+                        _activeTile = null;
+                    }
+                }
+            }
+            else
+            {
+                Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    _previewMaterial.SetColor("_baseColor", _editingColor);
+                    if (_lastEditTarget && _lastEditTarget != hit.transform.gameObject)
+                        ChangeLayer(_lastEditTarget, 8);
+                    _lastEditTarget = hit.transform.gameObject;
+                    ChangeLayer(_lastEditTarget, 6);
+                    if (EditorViewPressed)
+                    {
+                        _activeTile = hit.transform;
+                        if (_activeTile.TryGetComponent(out TileController tileController))
+                            tileController.SetActiveArrows(true);
+                    }
+                }
+                else
+                {
+                    if (_lastEditTarget)
+                        ChangeLayer(_lastEditTarget, 8);
+                }
+            }
         }
 
         private void HandlePlaceMode()
@@ -56,11 +126,9 @@ namespace _game.Scripts
                 Destroy(_activeTile.gameObject);
                 _activeTile = null;
             }
-        }
 
-        public void EditorPointerUp()
-        {
-            if (!_activeTile || _editorMode != EditorMode.Place || !Input.GetMouseButtonUp(0)) return;
+
+            if (!EditorViewPressed) return;
             if (_isColliding)
             {
                 _editorUI.DisplayWarning(0);
@@ -85,14 +153,6 @@ namespace _game.Scripts
 
         private void HandleDestroyMode()
         {
-            // if (Input.GetMouseButtonUp(0))
-            // {
-            //     Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
-            //     if (Physics.Raycast(ray, out RaycastHit hit))
-            //     {
-            //         Destroy(hit.transform.gameObject);
-            //     }
-            // }
             Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
@@ -101,7 +161,7 @@ namespace _game.Scripts
                     ChangeLayer(_lastDestroyTarget, 8);
                 _lastDestroyTarget = hit.transform.gameObject;
                 ChangeLayer(_lastDestroyTarget, 6);
-                if (Input.GetMouseButtonUp(0))
+                if (EditorViewPressed)
                 {
                     Destroy(_lastDestroyTarget);
                 }
@@ -130,10 +190,15 @@ namespace _game.Scripts
 
         private void MyCollisions()
         {
-            if (_activeTile)
+            if (_activeTile && _editorMode == EditorMode.Place)
             {
                 _isColliding = Physics.OverlapBoxNonAlloc(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.45f, _overlapBuffer, _rotation, _collisionCheck) > 0;
                 _previewMaterial.SetColor("_baseColor", _isColliding ? _collidingColor : _notCollidingColor);
+            }
+            if (_activeTile && _editorMode == EditorMode.Edit)
+            {
+                _isColliding = Physics.OverlapBoxNonAlloc(_activeTile.GetChild(0).position, _activeTile.GetChild(0).localScale * 0.45f, _overlapBuffer, _rotation, _collisionCheck) > 0;
+                _previewMaterial.SetColor("_baseColor", _isColliding ? _collidingColor : _editingColor);
             }
         }
 
@@ -165,22 +230,15 @@ namespace _game.Scripts
 
         public void SetEditorMode(int value)
         {
+            if (_editorMode == (EditorMode)value) return;
             _editorMode = (EditorMode)value;
+            OnEditorModeChanged?.Invoke(_editorMode);
             if (_activeTile)
                 Destroy(_activeTile.gameObject);
             _activeTile = null;
             _editorUI.EditorEnabled(_editorMode != EditorMode.Off);
         }
         private void SetEditorMode(EditorMode mode) { SetEditorMode((int)mode); }
-        public void SetEditorMode(bool value) { SetEditorMode(value ? 1 : 0); }
-
-        private enum EditorMode
-        {
-            Place = 0,
-            Destroy = 1,
-            Off = 2
-        }
-
 
         private void OnGameStateChanged(GameState gameState) { SetEditorMode(gameState == GameState.Editing ? EditorMode.Place : EditorMode.Off); }
 
@@ -194,5 +252,12 @@ namespace _game.Scripts
 
         private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
         private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
+    }
+    public enum EditorMode
+    {
+        Place = 0,
+        Destroy = 1,
+        Off = 2,
+        Edit = 3
     }
 }
