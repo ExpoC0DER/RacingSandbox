@@ -7,7 +7,6 @@ namespace _game.Scripts.UIScripts
     public class TileItemToggle : MonoBehaviour
     {
         [SerializeField] private int _tileId;
-        [SerializeField] private Toggle _editorModeToggle;
         [SerializeField] private TilePlacing _tilePlacing;
         private bool _wasOn;
         private Toggle _toggle;
@@ -18,7 +17,6 @@ namespace _game.Scripts.UIScripts
         {
             if (value)
             {
-                _editorModeToggle.isOn = false;
                 _tilePlacing.SetActiveTile(_tileId);
             }
             if (_wasOn && !value)
@@ -33,7 +31,22 @@ namespace _game.Scripts.UIScripts
             _toggle.isOn = false;
         }
 
-        private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
-        private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
+        private void OnEditorModeChanged(EditorMode editorMode)
+        {
+            if (editorMode == EditorMode.Place) return;
+            _wasOn = false;
+            _toggle.isOn = false;
+        }
+
+        private void OnEnable()
+        {
+            GameManager.OnGameStateChanged += OnGameStateChanged;
+            TilePlacing.OnEditorModeChanged += OnEditorModeChanged;
+        }
+        private void OnDisable()
+        {
+            GameManager.OnGameStateChanged -= OnGameStateChanged;
+            TilePlacing.OnEditorModeChanged -= OnEditorModeChanged;
+        }
     }
 }

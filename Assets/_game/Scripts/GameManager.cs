@@ -6,7 +6,7 @@ namespace _game.Scripts
     public class GameManager : MonoBehaviour
     {
         public static event Action<GameState> OnGameStateChanged;
-        private static GameState _gameState;
+        private static GameState _gameState = GameState.Editing;
         public void SetGameState(int value) { GameState = (GameState)value; }
         public static GameState GameState
         {
