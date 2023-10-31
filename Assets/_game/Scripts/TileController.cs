@@ -6,6 +6,7 @@ namespace _game.Scripts
     public class TileController : MonoBehaviour
     {
         [SerializeField] private GameObject[] _arrows;
+        [SerializeField] private GameObject[] _overlays;
         [SerializeField] private float _time = 0.5f;
 
         private void Start()
@@ -19,6 +20,10 @@ namespace _game.Scripts
             {
                 arrow.transform.DOKill();
                 arrow.SetActive(value);
+            }
+            foreach (GameObject overlay in _overlays)
+            {
+                overlay.SetActive(value);
             }
         }
 

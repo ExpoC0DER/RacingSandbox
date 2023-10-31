@@ -468,7 +468,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5286830187748002244}
-  - component: {fileID: 1832405802601727274}
+  - component: {fileID: 2744723435147006638}
   - component: {fileID: 5319759891141063608}
   - component: {fileID: 6938047218454832537}
   - component: {fileID: 330393016609333887}
@@ -487,7 +487,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4419321437978943103}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -497,7 +497,7 @@ Transform:
   - {fileID: 8998532085854115051}
   m_Father: {fileID: 1118510309542236147}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1832405802601727274
+--- !u!114 &2744723435147006638
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -506,26 +506,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 4419321437978943103}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee695048199969a4b8256152a0bdabe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e04300889f03a44d853aabb70b7a2c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _controlScheme: 0
+  _carParameters: {fileID: 11400000, guid: 42c347c14303c134d85e0821c03dd863, type: 2}
+  _isTesting: 0
+  _wheels:
+  - wheelModel: {fileID: 3840677236828460486}
+    wheelCollider: {fileID: 200453282838844302}
+    wheelEffectObj: {fileID: 0}
+    smokeParticle: {fileID: 0}
+    axel: 0
+  - wheelModel: {fileID: 1649678755299201738}
+    wheelCollider: {fileID: 3592979150856865348}
+    wheelEffectObj: {fileID: 0}
+    smokeParticle: {fileID: 0}
+    axel: 0
+  - wheelModel: {fileID: 4308094036747659352}
+    wheelCollider: {fileID: 2002046656698780728}
+    wheelEffectObj: {fileID: 0}
+    smokeParticle: {fileID: 0}
+    axel: 1
+  - wheelModel: {fileID: 8121082777388585747}
+    wheelCollider: {fileID: 2636675533077681330}
+    wheelEffectObj: {fileID: 0}
+    smokeParticle: {fileID: 0}
+    axel: 1
+  _speedMeter: {fileID: 0}
   _carCam: {fileID: 7034986773021005219}
   _followPoint: {fileID: 8998532085854115051}
-  _rewindPosMulti: 6
-  _rewindRotMulti: 180
-  _testing: 0
-  _motorForce: 4000
-  _breakForce: 3000
-  _maxSteerAngle: 60
-  _finishBreakForce: 999999
-  _frontLeftWheelCollider: {fileID: 200453282838844302}
-  _frontRightWheelCollider: {fileID: 3592979150856865348}
-  _rearLeftWheelCollider: {fileID: 2002046656698780728}
-  _rearRightWheelCollider: {fileID: 2636675533077681330}
-  _frontLeftWheelTransform: {fileID: 457476332375168400}
-  _frontRightWheelTransform: {fileID: 7190801566889972346}
-  _rearLeftWheelTransform: {fileID: 825447859124353639}
-  _rearRightWheelTransform: {fileID: 1762224076061795895}
 --- !u!65 &5319759891141063608
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -601,9 +611,7 @@ MonoBehaviour:
   TriggerOnce: 0
   Preload: 0
   AllowNonRigidbodyDoppler: 0
-  Params:
-  - Name: Accel
-    Value: 1
+  Params: []
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
@@ -829,7 +837,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7430983459576308287}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18910751, y: -0, z: -0, w: 0.9819564}
+  m_LocalRotation: {x: 0.18910751, y: 1e-45, z: -0, w: 0.9819564}
   m_LocalPosition: {x: 0, y: 1.586, z: -2.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

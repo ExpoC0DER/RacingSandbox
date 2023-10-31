@@ -30,7 +30,7 @@ namespace _game.Scripts
             }
 
             Vector2 keyboardInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * _keyboardSensitivity;
-            float scrollInput = Input.mouseScrollDelta.y * _scrollSensitivity;
+            float scrollInput = Input.mouseScrollDelta.y * -_scrollSensitivity;
 
             transform.position += new Vector3(keyboardInput.x, scrollInput, keyboardInput.y) * Time.deltaTime;
         }

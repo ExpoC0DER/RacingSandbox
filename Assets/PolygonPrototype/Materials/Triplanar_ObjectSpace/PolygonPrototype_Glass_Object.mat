@@ -44,7 +44,7 @@ Material:
     - _Falloff: 50
     - _GridScale: 5
     - _OverlayAmount: 1
-    - _QueueControl: -1
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 1
     - _Specular: 0.1
