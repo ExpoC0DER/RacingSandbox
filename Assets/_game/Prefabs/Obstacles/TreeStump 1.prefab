@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3814560816018429928}
   - component: {fileID: 314889169150650525}
   m_Layer: 8
-  m_Name: TreeStump
+  m_Name: TreeStump 1
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

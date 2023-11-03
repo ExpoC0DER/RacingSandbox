@@ -11,7 +11,7 @@ namespace _game.Scripts
 {
     public class CarController2 : MonoBehaviour
     {
-        public enum ControlMode
+        private enum ControlMode
         {
             Keyboard,
             Buttons
@@ -33,7 +33,6 @@ namespace _game.Scripts
             public Axel axel;
         }
 
-        [FormerlySerializedAs("control")]
         [SerializeField] private ControlMode _controlScheme;
 
         [SerializeField, Expandable] private CarParameters _carParameters;
@@ -47,7 +46,7 @@ namespace _game.Scripts
         private Rigidbody _rb;
         [SerializeField] private TMP_Text _speedMeter;
 
-        private CarTransform _restartPosition;
+        private CarTransform _restartPosition, _checkpointPosition;
         private bool _isPlaying, _isResetting;
         [SerializeField] private CinemachineVirtualCamera _carCam;
         [SerializeField] private Transform _followPoint;
@@ -68,6 +67,15 @@ namespace _game.Scripts
 
                 _rb.isKinematic = false;
                 _isPlaying = true;
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Checkpoint"))
+            {
+                _checkpointPosition.Position = other.transform.position;
+                _checkpointPosition.Rotation = other.transform.rotation;
             }
         }
 
@@ -101,7 +109,7 @@ namespace _game.Scripts
                 _steerInput = Input.GetAxis("Horizontal");
 
                 if (Input.GetKeyDown(KeyCode.C) && !_isResetting)
-                    Reset();
+                    Reset(_checkpointPosition);
             }
         }
 
@@ -208,14 +216,14 @@ namespace _game.Scripts
                 wheel.wheelCollider.sidewaysFriction = sidewaysFriction;
             }
         }
-        private IEnumerator ResetCoroutine()
+        private IEnumerator ResetCoroutine(CarTransform pos)
         {
             bool tempIsPlaying = _isPlaying;
             _isPlaying = true;
 
             _isResetting = true;
             _rb.isKinematic = true;
-            transform.SetPositionAndRotation(_restartPosition.Position, _restartPosition.Rotation);
+            transform.SetPositionAndRotation(pos.Position, pos.Rotation);
 
             yield return new WaitForSeconds(.5f);
             _isResetting = false;
@@ -223,13 +231,14 @@ namespace _game.Scripts
             _isPlaying = tempIsPlaying;
         }
 
-        private void Reset() { StartCoroutine(nameof(ResetCoroutine)); }
+        private void Reset(CarTransform pos) { StartCoroutine(nameof(ResetCoroutine), pos); }
 
         private void OnGameStateChanged(GameState gameState)
         {
             if (gameState == GameState.Playing)
             {
                 _restartPosition = new(transform);
+                _checkpointPosition = _restartPosition;
                 SwitchCamera(true);
 
                 _rb.isKinematic = false;
@@ -240,7 +249,7 @@ namespace _game.Scripts
                 _rb.isKinematic = true;
                 SwitchCamera(false);
                 _isPlaying = false;
-                Reset();
+                Reset(_restartPosition);
             }
         }
 

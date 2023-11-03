@@ -193,7 +193,7 @@ namespace _game.Scripts
 
         public void SetActiveTile(int id)
         {
-            SetEditorMode(0);
+            SetEditorMode(EditorMode.Place);
             if (_activeTileTransform)
                 Destroy(_activeTileTransform.gameObject);
             if (id == -1) return;
