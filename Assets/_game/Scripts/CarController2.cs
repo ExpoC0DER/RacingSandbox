@@ -50,6 +50,9 @@ namespace _game.Scripts
         private bool _isPlaying, _isResetting;
         [SerializeField] private CinemachineVirtualCamera _carCam;
         [SerializeField] private Transform _followPoint;
+
+        public static event Action<bool> SetTimerActive;
+        public static event Action<CarController2> ShowEndScreen;
         //private CarLights carLights;
 
         void Start()
@@ -67,15 +70,6 @@ namespace _game.Scripts
 
                 _rb.isKinematic = false;
                 _isPlaying = true;
-            }
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Checkpoint"))
-            {
-                _checkpointPosition.Position = other.transform.position;
-                _checkpointPosition.Rotation = other.transform.rotation;
             }
         }
 
@@ -101,7 +95,7 @@ namespace _game.Scripts
 
         public void SteerInput(float input) { _steerInput = input; }
 
-        void GetInputs()
+        private void GetInputs()
         {
             if (_controlScheme == ControlMode.Keyboard)
             {
@@ -120,31 +114,31 @@ namespace _game.Scripts
             _engineSound.SetParameter("Accel", _moveInput);
         }
 
-        void Move()
+        private void Move()
         {
-            foreach (var wheel in _wheels)
+            foreach (Wheel wheel in _wheels)
             {
                 wheel.wheelCollider.motorTorque = _moveInput * _maxAcceleration;
             }
         }
 
-        void Steer()
+        private void Steer()
         {
-            foreach (var wheel in _wheels)
+            foreach (Wheel wheel in _wheels)
             {
                 if (wheel.axel == Axel.Front)
                 {
-                    float _steerAngle = _steerInput * _turnSensitivity * _maxSteerAngle;
-                    wheel.wheelCollider.steerAngle = Mathf.Lerp(wheel.wheelCollider.steerAngle, _steerAngle, 0.6f);
+                    float steerAngle = _steerInput * _turnSensitivity * _maxSteerAngle;
+                    wheel.wheelCollider.steerAngle = Mathf.Lerp(wheel.wheelCollider.steerAngle, steerAngle, 0.6f);
                 }
             }
         }
 
-        void Brake()
+        private void Brake()
         {
             if (Input.GetKey(KeyCode.Space) || _isResetting) // || moveInput == 0)
             {
-                foreach (var wheel in _wheels)
+                foreach (Wheel wheel in _wheels)
                 {
                     wheel.wheelCollider.brakeTorque = _isResetting ? float.MaxValue : _brakeAcceleration;
                 }
@@ -154,7 +148,7 @@ namespace _game.Scripts
             }
             else
             {
-                foreach (var wheel in _wheels)
+                foreach (Wheel wheel in _wheels)
                 {
                     wheel.wheelCollider.brakeTorque = 0;
                 }
@@ -164,21 +158,19 @@ namespace _game.Scripts
             }
         }
 
-        void AnimateWheels()
+        private void AnimateWheels()
         {
-            foreach (var wheel in _wheels)
+            foreach (Wheel wheel in _wheels)
             {
-                Quaternion rot;
-                Vector3 pos;
-                wheel.wheelCollider.GetWorldPose(out pos, out rot);
+                wheel.wheelCollider.GetWorldPose(out Vector3 pos, out Quaternion rot);
                 wheel.wheelModel.transform.position = pos;
                 wheel.wheelModel.transform.rotation = rot;
             }
         }
 
-        void WheelEffects()
+        private void WheelEffects()
         {
-            foreach (var wheel in _wheels)
+            foreach (Wheel wheel in _wheels)
             {
                 //var dirtParticleMainSettings = wheel.smokeParticle.main;
 
@@ -243,6 +235,8 @@ namespace _game.Scripts
 
                 _rb.isKinematic = false;
                 _isPlaying = true;
+
+                SetTimerActive?.Invoke(true);
             }
             else
             {
@@ -253,11 +247,27 @@ namespace _game.Scripts
             }
         }
 
+        public void RestartLevel()
+        {
+            Reset(_restartPosition);
+            SetTimerActive?.Invoke(true);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Checkpoint"))
+            {
+                _checkpointPosition.SetPositionAndRotation(other.transform);
+            }
+        }
+
         private void OnTriggerExit(Collider other)
         {
             if (other.CompareTag("Finish"))
             {
-                GameManager.GameState = GameState.Editing;
+                SetTimerActive?.Invoke(false);
+                ShowEndScreen?.Invoke(this);
+                //GameManager.GameState = GameState.Editing;
             }
         }
 
@@ -295,6 +305,12 @@ namespace _game.Scripts
         public Vector3 Position;
         public Quaternion Rotation;
         public CarTransform(Transform t)
+        {
+            Position = t.position;
+            Rotation = t.rotation;
+        }
+
+        public void SetPositionAndRotation(Transform t)
         {
             Position = t.position;
             Rotation = t.rotation;
