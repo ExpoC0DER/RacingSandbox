@@ -50,18 +50,22 @@ namespace _game.Scripts
         private bool _isPlaying, _isResetting;
         [SerializeField] private CinemachineVirtualCamera _carCam;
         [SerializeField] private Transform _followPoint;
+        private float _countdownDelay;
 
         public static event Action<bool> SetTimerActive;
         public static event Action<CarController2> ShowEndScreen;
+        public static event Action<int, float, Action> StartCountdown;
         //private CarLights carLights;
 
-        void Start()
+        private void Start()
         {
             _rb = GetComponent<Rigidbody>();
             LoadParameters(_carParameters);
             _restartPosition = new(transform);
             //carLights = GetComponent<CarLights>();
             _engineSound = GetComponent<FMODUnity.StudioEventEmitter>();
+
+            _countdownDelay = Camera.main!.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time;
 
             if (_isTesting)
             {
@@ -73,7 +77,7 @@ namespace _game.Scripts
             }
         }
 
-        void Update()
+        private void Update()
         {
             GetInputs();
             AnimateWheels();
@@ -86,6 +90,7 @@ namespace _game.Scripts
 
         private void FixedUpdate()
         {
+            if (!_isPlaying) return;
             Move();
             Steer();
             Brake();
@@ -97,6 +102,7 @@ namespace _game.Scripts
 
         private void GetInputs()
         {
+            if (!_isPlaying) return;
             if (_controlScheme == ControlMode.Keyboard)
             {
                 _moveInput = Input.GetAxis("Vertical");
@@ -234,9 +240,7 @@ namespace _game.Scripts
                 SwitchCamera(true);
 
                 _rb.isKinematic = false;
-                _isPlaying = true;
-
-                SetTimerActive?.Invoke(true);
+                StartCountdown?.Invoke(3, _countdownDelay, StartPlaying);
             }
             else
             {
@@ -247,9 +251,18 @@ namespace _game.Scripts
             }
         }
 
+        //Triggered pressing restart on endscreen
         public void RestartLevel()
         {
+            _isPlaying = false;
             Reset(_restartPosition);
+            StartCountdown?.Invoke(3, 0f, StartPlaying);
+        }
+
+        //Enable playingF
+        private void StartPlaying()
+        {
+            _isPlaying = true;
             SetTimerActive?.Invoke(true);
         }
 
@@ -265,9 +278,13 @@ namespace _game.Scripts
         {
             if (other.CompareTag("Finish"))
             {
+                _isPlaying = false;
+                foreach (Wheel wheel in _wheels)
+                {
+                    wheel.wheelCollider.brakeTorque = float.MaxValue;
+                }
                 SetTimerActive?.Invoke(false);
                 ShowEndScreen?.Invoke(this);
-                //GameManager.GameState = GameState.Editing;
             }
         }
 
