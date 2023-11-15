@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
-{
+{   
     void Start()
     {
         Time.timeScale = 1;
@@ -18,5 +18,5 @@ public class MainMenu : MonoBehaviour
    {
     Application.Quit();
    }
-
+    
 }
