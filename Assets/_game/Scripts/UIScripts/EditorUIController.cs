@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using FMOD;
 using FMODUnity;
+using UnityEngine.SceneManagement;
 
 namespace _game.Scripts.UIScripts
 {
@@ -65,6 +66,7 @@ namespace _game.Scripts.UIScripts
                 DisplayWarning(1);
         }
 
-        public void TileItemToggle(int id) { }
+        public void GoToMenu() { SceneManager.LoadScene("Main Menu"); }
+        public void ExitToDesktop() { Application.Quit(69); }
     }
 }

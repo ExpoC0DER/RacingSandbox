@@ -12,16 +12,16 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Car
   - Water
   - UI
-  - TilePreview
-  - AlwaysOnTop
-  - TileBounds
+  - NoCollision
+  - Road
+  - Object
+  - Area
   - 
-  - 
-  - 
-  - 
+  - NormalRender
+  - PickedUpRender
   - 
   - 
   - 

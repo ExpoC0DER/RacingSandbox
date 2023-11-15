@@ -68,45 +68,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: bigtosmall_export
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 57a7f518f7992a94990f2f8839e78a89, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 57a7f518f7992a94990f2f8839e78a89, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6281159207530568821}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57a7f518f7992a94990f2f8839e78a89, type: 3}
 --- !u!4 &345937421416788715 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 57a7f518f7992a94990f2f8839e78a89, type: 3}
   m_PrefabInstance: {fileID: 236365575162598656}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1118815671363283025 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 57a7f518f7992a94990f2f8839e78a89, type: 3}
-  m_PrefabInstance: {fileID: 236365575162598656}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &6281159207530568821
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1118815671363283025}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 10, y: 10.000002, z: 0.5}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1648688781216441810
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -158,6 +133,18 @@ PrefabInstance:
     - target: {fileID: 2403047715860921947, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
       propertyPath: m_Name
       value: 1x1 BigToSmall
+      objectReference: {fileID: 0}
+    - target: {fileID: 3776255922077202589, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Size.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3776255922077202589, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Size.y
+      value: 10.000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 3776255922077202589, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Size.z
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

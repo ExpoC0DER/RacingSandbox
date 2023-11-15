@@ -3,7 +3,9 @@ using _game.Scripts.UIScripts;
 using UnityEngine;
 using FMOD;
 using FMODUnity;
+using JetBrains.Annotations;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace _game.Scripts
 {
@@ -11,26 +13,31 @@ namespace _game.Scripts
     {
         [SerializeField] private GameObject[] _tiles;
         [SerializeField] private EditorUIController _editorUI;
-        [SerializeField] private LayerMask _collisionCheck;
-        [SerializeField] private LayerMask _collisionCheckObstacle;
-        [SerializeField] private LayerMask _collisionCheckRaycast;
+        [FormerlySerializedAs("_collisionCheck")]
+        [SerializeField] private LayerMask _collisionCheckRoad;
+        [FormerlySerializedAs("_collisionCheckObstacle")]
+        [SerializeField] private LayerMask _collisionCheckObject;
+        [SerializeField] private LayerMask _collisionCheckArea;
+        [SerializeField] private LayerMask _editorRaycast;
+        [SerializeField] private Transform _test;
         [ColorUsage(true, true), SerializeField]
         private Color _collidingColor, _notCollidingColor, _editingColor;
-        [SerializeField] private Material _previewMaterial;
+        [SerializeField] private Material _outlineMat, _tintMat;
         private Transform _activeTileTransform;
         private BoxCollider _activeTileCollider;
+        private int _activeTileDefaultLayer;
         private Vector3 _mousePos;
         [SerializeField] private int _selectedId;
         [SerializeField] private StudioEventEmitter _tilePlaceSound, _tileDestroySound;
         private bool _isColliding;
-        private TileType _tileType;
+        private Layer _layer;
         private Quaternion _rotation;
         private EditorMode _editorMode = EditorMode.Place;
         private readonly Collider[] _overlapBuffer = new Collider[1];
         private Camera _cameraMain;
-        private GameObject _startTile, _endTile;
+        [SerializeField] private GameObject _startTile, _endTile;
         private GameObject _lastDestroyTarget, _lastEditTarget;
-        private static readonly int BaseColor = Shader.PropertyToID("_baseColor");
+        private static readonly int BaseColor = Shader.PropertyToID("_Color");
         public bool EditorViewPressed { get; set; }
 
         public static event Action<EditorMode> OnEditorModeChanged;
@@ -89,26 +96,28 @@ namespace _game.Scripts
                     {
                         if (_activeTileTransform.TryGetComponent(out TileController tileController))
                             tileController.SetActiveArrows(false);
-                        ChangeLayer(_activeTileTransform.gameObject, 8);
-                        SetActiveTile(null);
+                        ChangeCollisionLayer(_activeTileTransform.gameObject, _activeTileDefaultLayer);
+                        SetActiveTile((Transform)null);
                         _tilePlaceSound.Play();
                     }
                 }
             }
             else
             {
+
                 Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
-                if (Physics.Raycast(ray, out RaycastHit hit))
+                if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
                 {
-                    _previewMaterial.SetColor(BaseColor, _editingColor);
-                    Transform hitTransform = GetTransformParent(hit.transform);
-                    if (_lastEditTarget && _lastEditTarget != hitTransform.gameObject)
-                        ChangeLayer(_lastEditTarget, 8);
-                    _lastEditTarget = hitTransform.gameObject;
-                    ChangeLayer(_lastEditTarget, 6);
+                    SetHighlightMaterialColor(_editingColor);
+                    GameObject hitGameObject = hit.transform.gameObject;
+                    if (_lastEditTarget && _lastEditTarget != hitGameObject)
+                        ChangeCollisionLayer(_lastEditTarget, _activeTileDefaultLayer, true);
+                    _lastEditTarget = hitGameObject;
+                    ChangeCollisionLayer(_lastEditTarget, (int)Layer.NoCollision, true);
                     if (EditorViewPressed)
                     {
-                        SetActiveTile(hitTransform);
+                        SetActiveTile(hitGameObject);
+                        ChangeCollisionLayer(hitGameObject, (int)Layer.NoCollision);
                         if (_activeTileTransform.TryGetComponent(out TileController tileController))
                             tileController.SetActiveArrows(true);
                         _tileDestroySound.Play();
@@ -117,7 +126,7 @@ namespace _game.Scripts
                 else
                 {
                     if (_lastEditTarget)
-                        ChangeLayer(_lastEditTarget, 8);
+                        ChangeCollisionLayer(_lastEditTarget, _activeTileDefaultLayer);
                 }
             }
         }
@@ -137,7 +146,7 @@ namespace _game.Scripts
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Destroy(_activeTileTransform.gameObject);
-                SetActiveTile(null);
+                SetActiveTile((Transform)null);
             }
 
 
@@ -147,7 +156,7 @@ namespace _game.Scripts
                 _editorUI.DisplayWarning(0);
                 return;
             }
-            ChangeLayer(_activeTileTransform.gameObject, 8);
+            ChangeCollisionLayer(_activeTileTransform.gameObject, _activeTileDefaultLayer);
             if (_activeTileTransform.TryGetComponent(out TileController tileController))
                 tileController.SetActiveArrows(false);
             if (_selectedId == 4) //4 is StartTileId
@@ -161,21 +170,21 @@ namespace _game.Scripts
                 _endTile = _activeTileTransform.gameObject;
             }
             SetActiveTile(Instantiate(_tiles[_selectedId], _cameraMain.ViewportToWorldPoint(Input.mousePosition), _rotation).transform);
-            ChangeLayer(_activeTileTransform.gameObject, 6);
+            ChangeCollisionLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
             _tilePlaceSound.Play();
         }
 
         private void HandleDestroyMode()
         {
             Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
             {
-                _previewMaterial.SetColor(BaseColor, _collidingColor);
-                Transform hitTransform = GetTransformParent(hit.transform);
-                if (_lastDestroyTarget && _lastDestroyTarget != hitTransform.gameObject)
-                    ChangeLayer(_lastDestroyTarget, 8);
-                _lastDestroyTarget = hitTransform.gameObject;
-                ChangeLayer(_lastDestroyTarget, 6);
+                SetHighlightMaterialColor(_collidingColor);
+                GameObject hitObject = hit.transform.gameObject;
+                if (_lastDestroyTarget && _lastDestroyTarget != hitObject.gameObject)
+                    ChangeCollisionLayer(_lastDestroyTarget, _activeTileDefaultLayer, true);
+                _lastDestroyTarget = hitObject.gameObject;
+                ChangeCollisionLayer(_lastDestroyTarget, (int)Layer.NoCollision, true);
                 if (EditorViewPressed)
                 {
                     Destroy(_lastDestroyTarget);
@@ -186,7 +195,7 @@ namespace _game.Scripts
             {
                 if (_lastDestroyTarget)
                 {
-                    ChangeLayer(_lastDestroyTarget, 8);
+                    ChangeCollisionLayer(_lastDestroyTarget, _activeTileDefaultLayer);
                 }
             }
         }
@@ -197,8 +206,8 @@ namespace _game.Scripts
             if (_activeTileTransform)
                 Destroy(_activeTileTransform.gameObject);
             if (id == -1) return;
-            SetActiveTile(Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10), Quaternion.identity).transform);
-            ChangeLayer(_activeTileTransform.gameObject, 6);
+            SetActiveTile(Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10), _rotation).transform);
+            ChangeCollisionLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
             _selectedId = id;
         }
 
@@ -206,31 +215,33 @@ namespace _game.Scripts
 
         private void MyCollisions()
         {
-            LayerMask layerMask;
-            switch (_tileType)
-            {
-                case TileType.Obstacle:
-                    layerMask = _collisionCheckObstacle;
-                    break;
-                case TileType.Tile:
-                    layerMask = _collisionCheck;
-                    break;
-                case TileType.Area:
-                    return;
-                default:
-                    return;
-            }
             if (!_activeTileTransform)
                 return;
 
             Vector3 worldCenter = _activeTileTransform.TransformPoint(_activeTileCollider.center);
             Vector3 worldHalfExtents = _activeTileTransform.TransformVector(_activeTileCollider.size * 0.45f);
+            LayerMask layerMask = GetActiveTileCollisionCheck(_layer);
 
-            _isColliding = Physics.OverlapBoxNonAlloc(worldCenter, worldHalfExtents, _overlapBuffer, _rotation, layerMask) > 0;
+            // _test.localPosition = worldCenter;
+            // _test.localScale = worldHalfExtents * 2;
+            // _test.localRotation = _rotation;
+
+            _isColliding = Physics.OverlapBoxNonAlloc(worldCenter, worldHalfExtents, _overlapBuffer, _rotation, layerMask, QueryTriggerInteraction.Ignore) > 0;
             if (_editorMode == EditorMode.Edit)
-                _previewMaterial.SetColor(BaseColor, _isColliding ? _collidingColor : _editingColor);
+                SetHighlightMaterialColor(_isColliding ? _collidingColor : _editingColor);
             if (_editorMode == EditorMode.Place)
-                _previewMaterial.SetColor(BaseColor, _isColliding ? _collidingColor : _notCollidingColor);
+                SetHighlightMaterialColor(_isColliding ? _collidingColor : _notCollidingColor);
+        }
+
+        private LayerMask GetActiveTileCollisionCheck(Layer layer)
+        {
+            return layer switch
+            {
+                Layer.Object => _collisionCheckObject,
+                Layer.Road => _collisionCheckRoad,
+                Layer.Area => _collisionCheckArea,
+                _ => (int)Layer.NoCollision
+            };
         }
 
         private void OnDrawGizmos()
@@ -240,21 +251,34 @@ namespace _game.Scripts
 
             Gizmos.color = Color.red;
             Vector3 worldCenter = _activeTileTransform.TransformPoint(_activeTileCollider.center);
-            Vector3 worldHalfExtents = _activeTileTransform.TransformVector(_activeTileCollider.size * 0.9f);
-            Gizmos.DrawWireCube(worldCenter, worldHalfExtents);
+            Vector3 worldExtents = _activeTileTransform.TransformVector(_activeTileCollider.size * 0.9f);
+            Gizmos.DrawWireCube(worldCenter, worldExtents);
         }
 
-        private static void ChangeLayer(GameObject gO, int layer)
+        private static void ChangeCollisionLayer(GameObject gO, int layer, bool renderOnly = false)
         {
-            gO.layer = layer;
+            if (!renderOnly)
+                gO.layer = layer;
             for(int i = 0; i < gO.transform.childCount; i++)
             {
-                if (layer == 8)
-                    SetLayerRecursively(gO.transform.GetChild(i), 0);
+                int childLayer = gO.transform.GetChild(i).gameObject.layer;
+                if (IsDefaultCollision(layer))
+                {
+                    if (childLayer == (int)Layer.NoCollision && !renderOnly)
+                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.Default);
+                    if (childLayer == (int)Layer.PickedUpRender)
+                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.NormalRender);
+                }
                 else
-                    SetLayerRecursively(gO.transform.GetChild(i), layer);
+                {
+                    if (childLayer == (int)Layer.Default && !renderOnly)
+                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.NoCollision);
+                    if (childLayer == (int)Layer.NormalRender)
+                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.PickedUpRender);
+                }
             }
         }
+
         private static void SetLayerRecursively(Transform trans, int layer)
         {
             trans.gameObject.layer = layer;
@@ -268,32 +292,27 @@ namespace _game.Scripts
             OnEditorModeChanged?.Invoke(_editorMode);
             if (_activeTileTransform)
                 Destroy(_activeTileTransform.gameObject);
-            SetActiveTile(null);
+            SetActiveTile((Transform)null);
             _editorUI.EditorEnabled(_editorMode != EditorMode.Off);
         }
         private void SetEditorMode(EditorMode mode) { SetEditorMode((int)mode); }
 
         private void OnGameStateChanged(GameState gameState) { SetEditorMode(gameState == GameState.Editing ? EditorMode.Place : EditorMode.Off); }
 
-        private static Transform GetTransformParent(Transform hitObject)
-        {
-            if (hitObject.CompareTag("Obstacle") || hitObject.CompareTag("Tile") || hitObject.CompareTag("Area"))
-                return hitObject;
-            return GetTransformParent(hitObject.parent);
-        }
-
+        private void SetActiveTile(GameObject value) { SetActiveTile(value.transform); }
         private void SetActiveTile(Transform value)
         {
             _activeTileTransform = value;
             if (_activeTileTransform)
             {
                 if (_activeTileTransform.gameObject.CompareTag("Obstacle"))
-                    _tileType = TileType.Obstacle;
+                    _layer = Layer.Object;
                 if (_activeTileTransform.gameObject.CompareTag("Tile"))
-                    _tileType = TileType.Tile;
+                    _layer = Layer.Road;
                 if (_activeTileTransform.gameObject.CompareTag("Area"))
-                    _tileType = TileType.Area;
+                    _layer = Layer.Area;
                 _activeTileCollider = _activeTileTransform.GetComponent<BoxCollider>();
+                _activeTileDefaultLayer = _activeTileTransform.gameObject.layer;
             }
             else
             {
@@ -301,21 +320,30 @@ namespace _game.Scripts
             }
         }
 
+        private void SetHighlightMaterialColor(Color color)
+        {
+            _outlineMat.SetColor(BaseColor, color);
+            _tintMat.SetColor(BaseColor, color);
+        }
+
         private void SetTileToMousePos(Transform tile)
         {
-            tile.position = _tileType switch
+            tile.position = _layer switch
             {
-                TileType.Obstacle => _cameraMain.ScreenToWorldPoint(_mousePos).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                TileType.Area => _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                TileType.Tile => _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10),
+                Layer.Object => _cameraMain.ScreenToWorldPoint(_mousePos).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                Layer.Area => _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                Layer.Road => _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10),
                 _ => tile.position
             };
         }
+
+        private static bool IsDefaultCollision(int layer) { return layer is (int)Layer.Road or (int)Layer.Object or (int)Layer.Area; }
 
         public bool CanStart() => _startTile && _endTile;
 
         private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
         private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
+
     }
 
     public enum EditorMode
@@ -326,10 +354,15 @@ namespace _game.Scripts
         Edit = 3
     }
 
-    public enum TileType
+    public enum Layer
     {
-        Tile,
-        Obstacle,
-        Area
+        Default = 0,
+        Car = 3,
+        NoCollision = 6,
+        Road = 7,
+        Object = 8,
+        Area = 9,
+        NormalRender = 11,
+        PickedUpRender = 12
     }
 }

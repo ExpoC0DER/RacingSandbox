@@ -25,7 +25,7 @@ namespace _game.Scripts
             _timerText.text = GetStringTime();
         }
 
-        public void StartTimer()
+        private void StartTimer()
         {
             _time = 0;
             _timerText.text = GetStringTime();
@@ -33,7 +33,7 @@ namespace _game.Scripts
             _timerText.enabled = true;
         }
 
-        public void EndTimer()
+        private void EndTimer()
         {
             _isRunning = false;
             _timerText.enabled = false;

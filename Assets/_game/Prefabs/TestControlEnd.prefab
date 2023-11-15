@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 862939618534722053}
   - component: {fileID: 6596090753499127283}
   - component: {fileID: 3980591132120760299}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: TestControlEnd
   m_TagString: Tile
   m_Icon: {fileID: 0}
@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _arrows:
   - {fileID: 4092731266472269891}
+  _overlays: []
   _time: 0.3
 --- !u!65 &3980591132120760299
 BoxCollider:
@@ -687,6 +688,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Icon_Letter_H_01
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 46c3c788c95462841bad409314fa1391, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 46c3c788c95462841bad409314fa1391, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.25
@@ -752,6 +757,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 0a59becb20a860b42bcedce44eb375f6, type: 3}
       propertyPath: m_Name
       value: SM_Icon_Letter_S_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 0a59becb20a860b42bcedce44eb375f6, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0a59becb20a860b42bcedce44eb375f6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -819,6 +828,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Icon_Letter_F_01
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 7b3b4ab8d7928744ab2e2de6c2f74437, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7b3b4ab8d7928744ab2e2de6c2f74437, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.25
@@ -885,6 +898,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Icon_Letter_I_01 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1f312a11405be464385fa419871af6c8, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1f312a11405be464385fa419871af6c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.25
@@ -950,6 +967,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 1f312a11405be464385fa419871af6c8, type: 3}
       propertyPath: m_Name
       value: SM_Icon_Letter_I_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1f312a11405be464385fa419871af6c8, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1f312a11405be464385fa419871af6c8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1019,7 +1040,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
       propertyPath: m_LocalScale.x
@@ -1107,6 +1128,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 90cb7bcc94e904a4290f9e4c58ba3af1, type: 3}
       propertyPath: m_Name
       value: SM_Icon_Letter_N_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 90cb7bcc94e904a4290f9e4c58ba3af1, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 90cb7bcc94e904a4290f9e4c58ba3af1, type: 3}
       propertyPath: m_LocalPosition.x
