@@ -7,12 +7,14 @@ namespace _game.Scripts
         public static Vector3 RoundToMultiple(this Vector3 value, int multipleOf)
         {
             return new Vector3(
-                RountToMultiple(value.x, multipleOf),
-                RountToMultiple(value.y, multipleOf),
-                RountToMultiple(value.z, multipleOf));
+                RoundToMultiple(value.x, multipleOf),
+                RoundToMultiple(value.y, multipleOf),
+                RoundToMultiple(value.z, multipleOf));
         }
 
-        public static int RountToMultiple(float value, int multipleOf) { return (int)(Mathf.Round(value / multipleOf) * multipleOf); }
+        public static Vector3 Abs(this Vector3 vector3) { return new Vector3(Mathf.Abs(vector3.x), Mathf.Abs(vector3.y), Mathf.Abs(vector3.z)); }
+
+        public static int RoundToMultiple(float value, int multipleOf) { return (int)(Mathf.Round(value / multipleOf) * multipleOf); }
 
         public static Vector3 MultiplyBy(this Vector3 a, Vector3 b) { return new(a.x * b.x, a.y * b.y, a.z * b.z); }
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1118510309542236147}
   m_Layer: 3
   m_Name: CarPrefabErik
-  m_TagString: Untagged
+  m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43,6 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4300876552279854280}
   - component: {fileID: 200453282838844302}
+  - component: {fileID: 6704951126217555774}
   m_Layer: 3
   m_Name: FrontLeftCollider
   m_TagString: Untagged
@@ -104,6 +105,18 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &6704951126217555774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309488286674153597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1649678755299201738
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,6 +210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4485944544750703982}
   - component: {fileID: 3592979150856865348}
+  - component: {fileID: 4061307406387993071}
   m_Layer: 3
   m_Name: FrontRightCollider
   m_TagString: Untagged
@@ -258,6 +272,18 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &4061307406387993071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730179286833504224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2498440090447688699
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,7 +500,7 @@ GameObject:
   - component: {fileID: 330393016609333887}
   m_Layer: 3
   m_Name: Car
-  m_TagString: Untagged
+  m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -751,6 +777,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3800492333842528273}
   - component: {fileID: 2002046656698780728}
+  - component: {fileID: 4211037938618560590}
   m_Layer: 3
   m_Name: RearLeftCollider
   m_TagString: Untagged
@@ -812,6 +839,18 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &4211037938618560590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6950783857271083154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7430983459576308287
 GameObject:
   m_ObjectHideFlags: 0
@@ -1072,6 +1111,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6898383355070650143}
   - component: {fileID: 2636675533077681330}
+  - component: {fileID: 7980474883161186185}
   m_Layer: 3
   m_Name: RearRightCollider
   m_TagString: Untagged
@@ -1133,6 +1173,18 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!114 &7980474883161186185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8128423633610317762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8785506464194846553
 GameObject:
   m_ObjectHideFlags: 0

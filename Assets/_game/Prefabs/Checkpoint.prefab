@@ -154,6 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ef592132a645344ac7f507359e265f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 
+  <TileID>k__BackingField: 0
   _arrows:
   - {fileID: 2501658487421283221}
   _overlays: []
@@ -300,7 +302,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0c04ad659f6190469ef814ed0a5797c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.754751
+      value: 2.285475
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0c04ad659f6190469ef814ed0a5797c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -308,7 +310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0c04ad659f6190469ef814ed0a5797c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.9949956
+      value: -0.5643719
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0c04ad659f6190469ef814ed0a5797c, type: 3}
       propertyPath: m_LocalRotation.x
@@ -316,7 +318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0c04ad659f6190469ef814ed0a5797c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.09991903
+      value: -0.8255207
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0c04ad659f6190469ef814ed0a5797c, type: 3}
       propertyPath: m_LocalRotation.z

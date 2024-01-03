@@ -16,6 +16,7 @@ MonoBehaviour:
   BrakeAccelaration: 300
   TurnSensitivity: 0.5
   MaxSteerAngle: 30
+  BoostPower: 10
   CenterOfMass: {x: 0, y: 0, z: 0}
   Weight: 1300
   AirDrag: 0.2

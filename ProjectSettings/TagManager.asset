@@ -8,6 +8,9 @@ TagManager:
   - Tile
   - Area
   - Checkpoint
+  - Boost
+  - Car
+  - FreezeBullet
   layers:
   - Default
   - TransparentFX
@@ -18,8 +21,8 @@ TagManager:
   - NoCollision
   - Road
   - Object
-  - Area
-  - 
+  - RoadTrigger
+  - ObjectTrigger
   - NormalRender
   - PickedUpRender
   - 

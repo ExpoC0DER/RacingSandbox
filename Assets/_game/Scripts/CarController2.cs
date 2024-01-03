@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using NaughtyAttributes;
+using UnityEngine.Rendering;
 
 namespace _game.Scripts
 {
@@ -36,7 +37,7 @@ namespace _game.Scripts
         [SerializeField] private ControlMode _controlScheme;
 
         [SerializeField, Expandable] private CarParameters _carParameters;
-        private float _maxAcceleration, _brakeAcceleration, _turnSensitivity, _maxSteerAngle;
+        private float _maxAcceleration, _brakeAcceleration, _turnSensitivity, _maxSteerAngle, _boostPower;
         private FMODUnity.StudioEventEmitter _engineSound;
         [SerializeField] private bool _isTesting;
 
@@ -47,7 +48,7 @@ namespace _game.Scripts
         [SerializeField] private TMP_Text _speedMeter;
 
         private CarTransform _restartPosition, _checkpointPosition;
-        private bool _isPlaying, _isResetting;
+        private bool _isPlaying, _isResetting, _isBreaking;
         [SerializeField] private CinemachineVirtualCamera _carCam;
         [SerializeField] private Transform _followPoint;
         private float _countdownDelay;
@@ -105,11 +106,8 @@ namespace _game.Scripts
             if (!_isPlaying) return;
             if (_controlScheme == ControlMode.Keyboard)
             {
-                _moveInput = Input.GetAxis("Vertical");
-                _steerInput = Input.GetAxis("Horizontal");
-
-                if (Input.GetKeyDown(KeyCode.C) && !_isResetting)
-                    Reset(_checkpointPosition);
+                if (Input.GetKeyDown(KeyCode.LeftShift))
+                    _rb.AddForce(transform.forward * 10, ForceMode.VelocityChange);
             }
         }
 
@@ -142,7 +140,7 @@ namespace _game.Scripts
 
         private void Brake()
         {
-            if (Input.GetKey(KeyCode.Space) || _isResetting) // || moveInput == 0)
+            if (_isBreaking || _isResetting) // || moveInput == 0)
             {
                 foreach (Wheel wheel in _wheels)
                 {
@@ -180,7 +178,7 @@ namespace _game.Scripts
             {
                 //var dirtParticleMainSettings = wheel.smokeParticle.main;
 
-                if (Input.GetKey(KeyCode.Space) && wheel.axel == Axel.Rear && wheel.wheelCollider.isGrounded && _rb.velocity.magnitude >= 10.0f)
+                if (_isBreaking && wheel.axel == Axel.Rear && wheel.wheelCollider.isGrounded && _rb.velocity.magnitude >= 10.0f)
                 {
                     wheel.wheelEffectObj.GetComponentInChildren<TrailRenderer>().emitting = true;
                     wheel.smokeParticle.Emit(1);
@@ -198,6 +196,7 @@ namespace _game.Scripts
             _brakeAcceleration = carParams.BrakeAccelaration;
             _turnSensitivity = carParams.TurnSensitivity;
             _maxSteerAngle = carParams.MaxSteerAngle;
+            _boostPower = carParams.BoostPower;
 
             _rb.mass = carParams.Weight;
             _rb.centerOfMass = carParams.CenterOfMass;
@@ -272,6 +271,10 @@ namespace _game.Scripts
             {
                 _checkpointPosition.SetPositionAndRotation(other.transform);
             }
+            if (other.CompareTag("Boost"))
+            {
+                _rb.AddForce(transform.forward * _boostPower, ForceMode.VelocityChange);
+            }
         }
 
         private void OnTriggerExit(Collider other)
@@ -306,15 +309,35 @@ namespace _game.Scripts
 
         private void OnDrawGizmos() { Gizmos.DrawSphere(transform.TransformPoint(_carParameters.CenterOfMass), 0.1f); }
 
+        private void GetAxisInput(Vector2 vector2)
+        {
+            _steerInput = vector2.x;
+            _moveInput = vector2.y;
+        }
+
+        private void OnRestartCheckpointPerformed()
+        {
+            if (!_isResetting)
+                Reset(_checkpointPosition);
+        }
+
+        private void OnBreakingChanged(bool value) { _isBreaking = value; }
+
         private void OnEnable()
         {
             GameManager.OnGameStateChanged += OnGameStateChanged;
             _carParameters.OnChange += LoadParameters;
+            InputController.InputAxisChanged += GetAxisInput;
+            InputController.RestartCheckpointPerformed += OnRestartCheckpointPerformed;
+            InputController.BreakingChanged += OnBreakingChanged;
         }
         private void OnDisable()
         {
             GameManager.OnGameStateChanged -= OnGameStateChanged;
             _carParameters.OnChange -= LoadParameters;
+            InputController.InputAxisChanged -= GetAxisInput;
+            InputController.RestartCheckpointPerformed -= OnRestartCheckpointPerformed;
+            InputController.BreakingChanged -= OnBreakingChanged;
         }
     }
     public struct CarTransform

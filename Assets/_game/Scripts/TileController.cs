@@ -5,14 +5,13 @@ namespace _game.Scripts
 {
     public class TileController : MonoBehaviour
     {
+        [field: SerializeField] public string Id { get; set; }
+        [field: SerializeField] public int TileID { get; set; }
         [SerializeField] private GameObject[] _arrows;
         [SerializeField] private GameObject[] _overlays;
         [SerializeField] private float _time = 0.5f;
 
-        private void Start()
-        {
-            StartAnim();
-        }
+        private void Start() { StartAnim(); }
 
         public void SetActiveArrows(bool value)
         {

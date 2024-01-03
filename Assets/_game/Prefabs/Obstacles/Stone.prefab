@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3814560816018429928}
   - component: {fileID: 1354292036841603517}
+  - component: {fileID: 251098399766101971}
   m_Layer: 8
   m_Name: Stone
   m_TagString: Obstacle
@@ -55,6 +56,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.9417615, y: 0.5502081, z: 1.9701475}
   m_Center: {x: -0.26496577, y: 0.5440159, z: 0.30088812}
+--- !u!114 &251098399766101971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556845871996475455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1ef592132a645344ac7f507359e265f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _arrows: []
+  _overlays: []
+  _time: 0.5
 --- !u!1 &3506764704069057865
 GameObject:
   m_ObjectHideFlags: 0
