@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using _game.Scripts.HelperScripts;
 
 namespace _game.Scripts.Saving
 {
@@ -11,7 +12,7 @@ namespace _game.Scripts.Saving
         [SerializeField] private string _fileName;
         [SerializeField] private bool _useEncryption;
 
-        private LevelData _levelData;
+        private LevelData _levelData = new LevelData();
         private List<IDataPersistence> _dataPersistenceObjects;
         private FileDataHandler _fileDataHandler;
 
@@ -28,6 +29,10 @@ namespace _game.Scripts.Saving
 
         private void Start()
         {
+            _fileName = PlayerPref.GetPlayerPref(PlayerPref.CurrentMap);
+            if (string.IsNullOrEmpty(_fileName))
+                _fileName = _levelData.Name + ".map";
+            
             _fileDataHandler = new FileDataHandler(Application.persistentDataPath, _fileName, _useEncryption);
             _dataPersistenceObjects = FindAllDataPersistenceObjects();
             LoadLevel();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _game.Scripts.HelperScripts;
 using _game.Scripts.Saving;
 using _game.Scripts.UIScripts;
 using UnityEngine;
@@ -97,7 +98,7 @@ namespace _game.Scripts
                     {
                         if (_activeTileTransform.TryGetComponent(out TileController tileController))
                             tileController.SetActiveArrows(false);
-                        ChangeCollisionLayer(_activeTileTransform.gameObject, (int)_activeTileDefaultLayer);
+                        ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)_activeTileDefaultLayer);
                         SetActiveTile((Transform)null);
                         _tilePlaceSound.Play();
                     }
@@ -105,20 +106,23 @@ namespace _game.Scripts
             }
             else
             {
-
                 Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
                 if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
                 {
                     SetHighlightMaterialColor(_editingColor);
                     GameObject hitGameObject = hit.transform.gameObject;
-                    if (_lastEditTarget && _lastEditTarget != hitGameObject)
-                        ChangeCollisionLayer(_lastEditTarget, (int)_activeTileDefaultLayer, true);
+                    if (_lastEditTarget != hitGameObject)
+                    {
+                        ChangeRenderLayer(_lastEditTarget, (int)Layer.NormalRender);
+                        ChangeRenderLayer(hitGameObject, (int)Layer.PickedUpRender);
+                    }
+
                     _lastEditTarget = hitGameObject;
-                    ChangeCollisionLayer(_lastEditTarget, (int)Layer.NoCollision, true);
+
                     if (EditorViewPressed)
                     {
                         SetActiveTile(hitGameObject);
-                        ChangeCollisionLayer(hitGameObject, (int)Layer.NoCollision);
+                        ChangeCollisionAndRenderLayer(hitGameObject, (int)Layer.NoCollision);
                         if (_activeTileTransform.TryGetComponent(out TileController tileController))
                             tileController.SetActiveArrows(true);
                         _tileDestroySound.Play();
@@ -127,7 +131,8 @@ namespace _game.Scripts
                 else
                 {
                     if (_lastEditTarget)
-                        ChangeCollisionLayer(_lastEditTarget, (int)_activeTileDefaultLayer, true);
+                        ChangeRenderLayer(_lastEditTarget, (int)Layer.NormalRender);
+                    _lastEditTarget = null;
                 }
             }
         }
@@ -157,7 +162,7 @@ namespace _game.Scripts
                 _editorUI.DisplayWarning(0);
                 return;
             }
-            ChangeCollisionLayer(_activeTileTransform.gameObject, (int)_activeTileDefaultLayer);
+            ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)_activeTileDefaultLayer);
             if (_activeTileTransform.TryGetComponent(out TileController tileController))
                 tileController.SetActiveArrows(false);
             if (_selectedId == 4) //4 is StartTileId
@@ -180,7 +185,7 @@ namespace _game.Scripts
             }
             AddTileToList(_activeTileTransform.gameObject, _selectedId);
             SetActiveTile(Instantiate(_tiles[_selectedId], _cameraMain.ViewportToWorldPoint(Input.mousePosition), _rotation).transform);
-            ChangeCollisionLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
+            ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
             _tilePlaceSound.Play();
         }
 
@@ -192,11 +197,14 @@ namespace _game.Scripts
                 SetHighlightMaterialColor(_collidingColor);
                 GameObject hitObject = hit.transform.gameObject;
 
-                if (_lastDestroyTarget && _lastDestroyTarget != hitObject)
-                    ChangeCollisionLayer(_lastDestroyTarget, (int)_activeTileDefaultLayer, true);
+                if (_lastDestroyTarget != hitObject)
+                {
+                    ChangeRenderLayer(_lastDestroyTarget, (int)Layer.NormalRender);
+                    ChangeRenderLayer(hitObject, (int)Layer.PickedUpRender);
+                }
 
                 _lastDestroyTarget = hitObject;
-                ChangeCollisionLayer(_lastDestroyTarget, (int)Layer.NoCollision, true);
+                
                 if (EditorViewPressed)
                 {
                     if (_lastDestroyTarget.TryGetComponent(out TileController tileController))
@@ -209,9 +217,8 @@ namespace _game.Scripts
             else
             {
                 if (_lastDestroyTarget)
-                {
-                    ChangeCollisionLayer(_lastDestroyTarget, (int)_activeTileDefaultLayer, true);
-                }
+                    ChangeRenderLayer(_lastDestroyTarget, (int)Layer.NormalRender);
+                _lastDestroyTarget = null;
             }
         }
 
@@ -257,27 +264,41 @@ namespace _game.Scripts
             Gizmos.DrawWireCube(worldCenter, worldExtents);
         }
 
-        private static void ChangeCollisionLayer(GameObject gO, int layer, bool renderOnly = false)
+        private static void ChangeCollisionAndRenderLayer(GameObject gameObject, int layer)
         {
-            if (!renderOnly)
-                gO.layer = layer;
-            for(int i = 0; i < gO.transform.childCount; i++)
+            if (!gameObject) return;
+            
+            gameObject.layer = layer;
+            for(int i = 0; i < gameObject.transform.childCount; i++)
             {
-                int childLayer = gO.transform.GetChild(i).gameObject.layer;
-                if (IsDefaultCollision(layer))
+                int childLayer = gameObject.transform.GetChild(i).gameObject.layer;
+                if (IsDefaultLayer(layer))
                 {
-                    if (childLayer == (int)Layer.NoCollision && !renderOnly)
-                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.Default);
+                    if (childLayer == (int)Layer.NoCollision)
+                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.Default);
                     if (childLayer == (int)Layer.PickedUpRender)
-                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.NormalRender);
+                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.NormalRender);
                 }
                 else
                 {
-                    if (childLayer == (int)Layer.Default && !renderOnly)
-                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.NoCollision);
+                    if (childLayer == (int)Layer.Default)
+                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.NoCollision);
                     if (childLayer == (int)Layer.NormalRender)
-                        SetLayerRecursively(gO.transform.GetChild(i), (int)Layer.PickedUpRender);
+                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.PickedUpRender);
                 }
+            }
+        }
+
+
+        private static void ChangeRenderLayer(GameObject gameObject, int layer)
+        {
+            if (!gameObject) return;
+            
+            foreach (Transform child in gameObject.transform)
+            {
+                if (child.gameObject.layer is (int)Layer.NormalRender or (int)Layer.PickedUpRender)
+                    child.gameObject.layer = layer;
+                ChangeRenderLayer(child.gameObject, layer);
             }
         }
 
@@ -309,7 +330,7 @@ namespace _game.Scripts
             if (id == -1) return;
             SetActiveTile(Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10), _rotation).transform);
             _selectedId = id;
-            ChangeCollisionLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
+            ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
         }
         private void SetActiveTile(GameObject value) { SetActiveTile(value.transform); }
         private void SetActiveTile(Transform value)
@@ -365,7 +386,7 @@ namespace _game.Scripts
             };
         }
 
-        private static bool IsDefaultCollision(int layer) { return layer is (int)Layer.Road or (int)Layer.Object or (int)Layer.RoadTrigger or (int)Layer.ObjectTrigger or (int)Layer.Default; }
+        private static bool IsDefaultLayer(int layer) { return layer is (int)Layer.Road or (int)Layer.Object or (int)Layer.RoadTrigger or (int)Layer.ObjectTrigger or (int)Layer.Default; }
 
         public bool CanStart() => _startTile && _endTile;
 

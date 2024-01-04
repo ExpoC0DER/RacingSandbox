@@ -11,7 +11,7 @@ namespace _game.Scripts.Saving
 
         public LevelData()
         {
-            Name = "No name";
+            Name = "NewLevel";
             TileMap = new();
         }
     }
