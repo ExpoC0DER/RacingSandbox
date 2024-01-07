@@ -37,7 +37,7 @@ namespace _game.Scripts
 
         [SerializeField] private ControlMode _controlScheme;
 
-        [SerializeField, Expandable] private CarParameters _carParameters;
+        [field: SerializeField, Expandable] public CarParameters CarParameters { get; private set; }
         private float _maxAcceleration, _brakeAcceleration, _turnSensitivity, _maxSteerAngle, _boostPower;
         private FMODUnity.StudioEventEmitter _engineSound;
         [SerializeField] private bool _isTesting;
@@ -62,12 +62,14 @@ namespace _game.Scripts
         private void Start()
         {
             _rb = GetComponent<Rigidbody>();
-            LoadParameters(_carParameters);
+            LoadParameters(CarParameters);
             _restartPosition = new(transform);
             //carLights = GetComponent<CarLights>();
             _engineSound = GetComponent<FMODUnity.StudioEventEmitter>();
 
             _countdownDelay = Camera.main!.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time;
+
+            _speedMeter = GameObject.Find("Speed").GetComponent<TMP_Text>();
 
             if (_isTesting)
             {
@@ -81,6 +83,7 @@ namespace _game.Scripts
 
         private void Update()
         {
+
             GetInputs();
             AnimateWheels();
 
@@ -92,6 +95,7 @@ namespace _game.Scripts
 
         private void FixedUpdate()
         {
+            _followPoint.SetPositionAndRotation(transform.position + new Vector3(0f, 0.586f, -0.1f), transform.rotation);
             if (!_isPlaying) return;
             Move();
             Steer();
@@ -280,16 +284,15 @@ namespace _game.Scripts
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.CompareTag("Finish"))
+            if (!_isPlaying || !other.CompareTag("Finish")) return;
+
+            _isPlaying = false;
+            foreach (Wheel wheel in _wheels)
             {
-                _isPlaying = false;
-                foreach (Wheel wheel in _wheels)
-                {
-                    wheel.wheelCollider.brakeTorque = float.MaxValue;
-                }
-                SetTimerActive?.Invoke(false);
-                ShowEndScreen?.Invoke(this);
+                wheel.wheelCollider.brakeTorque = float.MaxValue;
             }
+            SetTimerActive?.Invoke(false);
+            ShowEndScreen?.Invoke(this);
         }
 
         private void SwitchCamera(bool value)
@@ -308,7 +311,7 @@ namespace _game.Scripts
             }
         }
 
-        private void OnDrawGizmos() { Gizmos.DrawSphere(transform.TransformPoint(_carParameters.CenterOfMass), 0.1f); }
+        private void OnDrawGizmos() { Gizmos.DrawSphere(transform.TransformPoint(CarParameters.CenterOfMass), 0.1f); }
 
         private void GetAxisInput(Vector2 vector2)
         {
@@ -327,7 +330,7 @@ namespace _game.Scripts
         private void OnEnable()
         {
             GameManager.OnGameStateChanged += OnGameStateChanged;
-            _carParameters.OnChange += LoadParameters;
+            CarParameters.OnChange += LoadParameters;
             InputController.InputAxisChanged += GetAxisInput;
             InputController.RestartCheckpointPerformed += OnRestartCheckpointPerformed;
             InputController.BreakingChanged += OnBreakingChanged;
@@ -335,7 +338,7 @@ namespace _game.Scripts
         private void OnDisable()
         {
             GameManager.OnGameStateChanged -= OnGameStateChanged;
-            _carParameters.OnChange -= LoadParameters;
+            CarParameters.OnChange -= LoadParameters;
             InputController.InputAxisChanged -= GetAxisInput;
             InputController.RestartCheckpointPerformed -= OnRestartCheckpointPerformed;
             InputController.BreakingChanged -= OnBreakingChanged;

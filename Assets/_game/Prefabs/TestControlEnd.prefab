@@ -107,8 +107,6 @@ MonoBehaviour:
   <TileID>k__BackingField: 0
   _arrows:
   - {fileID: 4092731266472269891}
-  _overlays: []
-  _time: 0.3
 --- !u!65 &3980591132120760299
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -390,7 +388,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5956406498919662244}
   m_SourcePrefab: {fileID: 100100000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
 --- !u!4 &4092731266471904355 stripped
 Transform:
@@ -402,6 +403,27 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
   m_PrefabInstance: {fileID: 4092731266472304355}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5956406498919662244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4092731266472269891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c100f7104255884f8a94e9eb2a4740f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _startAutomatically: 1
+  _tweenType: 2
+  _rotation: {x: 0, y: 0, z: 0}
+  _endValue: 20
+  _duration: 0.3
+  _ease: 0
+  _delay: 0
+  _loops: -1
+  _loopType: 1
 --- !u!1001 &8806232104633948986
 PrefabInstance:
   m_ObjectHideFlags: 0

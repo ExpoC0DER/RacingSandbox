@@ -204,7 +204,7 @@ namespace _game.Scripts
                 }
 
                 _lastDestroyTarget = hitObject;
-                
+
                 if (EditorViewPressed)
                 {
                     if (_lastDestroyTarget.TryGetComponent(out TileController tileController))
@@ -267,33 +267,40 @@ namespace _game.Scripts
         private static void ChangeCollisionAndRenderLayer(GameObject gameObject, int layer)
         {
             if (!gameObject) return;
-            
+
             gameObject.layer = layer;
-            for(int i = 0; i < gameObject.transform.childCount; i++)
+
+            foreach (Transform child in gameObject.transform)
             {
-                int childLayer = gameObject.transform.GetChild(i).gameObject.layer;
                 if (IsDefaultLayer(layer))
                 {
-                    if (childLayer == (int)Layer.NoCollision)
-                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.Default);
-                    if (childLayer == (int)Layer.PickedUpRender)
-                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.NormalRender);
+                    ChangeRenderLayer(child.gameObject, (int)Layer.NormalRender);
+                    ChangeCollisionLayer(child.gameObject, (int)Layer.Default);
                 }
                 else
                 {
-                    if (childLayer == (int)Layer.Default)
-                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.NoCollision);
-                    if (childLayer == (int)Layer.NormalRender)
-                        SetLayerRecursively(gameObject.transform.GetChild(i), (int)Layer.PickedUpRender);
+                    ChangeRenderLayer(child.gameObject, (int)Layer.PickedUpRender);
+                    ChangeCollisionLayer(child.gameObject, (int)Layer.NoCollision);
                 }
             }
         }
 
+        private static void ChangeCollisionLayer(GameObject gameObject, int layer)
+        {
+            if (!gameObject) return;
+
+            foreach (Transform child in gameObject.transform)
+            {
+                if (child.gameObject.layer is (int)Layer.Default or (int)Layer.NoCollision)
+                    child.gameObject.layer = layer;
+                ChangeRenderLayer(child.gameObject, layer);
+            }
+        }
 
         private static void ChangeRenderLayer(GameObject gameObject, int layer)
         {
             if (!gameObject) return;
-            
+
             foreach (Transform child in gameObject.transform)
             {
                 if (child.gameObject.layer is (int)Layer.NormalRender or (int)Layer.PickedUpRender)
@@ -302,19 +309,22 @@ namespace _game.Scripts
             }
         }
 
-        private static void SetLayerRecursively(Transform trans, int layer)
-        {
-            trans.gameObject.layer = layer;
-            for(int i = 0; i < trans.childCount; i++) { SetLayerRecursively(trans.GetChild(i), layer); }
-        }
-
         public void SetEditorMode(int value)
         {
             if (_editorMode == (EditorMode)value) return;
+
             _editorMode = (EditorMode)value;
             OnEditorModeChanged?.Invoke(_editorMode);
+
+            //Turn off highlight of last placed tile
+            if (_lastEditTarget)
+                ChangeRenderLayer(_lastEditTarget, (int)Layer.NormalRender);
+            if (_lastDestroyTarget)
+                ChangeRenderLayer(_lastDestroyTarget, (int)Layer.NormalRender);
+
             if (_activeTileTransform)
                 Destroy(_activeTileTransform.gameObject);
+
             SetActiveTile((Transform)null);
             _editorUI.EditorEnabled(_editorMode != EditorMode.Off);
         }
@@ -399,13 +409,17 @@ namespace _game.Scripts
             {
                 GameObject newTile = Instantiate(_tiles[tileData.ID], tileData.Position, tileData.Rotation);
                 AddTileToList(newTile, tileData.ID);
+
                 if (!newTile.TryGetComponent(out TileController tileController)) continue;
+
+                tileController.SetActiveArrows(false);
                 if (tileData.ID == 4) //4 is StartTileId
                     _startTile = tileController;
                 else if (tileData.ID == 5) //5 is EndTileId
                     _endTile = tileController;
             }
         }
+
         [SerializeField] private string _name;
         public void SaveLevel(LevelData data)
         {

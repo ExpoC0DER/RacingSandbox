@@ -29,6 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8998532085854115051}
   - {fileID: 5286830187748002244}
   - {fileID: 3091456954429061955}
   m_Father: {fileID: 0}
@@ -117,6 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _carController: {fileID: 2744723435147006638}
 --- !u!1 &1649678755299201738
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,6 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _carController: {fileID: 2744723435147006638}
 --- !u!1 &2498440090447688699
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,7 +523,6 @@ Transform:
   m_Children:
   - {fileID: 5144378621626737392}
   - {fileID: 1085952065197532294}
-  - {fileID: 8998532085854115051}
   m_Father: {fileID: 1118510309542236147}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2744723435147006638
@@ -536,7 +538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controlScheme: 0
-  _carParameters: {fileID: 11400000, guid: 42c347c14303c134d85e0821c03dd863, type: 2}
+  <CarParameters>k__BackingField: {fileID: 11400000, guid: 42c347c14303c134d85e0821c03dd863, type: 2}
   _isTesting: 0
   _wheels:
   - wheelModel: {fileID: 3840677236828460486}
@@ -581,8 +583,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0210593, y: 0.5167587, z: 2.3649523}
-  m_Center: {x: 0, y: 0.34290838, z: 0.027628183}
+  m_Size: {x: 1.0210593, y: 0.49781054, z: 2.2654748}
+  m_Center: {x: 0, y: 0.34764543, z: 0.029996634}
 --- !u!54 &6938047218454832537
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -603,7 +605,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 1
@@ -851,6 +853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _carController: {fileID: 2744723435147006638}
 --- !u!1 &7430983459576308287
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,7 +1014,7 @@ MonoBehaviour:
   m_BindingMode: 1
   m_FollowOffset: {x: 0, y: 1, z: -2.5}
   m_XDamping: 1
-  m_YDamping: 1
+  m_YDamping: 0.2
   m_ZDamping: 0.5
   m_AngularDampingMode: 0
   m_PitchDamping: 0
@@ -1185,6 +1188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1e754065ea4d347a02601352b920fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _carController: {fileID: 2744723435147006638}
 --- !u!1 &8785506464194846553
 GameObject:
   m_ObjectHideFlags: 0
@@ -1209,10 +1213,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8785506464194846553}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.586, z: -0.1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.586, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 5286830187748002244}
+  m_Father: {fileID: 1118510309542236147}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
