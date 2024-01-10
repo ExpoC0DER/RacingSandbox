@@ -5,29 +5,30 @@ using _game.Scripts.Saving;
 using _game.Scripts.UIScripts;
 using UnityEngine;
 using FMODUnity;
-using UnityEngine.Serialization;
-using Object = System.Object;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.UI;
 
 namespace _game.Scripts
 {
     public class TilePlacing : MonoBehaviour, IDataPersistence
     {
+        [SerializeField] private PlayerInput _playerInput;
+        [SerializeField] private VirtualMouseInput _virtualMouseInput;
+        [SerializeField] private RectTransform _virtualCursor;
         [SerializeField] private GameObject[] _tiles;
         [SerializeField] private EditorUIController _editorUI;
-        [FormerlySerializedAs("_collisionCheck")]
         [SerializeField] private LayerMask _collisionCheckRoad;
-        [FormerlySerializedAs("_collisionCheckObstacle")]
         [SerializeField] private LayerMask _collisionCheckObject;
         [SerializeField] private LayerMask _collisionCheckArea;
         [SerializeField] private LayerMask _editorRaycast;
-        [SerializeField] private Transform _test;
         [ColorUsage(true, true), SerializeField]
         private Color _collidingColor, _notCollidingColor, _editingColor;
         [SerializeField] private Material _outlineMat, _tintMat;
         private Transform _activeTileTransform;
         private BoxCollider _activeTileCollider;
         private Layer _activeTileDefaultLayer = Layer.Default;
-        private Vector3 _mousePos;
+        private Vector3 _cursorPosition;
         [SerializeField] private int _selectedId;
         [SerializeField] private string _selectedTileControllerId;
         [SerializeField] private SerializableDictionary<string, GameObject> _placedTiles = new SerializableDictionary<string, GameObject>();
@@ -62,22 +63,60 @@ namespace _game.Scripts
 
         private void HandleInput()
         {
-            _mousePos = Input.mousePosition;
-            _mousePos.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
+            _cursorPosition = _controlScheme == ControlScheme.KeyboardMouse ? _mousePosition : _virtualCursor.position;
+            _cursorPosition.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
+        }
 
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+        private enum ControlScheme
+        {
+            KeyboardMouse,
+            Controller
+        }
+        private ControlScheme _controlScheme = ControlScheme.KeyboardMouse;
+        public void OnControlsChange(PlayerInput playerInput)
+        {
+            if (_playerInput.currentControlScheme.Equals("Keyboard&Mouse"))
             {
-                SetEditorMode(EditorMode.Place);
+                _controlScheme = ControlScheme.KeyboardMouse;
+                Mouse.current.WarpCursorPosition(_virtualCursor.position);
+                Cursor.visible = true;
+                _virtualCursor.gameObject.SetActive(false);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            else if (_playerInput.currentControlScheme.Equals("Controller"))
             {
-                SetEditorMode(EditorMode.Edit);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                SetEditorMode(EditorMode.Destroy);
+                _controlScheme = ControlScheme.Controller;
+                Cursor.visible = false;
+                _virtualCursor.gameObject.SetActive(true);
+                InputState.Change(_virtualMouseInput.virtualMouse, Mouse.current.position.ReadValue());
             }
         }
+
+        public void SetPlaceMode(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) SetEditorMode(EditorMode.Place);
+        }
+
+        public void SetEditMode(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) SetEditorMode(EditorMode.Edit);
+        }
+        public void SetDestroyMode(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) SetEditorMode(EditorMode.Destroy);
+        }
+
+        public void CancelTile(InputAction.CallbackContext ctx)
+        {
+            if (!ctx.performed || !_activeTileTransform) return;
+
+            SetEditorMode(EditorMode.Place);
+            Destroy(_activeTileTransform.gameObject);
+            SetActiveTile((Transform)null);
+        }
+
+
+        private Vector2 _mousePosition;
+        public void GetMousePosition(InputAction.CallbackContext ctx) { _mousePosition = ctx.ReadValue<Vector2>(); }
 
         private void HandleEditMode()
         {
@@ -85,11 +124,6 @@ namespace _game.Scripts
             {
                 SetTileToMousePos(_activeTileTransform);
 
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    _activeTileTransform.transform.Rotate(new(0, 90, 0));
-                    _rotation = _activeTileTransform.transform.rotation;
-                }
                 if (EditorViewPressed)
                 {
                     if (_isColliding)
@@ -106,7 +140,7 @@ namespace _game.Scripts
             }
             else
             {
-                Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
+                Ray ray = _cameraMain.ScreenPointToRay(_cursorPosition);
                 if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
                 {
                     SetHighlightMaterialColor(_editingColor);
@@ -144,18 +178,6 @@ namespace _game.Scripts
 
             SetTileToMousePos(_activeTileTransform);
 
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                _activeTileTransform.transform.Rotate(new(0, 90, 0));
-                _rotation = _activeTileTransform.transform.rotation;
-            }
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Destroy(_activeTileTransform.gameObject);
-                SetActiveTile((Transform)null);
-            }
-
-
             if (!EditorViewPressed) return;
             if (_isColliding)
             {
@@ -184,14 +206,22 @@ namespace _game.Scripts
                 _endTile = tileController;
             }
             AddTileToList(_activeTileTransform.gameObject, _selectedId);
-            SetActiveTile(Instantiate(_tiles[_selectedId], _cameraMain.ViewportToWorldPoint(Input.mousePosition), _rotation).transform);
+            SetActiveTile(Instantiate(_tiles[_selectedId], _cameraMain.ViewportToWorldPoint(_cursorPosition), _rotation).transform);
             ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
             _tilePlaceSound.Play();
         }
 
+        public void Rotate(InputAction.CallbackContext ctx)
+        {
+            if (!ctx.performed || !_activeTileTransform) return;
+
+            _activeTileTransform.transform.Rotate(new(0, 90 * ctx.ReadValue<float>(), 0));
+            _rotation = _activeTileTransform.transform.rotation;
+        }
+
         private void HandleDestroyMode()
         {
-            Ray ray = _cameraMain.ScreenPointToRay(_mousePos);
+            Ray ray = _cameraMain.ScreenPointToRay(_cursorPosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
             {
                 SetHighlightMaterialColor(_collidingColor);
@@ -289,11 +319,12 @@ namespace _game.Scripts
         {
             if (!gameObject) return;
 
+            if (gameObject.layer is (int)Layer.Default or (int)Layer.NoCollision)
+                gameObject.layer = layer;
+
             foreach (Transform child in gameObject.transform)
             {
-                if (child.gameObject.layer is (int)Layer.Default or (int)Layer.NoCollision)
-                    child.gameObject.layer = layer;
-                ChangeRenderLayer(child.gameObject, layer);
+                ChangeCollisionLayer(child.gameObject, layer);
             }
         }
 
@@ -301,10 +332,11 @@ namespace _game.Scripts
         {
             if (!gameObject) return;
 
+            if (gameObject.layer is (int)Layer.NormalRender or (int)Layer.PickedUpRender)
+                gameObject.layer = layer;
+
             foreach (Transform child in gameObject.transform)
             {
-                if (child.gameObject.layer is (int)Layer.NormalRender or (int)Layer.PickedUpRender)
-                    child.gameObject.layer = layer;
                 ChangeRenderLayer(child.gameObject, layer);
             }
         }
@@ -338,7 +370,7 @@ namespace _game.Scripts
             if (_activeTileTransform)
                 Destroy(_activeTileTransform.gameObject);
             if (id == -1) return;
-            SetActiveTile(Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10), _rotation).transform);
+            SetActiveTile(Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10), _rotation).transform);
             _selectedId = id;
             ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
         }
@@ -388,10 +420,10 @@ namespace _game.Scripts
         {
             tile.position = _activeTileDefaultLayer switch
             {
-                Layer.Object => _cameraMain.ScreenToWorldPoint(_mousePos).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                Layer.ObjectTrigger => _cameraMain.ScreenToWorldPoint(_mousePos).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                Layer.RoadTrigger => _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                Layer.Road => _cameraMain.ScreenToWorldPoint(_mousePos).RoundToMultiple(10),
+                Layer.Object => _cameraMain.ScreenToWorldPoint(_cursorPosition).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                Layer.ObjectTrigger => _cameraMain.ScreenToWorldPoint(_cursorPosition).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                Layer.RoadTrigger => _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                Layer.Road => _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10),
                 _ => tile.position
             };
         }

@@ -16,7 +16,10 @@ namespace _game.Scripts.UIScripts
 
         private void LoadLevelList()
         {
-
+            foreach (Transform child in _scrollViewContent)
+            {
+                Destroy(child.gameObject);
+            }
             DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);
             FileInfo[] info = dir.GetFiles("*.map");
             foreach (FileInfo f in info)

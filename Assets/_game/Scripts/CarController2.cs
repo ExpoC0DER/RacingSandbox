@@ -111,8 +111,8 @@ namespace _game.Scripts
             if (!_isPlaying) return;
             if (_controlScheme == ControlMode.Keyboard)
             {
-                if (Input.GetKeyDown(KeyCode.LeftShift))
-                    _rb.AddForce(transform.forward * 10, ForceMode.VelocityChange);
+                // if (Input.GetKeyDown(KeyCode.LeftShift))
+                //     _rb.AddForce(transform.forward * 10, ForceMode.VelocityChange);
             }
         }
 
