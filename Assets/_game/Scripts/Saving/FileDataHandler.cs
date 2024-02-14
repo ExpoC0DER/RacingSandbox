@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace _game.Scripts.Saving
 {
@@ -37,7 +38,7 @@ namespace _game.Scripts.Saving
                         dataToLoad = EncryptDecrypt(dataToLoad);
 
                     //deserialize data from json to C# object
-                    loadedData = JsonUtility.FromJson<LevelData>(dataToLoad);
+                    loadedData = JsonConvert.DeserializeObject<LevelData>(dataToLoad);
                 }
                 catch (Exception e)
                 {
@@ -57,7 +58,11 @@ namespace _game.Scripts.Saving
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
 
                 // serialize object into Json
-                string dataToStore = JsonUtility.ToJson(data, true);
+                string dataToStore = JsonConvert.SerializeObject(data, Formatting.Indented, new JsonSerializerSettings
+                {
+                    //!May crash unity
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
 
                 if (_useEncryption)
                     dataToStore = EncryptDecrypt(dataToStore);

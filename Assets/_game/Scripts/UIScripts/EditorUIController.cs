@@ -41,7 +41,7 @@ namespace _game.Scripts.UIScripts
                 _tileMenuHideArrow.DORotate(new(0, 0, -180), 0.5f);
             }
         }
-
+        
         public void PunchButtonBasic(bool value) { PunchToggle(value, _toggles[0]); }
 
         public void PunchButtonControl(bool value) { PunchToggle(value, _toggles[1]); }

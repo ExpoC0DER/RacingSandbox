@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using _game.Scripts.UIScripts;
+using UnityEngine;
 
 namespace _game.Scripts.Saving
 {
@@ -7,12 +9,19 @@ namespace _game.Scripts.Saving
     public class LevelData
     {
         public string Name;
+        public Dictionary<Trophy, int> TrophyTimes;
         public List<TileData> TileMap;
 
         public LevelData()
         {
             Name = "NewLevel";
             TileMap = new();
+            TrophyTimes = new Dictionary<Trophy, int>
+            {
+                { Trophy.Gold, 0 },
+                { Trophy.Silver, 0 },
+                { Trophy.Bronze, 0 }
+            };
         }
     }
 }

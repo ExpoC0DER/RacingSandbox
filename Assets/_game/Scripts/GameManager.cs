@@ -6,14 +6,14 @@ namespace _game.Scripts
     public class GameManager : MonoBehaviour
     {
         public static event Action<GameState> OnGameStateChanged;
-        private static GameState _gameState = GameState.Editing;
+        private static GameState gameState = GameState.Editing;
         public void SetGameState(int value) { GameState = (GameState)value; }
         public static GameState GameState
         {
-            get { return _gameState; }
+            get { return gameState; }
             set
             {
-                _gameState = value;
+                gameState = value;
                 OnGameStateChanged?.Invoke(value);
             }
         }

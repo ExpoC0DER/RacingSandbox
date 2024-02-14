@@ -5,6 +5,7 @@ using _game.Scripts.Saving;
 using _game.Scripts.UIScripts;
 using UnityEngine;
 using FMODUnity;
+using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
@@ -42,6 +43,7 @@ namespace _game.Scripts
         private GameObject _lastDestroyTarget, _lastEditTarget;
         private static readonly int BaseColor = Shader.PropertyToID("_Color");
         public bool EditorViewPressed { get; set; }
+        [SerializeField] private Transform _testCollider;
 
         public static event Action<EditorMode> OnEditorModeChanged;
 
@@ -65,6 +67,9 @@ namespace _game.Scripts
         {
             _cursorPosition = _controlScheme == ControlScheme.KeyboardMouse ? _mousePosition : _virtualCursor.position;
             _cursorPosition.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
+
+            if (_activeTileTransform)
+                _activeTileTransform.transform.Rotate(new(0, _rotateInput, 0));
         }
 
         private enum ControlScheme
@@ -75,19 +80,20 @@ namespace _game.Scripts
         private ControlScheme _controlScheme = ControlScheme.KeyboardMouse;
         public void OnControlsChange(PlayerInput playerInput)
         {
-            if (_playerInput.currentControlScheme.Equals("Keyboard&Mouse"))
+            switch (_playerInput.currentControlScheme)
             {
-                _controlScheme = ControlScheme.KeyboardMouse;
-                Mouse.current.WarpCursorPosition(_virtualCursor.position);
-                Cursor.visible = true;
-                _virtualCursor.gameObject.SetActive(false);
-            }
-            else if (_playerInput.currentControlScheme.Equals("Controller"))
-            {
-                _controlScheme = ControlScheme.Controller;
-                Cursor.visible = false;
-                _virtualCursor.gameObject.SetActive(true);
-                InputState.Change(_virtualMouseInput.virtualMouse, Mouse.current.position.ReadValue());
+                case "Keyboard&Mouse":
+                    _controlScheme = ControlScheme.KeyboardMouse;
+                    Mouse.current.WarpCursorPosition(_virtualCursor.position);
+                    Cursor.visible = true;
+                    _virtualCursor.gameObject.SetActive(false);
+                    break;
+                case "Controller":
+                    _controlScheme = ControlScheme.Controller;
+                    Cursor.visible = false;
+                    _virtualCursor.gameObject.SetActive(true);
+                    InputState.Change(_virtualMouseInput.virtualMouse, Mouse.current.position.ReadValue());
+                    break;
             }
         }
 
@@ -211,12 +217,30 @@ namespace _game.Scripts
             _tilePlaceSound.Play();
         }
 
+        private float _rotateInput;
         public void Rotate(InputAction.CallbackContext ctx)
         {
-            if (!ctx.performed || !_activeTileTransform) return;
+            if (!_activeTileTransform) return;
+            if (ctx.started)
+            {
+                if (_activeTileDefaultLayer is Layer.Road or Layer.RoadTrigger)
+                    _activeTileTransform.transform.Rotate(new(0, 90 * ctx.ReadValue<float>(), 0));
+                if (_activeTileDefaultLayer is Layer.Object or Layer.ObjectTrigger)
+                    _rotateInput = ctx.ReadValue<float>();
+            }
+            if (ctx.canceled)
+                _rotateInput = 0;
 
-            _activeTileTransform.transform.Rotate(new(0, 90 * ctx.ReadValue<float>(), 0));
             _rotation = _activeTileTransform.transform.rotation;
+        }
+
+        private static void RoundRotation(Transform t)
+        {
+            if (t.gameObject.layer is not ((int)Layer.Road or (int)Layer.RoadTrigger)) return;
+
+            Vector3 rotation = t.rotation.eulerAngles;
+            rotation.y = Mathf.RoundToInt(rotation.y / 90) * 90;
+            t.rotation = Quaternion.Euler(rotation);
         }
 
         private void HandleDestroyMode()
@@ -261,10 +285,17 @@ namespace _game.Scripts
                 return;
 
             Vector3 worldCenter = _activeTileTransform.TransformPoint(_activeTileCollider.center);
-            Vector3 worldHalfExtents = _activeTileTransform.TransformVector(_activeTileCollider.size * 0.45f).Abs();
+            Vector3 worldHalfExtents = /*_activeTileTransform.TransformVector*/(_activeTileCollider.size * 0.45f).Abs();
             LayerMask layerMask = GetActiveTileCollisionCheck(_activeTileDefaultLayer);
+            
+            if (_testCollider)
+            {
+                _testCollider.position = worldCenter;
+                _testCollider.localScale = worldHalfExtents * 2;
+                _testCollider.rotation = _activeTileTransform.rotation;
+            }
 
-            _isColliding = Physics.OverlapBoxNonAlloc(worldCenter, worldHalfExtents, _overlapBuffer, Quaternion.identity, layerMask, QueryTriggerInteraction.Ignore) > 0;
+            _isColliding = Physics.OverlapBoxNonAlloc(worldCenter, worldHalfExtents, _overlapBuffer, _activeTileTransform.rotation, layerMask, QueryTriggerInteraction.Ignore) > 0;
             if (_editorMode == EditorMode.Edit)
                 SetHighlightMaterialColor(_isColliding ? _collidingColor : _editingColor);
             if (_editorMode == EditorMode.Place)
@@ -385,6 +416,7 @@ namespace _game.Scripts
                     _selectedTileControllerId = tileController.Id;
                 _activeTileCollider = _activeTileTransform.GetComponent<BoxCollider>();
                 _activeTileDefaultLayer = (Layer)_activeTileTransform.gameObject.layer;
+                RoundRotation(_activeTileTransform);
             }
             else
             {

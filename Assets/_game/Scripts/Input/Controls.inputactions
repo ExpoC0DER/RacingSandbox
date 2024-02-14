@@ -1,4 +1,4 @@
-﻿{
+{
     "name": "Controls",
     "maps": [
         {
@@ -710,7 +710,7 @@
                     "id": "92eddd5e-1a83-4689-b193-19988bf40e94",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "initialStateCheck": false
                 },
                 {
