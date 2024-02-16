@@ -4,6 +4,19 @@ namespace _game.Scripts.HelperScripts
 {
     public static class ExtensionMethods
     {
+        public static string TimeToString(this int milliseconds)
+        {
+            string output = "";
+            output += (milliseconds / (60 * 1000)).ToString("D2");
+            milliseconds %= (60 * 1000);
+            output += ":";
+            output += (milliseconds / 1000).ToString("D2");
+            milliseconds %= 1000;
+            output += ".";
+            output += (milliseconds / 10).ToString("D2");
+            return output;
+        }
+
         public static Vector3 RoundToMultiple(this Vector3 value, int multipleOf)
         {
             return new Vector3(

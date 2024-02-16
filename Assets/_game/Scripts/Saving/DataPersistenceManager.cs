@@ -32,7 +32,7 @@ namespace _game.Scripts.Saving
             _fileName = PlayerPref.GetPlayerPref(PlayerPref.CurrentMap);
             if (string.IsNullOrEmpty(_fileName))
                 _fileName = _levelData.Name + ".map";
-            
+
             _fileDataHandler = new FileDataHandler(Application.persistentDataPath, _fileName, _useEncryption);
             _dataPersistenceObjects = FindAllDataPersistenceObjects();
             LoadLevel();

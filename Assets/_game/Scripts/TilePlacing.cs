@@ -483,11 +483,9 @@ namespace _game.Scripts
                     _endTile = tileController;
             }
         }
-
-        [SerializeField] private string _name;
+        
         public void SaveLevel(LevelData data)
         {
-            data.Name = _name;
             List<TileData> newTileMap = new();
             foreach (KeyValuePair<string, GameObject> pair in _placedTiles)
             {

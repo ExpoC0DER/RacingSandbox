@@ -14,7 +14,19 @@ namespace _game.Scripts.Saving
 
         public LevelData()
         {
-            Name = "NewLevel";
+            Name = null;
+            TileMap = new();
+            TrophyTimes = new Dictionary<Trophy, int>
+            {
+                { Trophy.Gold, 0 },
+                { Trophy.Silver, 0 },
+                { Trophy.Bronze, 0 }
+            };
+        }
+
+        public LevelData(string name)
+        {
+            Name = name;
             TileMap = new();
             TrophyTimes = new Dictionary<Trophy, int>
             {

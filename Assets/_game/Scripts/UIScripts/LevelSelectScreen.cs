@@ -2,8 +2,10 @@ using System;
 using UnityEngine;
 using System.IO;
 using _game.Scripts.HelperScripts;
+using _game.Scripts.Saving;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Newtonsoft.Json;
 using UnityEngine.Serialization;
 
 namespace _game.Scripts.UIScripts
@@ -25,15 +27,26 @@ namespace _game.Scripts.UIScripts
             foreach (FileInfo f in info)
             {
                 LevelSelectButton newLevelSelectButton = Instantiate(_levelSelectBtnPrefab, _scrollViewContent);
-                newLevelSelectButton.MapName = f.Name;
+                newLevelSelectButton.FileName = f.Name;
+                newLevelSelectButton.LevelData = GetLevelData(f.Name);
             }
+        }
+
+        private static LevelData GetLevelData(string fileName)
+        {
+            FileDataHandler fileDataHandler = new FileDataHandler(Application.persistentDataPath, fileName, true);
+            LevelData levelData = fileDataHandler.Load();
+            return levelData;
         }
 
         public void CreateNewLevel()
         {
-            if (string.IsNullOrEmpty(_inputField.text)) return;
+            string newLevelName = _inputField.text.Trim();
+            if (string.IsNullOrEmpty(newLevelName)) return;
 
-            PlayerPref.SetPlayerPref(PlayerPref.CurrentMap, _inputField.text.Trim() + ".map");
+            PlayerPref.SetPlayerPref(PlayerPref.CurrentMap, newLevelName + ".map");
+            FileDataHandler fileDataHandler = new FileDataHandler(Application.persistentDataPath, newLevelName + ".map", false);
+            fileDataHandler.Save(new LevelData(newLevelName));
             SceneManager.LoadScene("GameScene");
         }
 

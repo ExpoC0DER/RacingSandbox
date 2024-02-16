@@ -1,5 +1,6 @@
 using System;
 using _game.Scripts.HelperScripts;
+using _game.Scripts.Saving;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,36 +9,34 @@ namespace _game.Scripts.UIScripts
 {
     public class LevelSelectButton : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _mapNameText;
-        [SerializeField] private RectTransform _details;
-        private RectTransform _thisTransform;
-
-        private string _mapName;
-        public string MapName
+        private LevelData _levelData;
+        public LevelData LevelData
         {
-            get { return _mapName; }
             set
             {
-                _mapName = value;
-                _mapNameText.text = _mapName.Split('.')[0];
+                _levelData = value;
+                UpdateUI();
             }
         }
+        public string FileName { get; set; }
+        
+        [SerializeField] private TMP_Text _mapNameText;
+        [SerializeField] private TMP_Text _goldTrophyText;
+        [SerializeField] private TMP_Text _silverTrophyText;
+        [SerializeField] private TMP_Text _bronzeTrophyText;
 
-        private void Awake() { _thisTransform = GetComponent<RectTransform>(); }
+        private void UpdateUI()
+        {
+            _mapNameText.text = _levelData.Name;
+            _goldTrophyText.text = _levelData.TrophyTimes[Trophy.Gold].TimeToString();
+            _silverTrophyText.text = _levelData.TrophyTimes[Trophy.Silver].TimeToString();
+            _bronzeTrophyText.text = _levelData.TrophyTimes[Trophy.Bronze].TimeToString();
+        }
 
         public void OnClick()
         {
-            PlayerPref.SetPlayerPref(PlayerPref.CurrentMap, MapName);
+            PlayerPref.SetPlayerPref(PlayerPref.CurrentMap, FileName);
             SceneManager.LoadScene("GameScene");
-        }
-
-        public void Expand(bool value)
-        {
-            if (value)
-                _thisTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _thisTransform.rect.height + _details.rect.height);
-            else
-                _thisTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _thisTransform.rect.height - _details.rect.height);
-
         }
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.IO;
+using _game.Scripts.HelperScripts;
 using Newtonsoft.Json;
 
 namespace _game.Scripts.Saving
@@ -10,7 +11,7 @@ namespace _game.Scripts.Saving
         private readonly string _dataDirPath;
         private readonly string _dataFileName;
 
-        private readonly bool _useEncryption = false;
+        private bool _useEncryption;
         private const string EncryptionSalt = "strongafencryption";
 
 
@@ -20,6 +21,8 @@ namespace _game.Scripts.Saving
             _dataFileName = dataFileName;
             _useEncryption = useEncryption;
         }
+
+        public void UseEncryption(bool value) { _useEncryption = value; }
 
         public LevelData Load()
         {
@@ -34,8 +37,11 @@ namespace _game.Scripts.Saving
                     using StreamReader reader = new StreamReader(stream);
                     string dataToLoad = reader.ReadToEnd();
 
-                    if (_useEncryption)
+                    if (!dataToLoad[0].Equals('{'))
                         dataToLoad = EncryptDecrypt(dataToLoad);
+
+                    // if (_useEncryption)
+                    //     dataToLoad = EncryptDecrypt(dataToLoad);
 
                     //deserialize data from json to C# object
                     loadedData = JsonConvert.DeserializeObject<LevelData>(dataToLoad);
