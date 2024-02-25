@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168b7bb1a13729641845f916749224ee, type: 3}
   m_Name: TestParams
   m_EditorClassIdentifier: 
-  MaxAcceleration: 200
-  BrakeAccelaration: 300
-  TurnSensitivity: 0.5
+  MaxAcceleration: 400
+  BrakeAccelaration: 600
+  TurnSensitivity: 0.4
   MaxSteerAngle: 30
-  CenterOfMass: {x: 0, y: 0, z: 0}
+  BoostPower: 10
+  CenterOfMass: {x: 0, y: 0, z: 0.3}
   Weight: 1300
   AirDrag: 0.2
-  WheelForwardFriction: 2
-  WheelSidewaysFriction: 2.4
+  WheelForwardFriction: 3
+  WheelSidewaysFriction: 6

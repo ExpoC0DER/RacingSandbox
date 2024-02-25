@@ -30,11 +30,8 @@ namespace _game.Scripts
         private StartTransform _startTransform;
         private Tween _tween;
 
-        private void Start()
-        {
-            ReloadShowTriggers();
-            _startTransform = new(transform);
-        }
+        private void Awake() { _startTransform = new StartTransform(transform); }
+        private void Start() { ReloadShowTriggers(); }
 
         private void StartTween()
         {
@@ -64,8 +61,8 @@ namespace _game.Scripts
         }
         private void OnDisable()
         {
-            ResetTransform();
             _tween.Kill();
+            ResetTransform();
         }
 
         private void ResetTransform()

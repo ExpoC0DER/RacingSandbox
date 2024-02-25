@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 862939618534722053}
   - component: {fileID: 7639117714525377927}
-  m_Layer: 8
+  - component: {fileID: 6722516931722272194}
+  m_Layer: 7
   m_Name: TestBasic2x2
   m_TagString: Tile
   m_Icon: {fileID: 0}
@@ -54,6 +55,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 20, y: 2, z: 20}
   m_Center: {x: 5, y: 0, z: 5}
+--- !u!114 &6722516931722272194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2403047715860921947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1ef592132a645344ac7f507359e265f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _arrows: []
+  _overlays: []
+  _time: 0.5
 --- !u!1 &5049465182402481995
 GameObject:
   m_ObjectHideFlags: 0
@@ -66,7 +82,7 @@ GameObject:
   - component: {fileID: 1763309940663253663}
   - component: {fileID: 6058150719377797174}
   - component: {fileID: 299105483955524035}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

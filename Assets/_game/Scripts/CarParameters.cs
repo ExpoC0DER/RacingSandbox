@@ -7,7 +7,7 @@ public class CarParameters : ScriptableObject
 {
     [Header("Driving Properties"), Space]
     public float MaxAcceleration;
-    public float BrakeAccelaration, TurnSensitivity, MaxSteerAngle;
+    public float BrakeAccelaration, TurnSensitivity, MaxSteerAngle, BoostPower;
     [Header("Physics Properties"), Space]
     public Vector3 CenterOfMass;
     public float Weight, AirDrag, WheelForwardFriction, WheelSidewaysFriction;

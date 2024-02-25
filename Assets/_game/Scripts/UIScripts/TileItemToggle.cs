@@ -17,10 +17,10 @@ namespace _game.Scripts.UIScripts
         {
             if (value)
             {
-                _tilePlacing.SetActiveTile(_tileId);
+                _tilePlacing.CreateTileById(_tileId);
             }
             if (_wasOn && !value)
-                _tilePlacing.SetActiveTile(-1);
+                _tilePlacing.CreateTileById(-1);
 
             _wasOn = value;
         }

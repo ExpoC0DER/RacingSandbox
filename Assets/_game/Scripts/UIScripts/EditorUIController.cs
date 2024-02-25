@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using FMOD;
 using FMODUnity;
+using UnityEngine.SceneManagement;
 
 namespace _game.Scripts.UIScripts
 {
@@ -40,7 +41,7 @@ namespace _game.Scripts.UIScripts
                 _tileMenuHideArrow.DORotate(new(0, 0, -180), 0.5f);
             }
         }
-
+        
         public void PunchButtonBasic(bool value) { PunchToggle(value, _toggles[0]); }
 
         public void PunchButtonControl(bool value) { PunchToggle(value, _toggles[1]); }
@@ -65,6 +66,7 @@ namespace _game.Scripts.UIScripts
                 DisplayWarning(1);
         }
 
-        public void TileItemToggle(int id) { }
+        public void GoToMenu() { SceneManager.LoadScene("Main Menu"); }
+        public void ExitToDesktop() { Application.Quit(69); }
     }
 }
