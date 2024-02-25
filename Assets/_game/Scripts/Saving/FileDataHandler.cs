@@ -1,24 +1,24 @@
 using UnityEngine;
 using System;
 using System.IO;
-using _game.Scripts.HelperScripts;
 using Newtonsoft.Json;
+using Unity.VisualScripting.FullSerializer;
+using UnityEditor;
 
 namespace _game.Scripts.Saving
 {
     public class FileDataHandler
     {
-        private readonly string _dataDirPath;
-        private readonly string _dataFileName;
+        private string _dataDirName;
+        private string _levelDataFileName = "levelData.map";
 
         private bool _useEncryption;
         private const string EncryptionSalt = "strongafencryption";
 
 
-        public FileDataHandler(string dataDirPath, string dataFileName, bool useEncryption)
+        public FileDataHandler(string dataDirName, bool useEncryption)
         {
-            _dataDirPath = dataDirPath;
-            _dataFileName = dataFileName;
+            _dataDirName = dataDirName;
             _useEncryption = useEncryption;
         }
 
@@ -26,14 +26,20 @@ namespace _game.Scripts.Saving
 
         public LevelData Load()
         {
-            string fullPath = Path.Combine(_dataDirPath, _dataFileName);
             LevelData loadedData = null;
-            if (File.Exists(fullPath))
+
+            string fullPath = Path.Combine(Application.persistentDataPath, _dataDirName);
+
+            DirectoryInfo dirInfo = new DirectoryInfo(fullPath);
+            if (dirInfo.Exists)
             {
                 try
                 {
+                    FileInfo fileInfo = dirInfo.GetFiles("*.map")[0];
+                    _levelDataFileName = fileInfo.Name;
+
                     //Load the serialized data from the file
-                    using FileStream stream = new FileStream(fullPath, FileMode.Open);
+                    using FileStream stream = new FileStream(fileInfo.FullName, FileMode.Open);
                     using StreamReader reader = new StreamReader(stream);
                     string dataToLoad = reader.ReadToEnd();
 
@@ -57,7 +63,13 @@ namespace _game.Scripts.Saving
 
         public void Save(LevelData data)
         {
-            string fullPath = Path.Combine(_dataDirPath, _dataFileName);
+            if (!PlayerPrefs.GetString("CurrentMap", "").Equals(data.Name))
+            {
+                PlayerPrefs.SetString("CurrentMap", data.Name);
+                RenameSave(data.Name);
+            }
+            
+            string fullPath = Path.Combine(Application.persistentDataPath, _dataDirName, _levelDataFileName);
             try
             {
                 // create the directory the file will be written to if it doesn't already exist
@@ -81,6 +93,26 @@ namespace _game.Scripts.Saving
             catch (Exception e)
             {
                 Debug.LogError("Error occured when trying to save data to file: " + fullPath + "\n" + e);
+                throw;
+            }
+        }
+
+        public void RenameSave(string newName)
+        {
+            Debug.Log("rename");
+            string fullPathOld = Path.Combine(Application.persistentDataPath, _dataDirName);
+            string fullPathNew = Path.Combine(Application.persistentDataPath, newName);
+            try
+            {
+                // create the directory the file will be written to if it doesn't already exist
+                //FileUtil.ReplaceFile(fullPathOld, fullPathNew);
+                Directory.Move(fullPathOld, fullPathNew);
+                //Directory.Delete(fullPathOld,true);
+                _dataDirName = newName;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error occured when trying to rename save: " + fullPathOld + "\n" + e);
                 throw;
             }
         }

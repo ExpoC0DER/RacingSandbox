@@ -23,18 +23,18 @@ namespace _game.Scripts.UIScripts
                 Destroy(child.gameObject);
             }
             DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);
-            FileInfo[] info = dir.GetFiles("*.map");
-            foreach (FileInfo f in info)
+            DirectoryInfo[] mapDirs = dir.GetDirectories();
+            foreach (DirectoryInfo mapDir in mapDirs)
             {
                 LevelSelectButton newLevelSelectButton = Instantiate(_levelSelectBtnPrefab, _scrollViewContent);
-                newLevelSelectButton.FileName = f.Name;
-                newLevelSelectButton.LevelData = GetLevelData(f.Name);
+                newLevelSelectButton.FileName = mapDir.Name;
+                newLevelSelectButton.LevelData = GetLevelData(mapDir.Name);
             }
         }
 
         private static LevelData GetLevelData(string fileName)
         {
-            FileDataHandler fileDataHandler = new FileDataHandler(Application.persistentDataPath, fileName, true);
+            FileDataHandler fileDataHandler = new FileDataHandler(fileName, true);
             LevelData levelData = fileDataHandler.Load();
             return levelData;
         }
@@ -44,8 +44,8 @@ namespace _game.Scripts.UIScripts
             string newLevelName = _inputField.text.Trim();
             if (string.IsNullOrEmpty(newLevelName)) return;
 
-            PlayerPref.SetPlayerPref(PlayerPref.CurrentMap, newLevelName + ".map");
-            FileDataHandler fileDataHandler = new FileDataHandler(Application.persistentDataPath, newLevelName + ".map", false);
+            PlayerPref.SetPlayerPref(PlayerPref.CurrentMap, newLevelName);
+            FileDataHandler fileDataHandler = new FileDataHandler(newLevelName, false);
             fileDataHandler.Save(new LevelData(newLevelName));
             SceneManager.LoadScene("GameScene");
         }
