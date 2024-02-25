@@ -66,7 +66,7 @@ GameObject:
   - component: {fileID: 3581117717245545507}
   m_Layer: 10
   m_Name: SpeedBoost
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -101,10 +101,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ef592132a645344ac7f507359e265f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 
+  <TileID>k__BackingField: 0
   _arrows:
   - {fileID: 2501658487421283221}
-  _overlays: []
-  _time: 0.3
 --- !u!65 &3581117717245545507
 BoxCollider:
   m_ObjectHideFlags: 0

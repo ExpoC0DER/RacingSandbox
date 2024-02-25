@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 namespace _game.Scripts.HelperScripts
@@ -23,6 +24,22 @@ namespace _game.Scripts.HelperScripts
                 RoundToMultiple(value.x, multipleOf),
                 RoundToMultiple(value.y, multipleOf),
                 RoundToMultiple(value.z, multipleOf));
+        }
+        
+        public static Texture2D LoadTexture(string filePath)
+        {
+            // Load a PNG or JPG file from disk to a Texture2D
+            // Returns null if load fails
+
+            if (File.Exists(filePath))
+            {
+                byte[] fileData = File.ReadAllBytes(filePath);
+                Texture2D tex2D = new Texture2D(2, 2);
+                if (tex2D.LoadImage(fileData)) // Load the imagedata into the texture (size is set automatically)
+                    return tex2D; // If data = readable -> return texture
+            }
+
+            return null; // Return null if load failed
         }
 
         public static Vector3 Abs(this Vector3 vector3) { return new Vector3(Mathf.Abs(vector3.x), Mathf.Abs(vector3.y), Mathf.Abs(vector3.z)); }

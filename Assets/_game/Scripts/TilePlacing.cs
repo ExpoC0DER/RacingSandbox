@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using _game.Prefabs;
 using _game.Scripts.HelperScripts;
 using _game.Scripts.Saving;
 using _game.Scripts.UIScripts;
 using UnityEngine;
 using FMODUnity;
+using NaughtyAttributes;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -17,7 +19,7 @@ namespace _game.Scripts
         [SerializeField] private PlayerInput _playerInput;
         [SerializeField] private VirtualMouseInput _virtualMouseInput;
         [SerializeField] private RectTransform _virtualCursor;
-        [SerializeField] private GameObject[] _tiles;
+        [SerializeField, Expandable] private TileDatabaseSO _tileDatabase;
         [SerializeField] private EditorUIController _editorUI;
         [SerializeField] private LayerMask _collisionCheckRoad;
         [SerializeField] private LayerMask _collisionCheckObject;
@@ -46,6 +48,7 @@ namespace _game.Scripts
         [SerializeField] private Transform _testCollider;
 
         public static event Action<EditorMode> OnEditorModeChanged;
+        public static event Action OnResetObstacles;
 
         private void Awake() { _cameraMain = Camera.main; }
 
@@ -212,7 +215,7 @@ namespace _game.Scripts
                 _endTile = tileController;
             }
             AddTileToList(_activeTileTransform.gameObject, _selectedId);
-            SetActiveTile(Instantiate(_tiles[_selectedId], _cameraMain.ViewportToWorldPoint(_cursorPosition), _rotation).transform);
+            SetActiveTile(Instantiate(GetTileById(_selectedId), _cameraMain.ViewportToWorldPoint(_cursorPosition), _rotation).transform);
             ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
             _tilePlaceSound.Play();
         }
@@ -276,6 +279,7 @@ namespace _game.Scripts
             }
         }
 
+        private GameObject GetTileById(int index) { return _tileDatabase.AllTiles.Find(data => data.ID == index).Prefab; }
 
         private void FixedUpdate() { MyCollisions(); }
 
@@ -287,7 +291,7 @@ namespace _game.Scripts
             Vector3 worldCenter = _activeTileTransform.TransformPoint(_activeTileCollider.center);
             Vector3 worldHalfExtents = /*_activeTileTransform.TransformVector*/(_activeTileCollider.size * 0.45f).Abs();
             LayerMask layerMask = GetActiveTileCollisionCheck(_activeTileDefaultLayer);
-            
+
             if (_testCollider)
             {
                 _testCollider.position = worldCenter;
@@ -401,7 +405,7 @@ namespace _game.Scripts
             if (_activeTileTransform)
                 Destroy(_activeTileTransform.gameObject);
             if (id == -1) return;
-            SetActiveTile(Instantiate(_tiles[id], _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10), _rotation).transform);
+            SetActiveTile(Instantiate(GetTileById(id), _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10), _rotation).transform);
             _selectedId = id;
             ChangeCollisionAndRenderLayer(_activeTileTransform.gameObject, (int)Layer.NoCollision);
         }
@@ -467,11 +471,13 @@ namespace _game.Scripts
         private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
         private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
 
+        public void ResetObstacles() { OnResetObstacles?.Invoke(); }
+
         public void LoadLevel(LevelData data)
         {
             foreach (TileData tileData in data.TileMap)
             {
-                GameObject newTile = Instantiate(_tiles[tileData.ID], tileData.Position, tileData.Rotation);
+                GameObject newTile = Instantiate(GetTileById(tileData.ID), tileData.Position, tileData.Rotation);
                 AddTileToList(newTile, tileData.ID);
 
                 if (!newTile.TryGetComponent(out TileController tileController)) continue;
@@ -483,7 +489,7 @@ namespace _game.Scripts
                     _endTile = tileController;
             }
         }
-        
+
         public void SaveLevel(LevelData data)
         {
             List<TileData> newTileMap = new();

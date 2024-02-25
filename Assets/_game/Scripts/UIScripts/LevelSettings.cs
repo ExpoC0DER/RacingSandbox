@@ -29,30 +29,12 @@ namespace _game.Scripts.UIScripts
                 else
                     FileUtil.ReplaceFile(path, GetPreviewImagePath());
 
-                Texture2D spriteTexture = LoadTexture(path);
+                Texture2D spriteTexture = ExtensionMethods.LoadTexture(path);
                 if (spriteTexture != null)
                     SetTexture(spriteTexture);
             }
         }
-
-        private Texture2D LoadTexture(string filePath)
-        {
-            // Load a PNG or JPG file from disk to a Texture2D
-            // Returns null if load fails
-
-            if (File.Exists(filePath))
-            {
-                byte[] fileData = File.ReadAllBytes(filePath);
-                Texture2D tex2D = new Texture2D(2, 2);
-                if (tex2D.LoadImage(fileData)) // Load the imagedata into the texture (size is set automatically)
-                    return tex2D; // If data = readable -> return texture
-            }
-
-            return null; // Return null if load failed
-        }
-
-
-
+        
         private string GetPreviewImagePath()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(Application.persistentDataPath, _levelData.Name));
@@ -80,7 +62,7 @@ namespace _game.Scripts.UIScripts
             _nameInput.text = data.Name;
             _levelData = data;
 
-            Texture2D spriteTexture = LoadTexture(GetPreviewImagePath());
+            Texture2D spriteTexture = ExtensionMethods.LoadTexture(GetPreviewImagePath());
             if (spriteTexture != null)
                 SetTexture(spriteTexture);
         }
