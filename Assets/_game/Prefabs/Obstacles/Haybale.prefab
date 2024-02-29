@@ -68,9 +68,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ef592132a645344ac7f507359e265f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 
+  <TileID>k__BackingField: 0
   _arrows: []
-  _overlays: []
-  _time: 0.5
 --- !u!1 &4122847160920256664
 GameObject:
   m_ObjectHideFlags: 0

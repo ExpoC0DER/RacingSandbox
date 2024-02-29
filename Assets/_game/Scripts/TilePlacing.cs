@@ -11,15 +11,16 @@ using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.Serialization;
 
 namespace _game.Scripts
 {
     public class TilePlacing : MonoBehaviour, IDataPersistence
     {
+        [field:SerializeField, Expandable] public TileDatabaseSO TileDatabase { get; private set; }
         [SerializeField] private PlayerInput _playerInput;
         [SerializeField] private VirtualMouseInput _virtualMouseInput;
         [SerializeField] private RectTransform _virtualCursor;
-        [SerializeField, Expandable] private TileDatabaseSO _tileDatabase;
         [SerializeField] private EditorUIController _editorUI;
         [SerializeField] private LayerMask _collisionCheckRoad;
         [SerializeField] private LayerMask _collisionCheckObject;
@@ -279,7 +280,7 @@ namespace _game.Scripts
             }
         }
 
-        private GameObject GetTileById(int index) { return _tileDatabase.AllTiles.Find(data => data.ID == index).Prefab; }
+        private GameObject GetTileById(int index) { return TileDatabase.AllTiles.Find(data => data.ID == index).Prefab; }
 
         private void FixedUpdate() { MyCollisions(); }
 

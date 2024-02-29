@@ -118,10 +118,10 @@ MonoBehaviour:
   - <Name>k__BackingField: TiresBig
     _errorMessage: 
     <ID>k__BackingField: 20
-    <Prefab>k__BackingField: {fileID: 3200110364214618664, guid: 615b6a6beeb79c04ca4f8be348fd4283, type: 3}
+    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: 4de7c7335f139e047a43bb5c25aa94d2, type: 3}
     <Sprite>k__BackingField: {fileID: 0}
   - <Name>k__BackingField: TiresSmall
     _errorMessage: 
     <ID>k__BackingField: 21
-    <Prefab>k__BackingField: {fileID: 3200110364214618664, guid: 615b6a6beeb79c04ca4f8be348fd4283, type: 3}
+    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: b2c101362abd12e4f90b693651616c72, type: 3}
     <Sprite>k__BackingField: {fileID: 0}
