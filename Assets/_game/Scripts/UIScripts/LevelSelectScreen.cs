@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 using _game.Scripts.HelperScripts;
 using _game.Scripts.Saving;
 using TMPro;
@@ -29,7 +30,19 @@ namespace _game.Scripts.UIScripts
                 LevelSelectButton newLevelSelectButton = Instantiate(_levelSelectBtnPrefab, _scrollViewContent);
                 newLevelSelectButton.FileName = mapDir.Name;
                 newLevelSelectButton.LevelData = GetLevelData(mapDir.Name);
+                newLevelSelectButton.Texture = ExtensionMethods.LoadTexture(GetPreviewImagePath(mapDir));
             }
+        }
+
+        private string GetPreviewImagePath(DirectoryInfo dirInfo)
+        {
+            if (dirInfo.Exists)
+            {
+                FileInfo[] fileInfo = dirInfo.GetFiles().Where(f => f.Extension is ".png" or ".jpg" or ".jpeg").ToArray();
+                if (fileInfo.Length > 0)
+                    return fileInfo[0].FullName;
+            }
+            return null;
         }
 
         private static LevelData GetLevelData(string fileName)

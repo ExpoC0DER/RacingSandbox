@@ -754,6 +754,8 @@ MonoBehaviour:
   _goldTrophyText: {fileID: 3413270204162360573}
   _silverTrophyText: {fileID: 3902487638392645776}
   _bronzeTrophyText: {fileID: 1440031172293593243}
+  _previewImage: {fileID: 1679475221936441975}
+  _mask: {fileID: 1391697690470599877}
 --- !u!114 &1744775765969742538
 MonoBehaviour:
   m_ObjectHideFlags: 0
