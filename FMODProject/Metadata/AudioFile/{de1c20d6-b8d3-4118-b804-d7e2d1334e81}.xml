@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{de1c20d6-b8d3-4118-b804-d7e2d1334e81}">
+		<property name="assetPath">
+			<value>RaceCraftFullMenuMusic.ogg</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>90.403650793650797</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{e77a9e16-f4c0-4200-a55f-78539e0f8aa2}</destination>
+		</relationship>
+	</object>
+</objects>
