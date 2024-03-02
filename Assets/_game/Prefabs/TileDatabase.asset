@@ -118,10 +118,30 @@ MonoBehaviour:
   - <Name>k__BackingField: TiresBig
     _errorMessage: 
     <ID>k__BackingField: 20
-    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: 4de7c7335f139e047a43bb5c25aa94d2, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: db0be802a9002d248a9549e090af91e7, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 4d4c799453ad79345a6f0975f260223e, type: 3}
   - <Name>k__BackingField: TiresSmall
     _errorMessage: 
     <ID>k__BackingField: 21
     <Prefab>k__BackingField: {fileID: 556845871996475455, guid: b2c101362abd12e4f90b693651616c72, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: b667f2de65c2c5a47b4d320a97c28d93, type: 3}
+  - <Name>k__BackingField: ConesSmall
+    _errorMessage: 
+    <ID>k__BackingField: 22
+    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: 4de7c7335f139e047a43bb5c25aa94d2, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 8dd1988c50512b54c99d3d1a85bea326, type: 3}
+  - <Name>k__BackingField: ConesLarge
+    _errorMessage: 
+    <ID>k__BackingField: 23
+    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: e2267f4d667dd014b8aecbd4035c77b2, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 2703eef730a1fef43a1ea5044f25216a, type: 3}
+  - <Name>k__BackingField: BarrierSmall
+    _errorMessage: 
+    <ID>k__BackingField: 24
+    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: be519852686d1e947b23513e4cfed6a7, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 88bc5361cda0255448ba246b1657f82f, type: 3}
+  - <Name>k__BackingField: BarrierLarge
+    _errorMessage: 
+    <ID>k__BackingField: 25
+    <Prefab>k__BackingField: {fileID: 556845871996475455, guid: af94a1e2157d25f4ebcbb50a1f00da00, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 3e235b86353799a4abb6b68b9175c891, type: 3}

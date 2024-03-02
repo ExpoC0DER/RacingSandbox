@@ -276,9 +276,6 @@
 		<property name="length">
 			<value>90.403650793650797</value>
 		</property>
-		<property name="quantizationInterval">
-			<value>2</value>
-		</property>
 		<property name="transitionOffset">
 			<value>1</value>
 		</property>
@@ -301,9 +298,6 @@
 		</property>
 		<property name="length">
 			<value>90.403650793650797</value>
-		</property>
-		<property name="quantizationInterval">
-			<value>2</value>
 		</property>
 		<property name="transitionOffset">
 			<value>1</value>
@@ -342,9 +336,6 @@
 		<property name="length">
 			<value>90.403650793650783</value>
 		</property>
-		<property name="quantizationInterval">
-			<value>2</value>
-		</property>
 		<property name="transitionOffset">
 			<value>1</value>
 		</property>
@@ -367,9 +358,6 @@
 		</property>
 		<property name="length">
 			<value>90.403650793650812</value>
-		</property>
-		<property name="quantizationInterval">
-			<value>2</value>
 		</property>
 		<property name="transitionOffset">
 			<value>1</value>
@@ -408,9 +396,6 @@
 		<property name="length">
 			<value>90.403650793650812</value>
 		</property>
-		<property name="quantizationInterval">
-			<value>2</value>
-		</property>
 		<property name="transitionOffset">
 			<value>1</value>
 		</property>
@@ -433,9 +418,6 @@
 		</property>
 		<property name="length">
 			<value>90.403650793650783</value>
-		</property>
-		<property name="quantizationInterval">
-			<value>2</value>
 		</property>
 		<property name="transitionOffset">
 			<value>1</value>
