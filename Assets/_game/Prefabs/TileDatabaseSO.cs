@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine.Serialization;
 
 namespace _game.Prefabs
@@ -17,15 +18,19 @@ namespace _game.Prefabs
             {
                 List<TileProperties> allTiles = new List<TileProperties>();
                 allTiles.AddRange(BasicTiles);
+                allTiles.AddRange(SnowTiles);
                 allTiles.AddRange(ControlTiles);
-                allTiles.AddRange(ObstacleTiles);
+                allTiles.AddRange(Obstacles);
+                allTiles.AddRange(Decorations);
                 return allTiles;
             }
         }
 
         [field: SerializeField] public List<TileProperties> BasicTiles { get; private set; }
+        [field: SerializeField] public List<TileProperties> SnowTiles { get; private set; }
         [field: SerializeField] public List<TileProperties> ControlTiles { get; private set; }
-        [field: SerializeField] public List<TileProperties> ObstacleTiles { get; private set; }
+        [field: SerializeField] public List<TileProperties> Obstacles { get; private set; }
+        [field: SerializeField] public List<TileProperties> Decorations { get; private set; }
 
         private void OnValidate()
         {

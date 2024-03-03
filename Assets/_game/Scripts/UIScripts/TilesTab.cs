@@ -17,8 +17,10 @@ namespace _game.Scripts.UIScripts
         private enum TileList
         {
             Basic,
+            Snow,
             Control,
-            Obstacle
+            Obstacle,
+            Decorations
         }
 
         private List<TileProperties> GetTileList(TileList tileList)
@@ -26,8 +28,10 @@ namespace _game.Scripts.UIScripts
             return tileList switch
             {
                 TileList.Basic => _tilePlacing.TileDatabase.BasicTiles,
+                TileList.Snow => _tilePlacing.TileDatabase.SnowTiles,
                 TileList.Control => _tilePlacing.TileDatabase.ControlTiles,
-                TileList.Obstacle => _tilePlacing.TileDatabase.ObstacleTiles,
+                TileList.Obstacle => _tilePlacing.TileDatabase.Obstacles,
+                TileList.Decorations => _tilePlacing.TileDatabase.Decorations,
                 _ => null
             };
         }
@@ -40,6 +44,7 @@ namespace _game.Scripts.UIScripts
                 TileItemToggle newTileToggle = Instantiate(_prefab, _content);
                 newTileToggle.TilePlacing = _tilePlacing;
                 newTileToggle.TileId = tileProperties.ID;
+                newTileToggle.TileName = tileProperties.Name;
                 newTileToggle.Sprite = tileProperties.Sprite;
                 newTileToggle.ToggleGroup = _toggleGroup;
             }

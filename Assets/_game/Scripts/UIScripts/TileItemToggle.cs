@@ -9,27 +9,22 @@ namespace _game.Scripts.UIScripts
 {
     public class TileItemToggle : MonoBehaviour
     {
-        [SerializeField, ReadOnly] private int _tileId;
-        public int TileId
-        {
-            get { return _tileId; }
-            set
-            {
-                _tileId = value;
-                _idText.text = _tileId.ToString();
-            }
-        }
+        public int TileId { get; set; }
+
+        public string TileName { set { _nameText.text = value; } }
+
         [field: SerializeField, ReadOnly] public TilePlacing TilePlacing { get; set; }
         [field: SerializeField, ReadOnly] public ToggleGroup ToggleGroup { get; set; }
         [SerializeField] private Image _image;
-        [SerializeField] private TMP_Text _idText;
+        [FormerlySerializedAs("_idText")]
+        [SerializeField] private TMP_Text _nameText;
         public Sprite Sprite
         {
             set
             {
                 if (value == null) return;
                 _image.sprite = value;
-                _idText.enabled = false;
+                _nameText.enabled = false;
             }
         }
 
