@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3809945072200597350, guid: 20c5fe0da35e69644b4ca767e2b24e83, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b1fa698b56914994db88f453a5947c19, type: 2}
     - target: {fileID: 919132149155446097, guid: 20c5fe0da35e69644b4ca767e2b24e83, type: 3}
       propertyPath: m_Name
       value: onesidehighroad mesh

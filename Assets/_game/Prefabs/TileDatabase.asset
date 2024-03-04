@@ -43,6 +43,11 @@ MonoBehaviour:
     <ID>k__BackingField: 9
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 97445ac96a0c60f4dbb66339d06ba173, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: 94f69bdbc159a974394517b98bc13efa, type: 3}
+  - <Name>k__BackingField: 1x1 Passing
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 62
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 81eb5bb9b74fcf04dabfc812b2730f43, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 5457f44a244ebd74d88dad81579e81c1, type: 3}
   - <Name>k__BackingField: 1x1 NarrowStraight Grass
     _errorMessage: ID already in use!
     <ID>k__BackingField: 10
@@ -83,6 +88,36 @@ MonoBehaviour:
     <ID>k__BackingField: 37
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 844a42c54b542be4892ceca9023035a0, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: 0ec8a89f578a9e74dbb0a62ff74cd4e8, type: 3}
+  - <Name>k__BackingField: 1x1 BigtosmallOnly
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 57
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 3fbdbabac8c49134da34ab607b3b23da, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: d96e31ee54940e749a5dc0f3290d51ac, type: 3}
+  - <Name>k__BackingField: 1x1 NarrowStraightOnly
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 58
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 268576d2b78f52344a57f29bd0baf6c9, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 5819357e7a2da1742b58795d9b4ee15e, type: 3}
+  - <Name>k__BackingField: 1x1 RightToLeftOnly
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 59
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: c27e2cdd5bbdfa448bb1d825d1166f36, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: a5b3c0de8df46134c9e6238a92e126af, type: 3}
+  - <Name>k__BackingField: 1x1 SmallToBigOnly
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 60
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 8aed140b58195024295bf619d6370c48, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: b68cfd2ba782c8a46bf7bdd8b63f7bda, type: 3}
+  - <Name>k__BackingField: 1x1 BendHighOnly
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 61
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: f8aa8ab6ecf0a764cbcbda3762fb923d, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 09d4253140a634943903ecbd05e5f597, type: 3}
+  - <Name>k__BackingField: 1x1 RoadAndGrass
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 64
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 6fd30cb3fe238404c8d8bcddcd55dd8d, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: b00e5a18a8bf76a49b6964243f231295, type: 3}
   <SnowTiles>k__BackingField:
   - <Name>k__BackingField: 1x1 Bend Snow
     _errorMessage: ID already in use!
@@ -119,6 +154,11 @@ MonoBehaviour:
     <ID>k__BackingField: 32
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 0f71b761dacf1734d97cc444010c34e6, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: ae713540ec0440a4c91c75ea8034ddc3, type: 3}
+  - <Name>k__BackingField: 1x1 PassingSnow
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 63
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: ab20d255dd7f1f143b2aee32defe6655, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 3a36afcc3fa37fa47b2848bb029f9bbc, type: 3}
   <ControlTiles>k__BackingField:
   - <Name>k__BackingField: Start
     _errorMessage: 
@@ -135,6 +175,16 @@ MonoBehaviour:
     <ID>k__BackingField: 7
     <Prefab>k__BackingField: {fileID: 3200110364214618664, guid: 76ff4a70b476264488cfc262667d8a99, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: 397c1283f1b37424a8931848d986df00, type: 3}
+  - <Name>k__BackingField: Start
+    _errorMessage: 
+    <ID>k__BackingField: 55
+    <Prefab>k__BackingField: {fileID: 2403047715860921947, guid: 4c14f15f018f5fc40afcaec05c4c0b65, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: ffa0f179eeaf40b418f7a39c92828584, type: 3}
+  - <Name>k__BackingField: End
+    _errorMessage: 
+    <ID>k__BackingField: 56
+    <Prefab>k__BackingField: {fileID: 2403047715860921947, guid: 15a47db47229e9d468d274d1553de6c1, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 2810fea7aece2bd45b593510eba88146, type: 3}
   <Obstacles>k__BackingField:
   - <Name>k__BackingField: SpeedBoost
     _errorMessage: 
