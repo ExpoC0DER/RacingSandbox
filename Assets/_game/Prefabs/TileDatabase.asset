@@ -88,12 +88,12 @@ MonoBehaviour:
     _errorMessage: ID already in use!
     <ID>k__BackingField: 26
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 94f25bac23169e440853fa7e00f7ea6a, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 16f0890c01648a64b8755aa6edb453ed, type: 3}
   - <Name>k__BackingField: 1x1 BigToSmall Snow
     _errorMessage: ID already in use!
     <ID>k__BackingField: 27
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 317a9fd65b0614e40b0748df9c735a4a, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: c90664a94e542594a884d622355f7de4, type: 3}
   - <Name>k__BackingField: 1x1 Snow
     _errorMessage: ID already in use!
     <ID>k__BackingField: 28
@@ -108,17 +108,17 @@ MonoBehaviour:
     _errorMessage: ID already in use!
     <ID>k__BackingField: 30
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 52fa580bbe1dd87459474f390cf0a243, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: e5f5566fc2a008148a23e6ca96718db2, type: 3}
   - <Name>k__BackingField: 1x1 RightToLeft Snow
     _errorMessage: ID already in use!
     <ID>k__BackingField: 31
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: e2de954768000644abd53a0161345336, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: c22bd524eeb213a4280f45a8ca3efd9f, type: 3}
   - <Name>k__BackingField: 1x1 SmallToBig Snow
     _errorMessage: ID already in use!
     <ID>k__BackingField: 32
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 0f71b761dacf1734d97cc444010c34e6, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: ae713540ec0440a4c91c75ea8034ddc3, type: 3}
   <ControlTiles>k__BackingField:
   - <Name>k__BackingField: Start
     _errorMessage: 
@@ -145,12 +145,17 @@ MonoBehaviour:
     _errorMessage: 
     <ID>k__BackingField: 18
     <Prefab>k__BackingField: {fileID: 556845871996475455, guid: 1a1eb54d0ff37ec47b98d05609b30872, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 8205fdbb4f90f344e82a4a0748aa6998, type: 3}
   - <Name>k__BackingField: Mine
     _errorMessage: 
     <ID>k__BackingField: 19
     <Prefab>k__BackingField: {fileID: 3200110364214618664, guid: 615b6a6beeb79c04ca4f8be348fd4283, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: 487ebdd06fadae54aab75e559e0b29a0, type: 3}
+  - <Name>k__BackingField: Hammer
+    _errorMessage: 
+    <ID>k__BackingField: 54
+    <Prefab>k__BackingField: {fileID: 3200110364214618664, guid: 0774d20fa11f22a479a2554dd673ee12, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 5fa298472051ae04fa37cdfaebad698d, type: 3}
   <Decorations>k__BackingField:
   - <Name>k__BackingField: Haybale
     _errorMessage: 
@@ -201,7 +206,7 @@ MonoBehaviour:
     _errorMessage: 
     <ID>k__BackingField: 42
     <Prefab>k__BackingField: {fileID: 556845871996475455, guid: 9130bd0d7f6f8df43b246c0e87e1724d, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 2cfddd782ada41d4e85ce8a3bc5f69ec, type: 3}
   - <Name>k__BackingField: TreeHusk 2
     _errorMessage: 
     <ID>k__BackingField: 43
