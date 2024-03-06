@@ -8,14 +8,19 @@ using UnityEngine.UIElements;
 
 namespace _game.Scripts
 {
+    [RequireComponent(typeof(BoxCollider))]
     public class TileController : MonoBehaviour
     {
         public Vector3 Position { get => transform.position; set => transform.position = value; }
         public Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
+        public BoxCollider BoxCollider { get; set; }
         [field: SerializeField, ReadOnly] public string Id { get; set; }
         [field: SerializeField, ReadOnly] public int TileID { get; set; }
         [SerializeField] private GameObject[] _arrows = Array.Empty<GameObject>();
         [SerializeField] private UnityEvent _onRotate;
+
+
+        private void Awake() { BoxCollider = GetComponent<BoxCollider>(); }
 
         public void SetActiveArrows(bool value)
         {

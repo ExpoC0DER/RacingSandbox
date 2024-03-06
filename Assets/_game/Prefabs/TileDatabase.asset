@@ -159,6 +159,16 @@ MonoBehaviour:
     <ID>k__BackingField: 63
     <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: ab20d255dd7f1f143b2aee32defe6655, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: 3a36afcc3fa37fa47b2848bb029f9bbc, type: 3}
+  - <Name>k__BackingField: 1x1 RoadAndIce
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 65
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 88904665ebefff3429bab2940068a5dc, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: f5c07545b48058f4e96cb2ef80a41094, type: 3}
+  - <Name>k__BackingField: 1x1 RoadAndIce2
+    _errorMessage: ID already in use!
+    <ID>k__BackingField: 66
+    <Prefab>k__BackingField: {fileID: 4014966336892951433, guid: 456f50e23ec4dd84985fe6175fbc9397, type: 3}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: d669a397c592ec14695fa5df21f11e7a, type: 3}
   <ControlTiles>k__BackingField:
   - <Name>k__BackingField: Start
     _errorMessage: 

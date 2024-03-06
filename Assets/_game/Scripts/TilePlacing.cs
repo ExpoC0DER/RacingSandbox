@@ -30,12 +30,10 @@ namespace _game.Scripts
         [ColorUsage(true, true), SerializeField]
         private Color _collidingColor, _notCollidingColor, _editingColor;
         [SerializeField] private Material _outlineMat, _tintMat;
-        private BoxCollider _activeTileCollider;
         private TileController _activeTile;
         private Layer _activeTileDefaultLayer = Layer.Default;
         private Vector3 _cursorPosition;
         [SerializeField] private int _selectedId;
-        [SerializeField] private string _selectedTileControllerId;
         [SerializeField] private SerializableDictionary<string, GameObject> _placedTiles = new SerializableDictionary<string, GameObject>();
         [SerializeField] private StudioEventEmitter _tilePlaceSound, _tileDestroySound;
         private bool _isColliding;
@@ -153,7 +151,7 @@ namespace _game.Scripts
                 if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
                 {
                     SetHighlightMaterialColor(_editingColor);
-                    TileController hitTile = hit.transform.gameObject.GetComponent<TileController>();
+                    TileController hitTile = hit.transform.GetComponent<TileController>();
                     if (_lastEditTarget != hitTile)
                     {
                         if (_lastEditTarget)
@@ -251,7 +249,7 @@ namespace _game.Scripts
             if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
             {
                 SetHighlightMaterialColor(_collidingColor);
-                TileController hitTile = hit.transform.gameObject.GetComponent<TileController>();
+                TileController hitTile = hit.transform.GetComponent<TileController>();
 
                 if (_lastDestroyTarget != hitTile)
                 {
@@ -264,9 +262,8 @@ namespace _game.Scripts
 
                 if (EditorViewPressed)
                 {
-                    _selectedTileControllerId = _lastDestroyTarget.Id;
+                    RemoveTileFromList(_lastDestroyTarget.Id);
                     _lastDestroyTarget.Destroy();
-                    RemoveTileFromList(_selectedTileControllerId);
                     _tileDestroySound.Play();
                 }
             }
@@ -287,8 +284,8 @@ namespace _game.Scripts
             if (!_activeTile)
                 return;
 
-            Vector3 worldCenter = _activeTile.transform.TransformPoint(_activeTileCollider.center);
-            Vector3 worldHalfExtents = /*_activeTileTransform.TransformVector*/(_activeTileCollider.size * 0.45f).Abs();
+            Vector3 worldCenter = _activeTile.transform.TransformPoint(_activeTile.BoxCollider.center);
+            Vector3 worldHalfExtents = /*_activeTileTransform.TransformVector*/(_activeTile.BoxCollider.size * 0.45f).Abs();
             LayerMask layerMask = GetActiveTileCollisionCheck(_activeTileDefaultLayer);
 
             if (_testCollider)
@@ -323,8 +320,8 @@ namespace _game.Scripts
                 return;
 
             Gizmos.color = Color.red;
-            Vector3 worldCenter = _activeTile.transform.TransformPoint(_activeTileCollider.center);
-            Vector3 worldExtents = _activeTile.transform.TransformVector(_activeTileCollider.size * 0.9f);
+            Vector3 worldCenter = _activeTile.transform.TransformPoint(_activeTile.BoxCollider.center);
+            Vector3 worldExtents = _activeTile.transform.TransformVector(_activeTile.BoxCollider.size * 0.9f);
             Gizmos.DrawWireCube(worldCenter, worldExtents);
         }
 
@@ -368,15 +365,11 @@ namespace _game.Scripts
 
             if (_activeTile)
             {
-                _selectedTileControllerId = _activeTile.Id;
-
-                _activeTileCollider = _activeTile.GetComponent<BoxCollider>();
                 _activeTileDefaultLayer = (Layer)_activeTile.gameObject.layer;
                 RoundRotation(_activeTile);
             }
             else
             {
-                _activeTileCollider = null;
                 _activeTile = null;
             }
         }
