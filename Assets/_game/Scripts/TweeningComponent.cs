@@ -43,7 +43,7 @@ namespace _game.Scripts
             ReloadShowTriggers();
         }
 
-        [Button("start")]
+        [Button("Start")]
         private void StartTween()
         {
             switch (_tweenType)
@@ -75,6 +75,13 @@ namespace _game.Scripts
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public void Restart()
+        {
+            _tween.Kill();
+            ResetTransform();
+            StartTween();
         }
 
         private void OnDestroy() { _tween.Kill(); }
