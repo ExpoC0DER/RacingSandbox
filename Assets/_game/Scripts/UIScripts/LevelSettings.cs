@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using _game.Scripts.HelperScripts;
 using _game.Scripts.Saving;
+using SFB;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -21,20 +22,29 @@ namespace _game.Scripts.UIScripts
 
         public void OpenFile()
         {
-            string path = EditorUtility.OpenFilePanel("Select new preview image", "", "png,jpeg,jpg");
-            if (path.Length != 0)
+            // Open file with filter
+            ExtensionFilter[] extensions =
+            {
+                new ExtensionFilter("Image Files", "png", "jpg", "jpeg"),
+            };
+            string[] paths = StandaloneFileBrowser.OpenFilePanel("Select new preview image", "", extensions, false);
+            if (paths.Length > 1 && paths[0].Length != 0)
             {
                 if (GetPreviewImagePath() == null)
-                    FileUtil.ReplaceFile(path, Path.Combine(Application.persistentDataPath, NameInputText, "previewImage.png"));
+                {
+                    File.Copy(paths[0], Path.Combine(Application.persistentDataPath, NameInputText, "previewImage.png"), true);
+                }
                 else
-                    FileUtil.ReplaceFile(path, GetPreviewImagePath());
+                {
+                    File.Copy(paths[0], GetPreviewImagePath(), true);
+                }
 
-                Texture2D spriteTexture = ExtensionMethods.LoadTexture(path);
+                Texture2D spriteTexture = ExtensionMethods.LoadTexture(paths[0]);
                 if (spriteTexture != null)
                     SetTexture(spriteTexture);
             }
         }
-        
+
         private string GetPreviewImagePath()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(Path.Combine(Application.persistentDataPath, _levelData.Name));
