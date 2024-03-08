@@ -1482,7 +1482,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1184963091}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: QuitGame
         m_Mode: 1
@@ -3937,69 +3937,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1156566457}
   m_CullTransparentMesh: 1
---- !u!1 &1184963090
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1184963092}
-  - component: {fileID: 1184963091}
-  - component: {fileID: 1184963093}
-  m_Layer: 0
-  m_Name: ScriptsAndShit
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1184963091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1184963090}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcea7b2110b831a44ac70ddd64f85e1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1184963092
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1184963090}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 389.18027, y: 153.08473, z: -1.4035325}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1184963093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1184963090}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e86006d208cbf224cab3e023fe36680a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _musicVolume: 0.5
-  _sfxVolume: 0.5
-  _masterVolume: 1
-  _masterVolumeText: {fileID: 893645796}
-  _musicVolumeText: {fileID: 797214858}
-  _sfxVolumeText: {fileID: 1786464225}
 --- !u!1 &1190144286
 GameObject:
   m_ObjectHideFlags: 0
@@ -6245,6 +6182,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1810224752}
   m_CullTransparentMesh: 1
+--- !u!1 &1810320498 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8487495630062900792, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+  m_PrefabInstance: {fileID: 2192557254068565782}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1810320500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810320498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e86006d208cbf224cab3e023fe36680a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _musicVolume: 0.5
+  _sfxVolume: 0.5
+  _masterVolume: 1
+  _masterVolumeText: {fileID: 893645796}
+  _musicVolumeText: {fileID: 797214858}
+  _sfxVolumeText: {fileID: 1786464225}
 --- !u!1 &1827558977
 GameObject:
   m_ObjectHideFlags: 0
@@ -7069,7 +7029,11 @@ PrefabInstance:
     - target: {fileID: 1033258655589134803, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1184963093}
+      objectReference: {fileID: 1810320500}
+    - target: {fileID: 1033258655589134803, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MusicVolumeLevel
+      objectReference: {fileID: 0}
     - target: {fileID: 1789560234816445242, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 4
@@ -7121,7 +7085,11 @@ PrefabInstance:
     - target: {fileID: 3031737387517322805, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1184963093}
+      objectReference: {fileID: 1810320500}
+    - target: {fileID: 3031737387517322805, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SFXVolumeLevel
+      objectReference: {fileID: 0}
     - target: {fileID: 3168927449537486366, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -7173,7 +7141,11 @@ PrefabInstance:
     - target: {fileID: 7515684540440139453, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1184963093}
+      objectReference: {fileID: 1810320500}
+    - target: {fileID: 7515684540440139453, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MasterVolumeLevel
+      objectReference: {fileID: 0}
     - target: {fileID: 7980288153916582349, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -7273,7 +7245,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8487495630062900792, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1810320500}
   m_SourcePrefab: {fileID: 100100000, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
 --- !u!224 &2192557254068565783 stripped
 RectTransform:
@@ -7293,7 +7268,6 @@ SceneRoots:
   - {fileID: 828433081}
   - {fileID: 157635631}
   - {fileID: 195837717}
-  - {fileID: 1184963092}
   - {fileID: 1459775392}
   - {fileID: 2050024387}
   - {fileID: 1763385562}
