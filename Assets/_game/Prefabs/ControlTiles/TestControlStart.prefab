@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 862939618534722053}
   - component: {fileID: 1185972739910342143}
   - component: {fileID: 255543417449126671}
+  - component: {fileID: 4802289558297889592}
   m_Layer: 7
   m_Name: TestControlStart
   m_TagString: Tile
@@ -53,8 +54,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 
   <TileID>k__BackingField: 0
+  <IsColliding>k__BackingField: 0
+  <IsSelected>k__BackingField: 0
   _arrows:
   - {fileID: 8032737327554329070}
+  _onRotate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &255543417449126671
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -70,12 +76,39 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10, y: 2, z: 20}
+  m_Size: {x: 9, y: 2, z: 19}
   m_Center: {x: 0, y: 0, z: 5}
+--- !u!54 &4802289558297889592
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2403047715860921947}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &4914749084772240914
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,8 +676,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startAutomatically: 1
+  _useRigidbody: 0
   _tweenType: 2
   _rotation: {x: 0, y: 0, z: 0}
+  _rotationOffset: {fileID: 0}
   _endValue: 20
   _duration: 0.3
   _ease: 0

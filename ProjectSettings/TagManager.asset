@@ -11,6 +11,7 @@ TagManager:
   - Boost
   - Car
   - FreezeBullet
+  - Lap
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - ObjectTrigger
   - NormalRender
   - PickedUpRender
-  - 
+  - Tile
   - 
   - 
   - 

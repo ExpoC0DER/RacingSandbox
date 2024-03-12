@@ -28,16 +28,9 @@ namespace _game.Scripts.UIScripts
                 new ExtensionFilter("Image Files", "png", "jpg", "jpeg"),
             };
             string[] paths = StandaloneFileBrowser.OpenFilePanel("Select new preview image", "", extensions, false);
-            if (paths.Length > 1 && paths[0].Length != 0)
+            if (paths.Length > 0 && paths[0].Length != 0)
             {
-                if (GetPreviewImagePath() == null)
-                {
-                    File.Copy(paths[0], Path.Combine(Application.persistentDataPath, NameInputText, "previewImage.png"), true);
-                }
-                else
-                {
-                    File.Copy(paths[0], GetPreviewImagePath(), true);
-                }
+                File.Copy(paths[0], GetPreviewImagePath() ?? Path.Combine(Application.persistentDataPath, NameInputText, "previewImage.png"), true);
 
                 Texture2D spriteTexture = ExtensionMethods.LoadTexture(paths[0]);
                 if (spriteTexture != null)

@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using NaughtyAttributes;
+using NUnit.Framework;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
@@ -13,14 +16,28 @@ namespace _game.Scripts
     {
         public Vector3 Position { get => transform.position; set => transform.position = value; }
         public Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
-        public BoxCollider BoxCollider { get; set; }
+        public Rigidbody Rb { get; private set; }
+        public BoxCollider BoxCollider { get; private set; }
         [field: SerializeField, ReadOnly] public string Id { get; set; }
         [field: SerializeField, ReadOnly] public int TileID { get; set; }
+        [SerializeField] private bool _isColliding;
+        [SerializeField] private bool _canBePlaced;
+        public bool IsColliding { get { return /*!_canBePlaced ||*/ _isColliding; } }
+        [field: SerializeField, ReadOnly] public bool IsSelected { get; set; } = true;
         [SerializeField] private GameObject[] _arrows = Array.Empty<GameObject>();
         [SerializeField] private UnityEvent _onRotate;
 
+        private void Awake()
+        {
+            BoxCollider = GetComponent<BoxCollider>();
+            Rb = GetComponent<Rigidbody>();
 
-        private void Awake() { BoxCollider = GetComponent<BoxCollider>(); }
+        }
+        private void Start()
+        {
+            _canBePlaced = false;
+            //StartCoroutine(nameof(SetColliding));
+        }
 
         public void SetActiveArrows(bool value)
         {
@@ -40,6 +57,45 @@ namespace _game.Scripts
         {
             transform.Rotate(Vector3.up, rotateBy);
             _onRotate.Invoke();
+        }
+
+        public void Place()
+        {
+            SetActiveArrows(false);
+            IsSelected = false;
+            ChangeRenderLayer((int)Layer.NormalRender);
+        }
+
+        public void PickUp()
+        {
+            SetActiveArrows(true);
+            IsSelected = true;
+            ChangeRenderLayer((int)Layer.PickedUpRender);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (IsSelected)
+                _isColliding = true;
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (IsSelected)
+                _isColliding = true;
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (IsSelected)
+                _isColliding = false;
+        }
+
+
+        private IEnumerator SetColliding()
+        {
+            yield return new WaitForSecondsRealtime(0.1f);
+            _canBePlaced = true;
         }
 
 
@@ -96,7 +152,7 @@ namespace _game.Scripts
             }
         }
 
-        private static bool IsDefaultLayer(int layer) { return layer is (int)Layer.Road or (int)Layer.Object or (int)Layer.RoadTrigger or (int)Layer.ObjectTrigger or (int)Layer.Default; }
+        private static bool IsDefaultLayer(int layer) { return layer is (int)Layer.Road or (int)Layer.Tile or (int)Layer.Object or (int)Layer.RoadTrigger or (int)Layer.ObjectTrigger or (int)Layer.Default; }
 
     }
 }

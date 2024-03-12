@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using NaughtyAttributes;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
 namespace _game.Scripts
@@ -53,6 +54,7 @@ namespace _game.Scripts
         [SerializeField] private CinemachineVirtualCamera _carCam;
         [SerializeField] private Transform _followPoint;
         private float _countdownDelay;
+        private int _lapCounter;
 
         public static event Action<bool> SetTimerActive;
         public static event Action<CarController2> ShowEndScreen;
@@ -86,11 +88,13 @@ namespace _game.Scripts
 
             GetInputs();
             AnimateWheels();
-
             HandleAudio();
             //WheelEffects();
             if (_speedMeter)
                 _speedMeter.text = Mathf.Round(_rb.velocity.magnitude * 3.6f) + " km/h";
+
+            if (_rb.position.y < -10 && !_isResetting)
+                Reset(_checkpointPosition);
         }
 
         private void FixedUpdate()
@@ -266,6 +270,7 @@ namespace _game.Scripts
         //Enable playingF
         private void StartPlaying()
         {
+            _lapCounter = 0;
             _isPlaying = true;
             SetTimerActive?.Invoke(true);
         }
@@ -284,15 +289,31 @@ namespace _game.Scripts
 
         private void OnTriggerExit(Collider other)
         {
-            if (!_isPlaying || !other.CompareTag("Finish")) return;
-
-            _isPlaying = false;
-            foreach (Wheel wheel in _wheels)
+            if (!_isPlaying) return;
+            if (other.CompareTag("Finish"))
             {
-                wheel.wheelCollider.brakeTorque = float.MaxValue;
+                _isPlaying = false;
+                foreach (Wheel wheel in _wheels)
+                {
+                    wheel.wheelCollider.brakeTorque = float.MaxValue;
+                }
+                SetTimerActive?.Invoke(false);
+                ShowEndScreen?.Invoke(this);
             }
-            SetTimerActive?.Invoke(false);
-            ShowEndScreen?.Invoke(this);
+            if (other.CompareTag("Lap"))
+            {
+                _lapCounter++;
+                if (_lapCounter > 3)
+                {
+                    _isPlaying = false;
+                    foreach (Wheel wheel in _wheels)
+                    {
+                        wheel.wheelCollider.brakeTorque = float.MaxValue;
+                    }
+                    SetTimerActive?.Invoke(false);
+                    ShowEndScreen?.Invoke(this);
+                }
+            }
         }
 
         private void SwitchCamera(bool value)
@@ -327,6 +348,16 @@ namespace _game.Scripts
 
         private void OnBreakingChanged(bool value) { _isBreaking = value; }
 
+        private void ShowEndScreenShortcut()
+        {
+            if (!_isPlaying) return;
+
+            _isPlaying = false;
+
+            SetTimerActive?.Invoke(false);
+            ShowEndScreen?.Invoke(this);
+        }
+
         private void OnEnable()
         {
             GameManager.OnGameStateChanged += OnGameStateChanged;
@@ -334,6 +365,7 @@ namespace _game.Scripts
             InputController.InputAxisChanged += GetAxisInput;
             InputController.RestartCheckpointPerformed += OnRestartCheckpointPerformed;
             InputController.BreakingChanged += OnBreakingChanged;
+            InputController.OnShowEndScreen += ShowEndScreenShortcut;
         }
         private void OnDisable()
         {
@@ -342,6 +374,7 @@ namespace _game.Scripts
             InputController.InputAxisChanged -= GetAxisInput;
             InputController.RestartCheckpointPerformed -= OnRestartCheckpointPerformed;
             InputController.BreakingChanged -= OnBreakingChanged;
+            InputController.OnShowEndScreen -= ShowEndScreenShortcut;
         }
     }
     public struct CarTransform

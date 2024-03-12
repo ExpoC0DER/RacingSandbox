@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using _game.Prefabs;
 using _game.Scripts.HelperScripts;
 using _game.Scripts.Saving;
@@ -7,45 +8,59 @@ using _game.Scripts.UIScripts;
 using UnityEngine;
 using FMODUnity;
 using NaughtyAttributes;
-using Unity.VisualScripting;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.Serialization;
-using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 namespace _game.Scripts
 {
     public class TilePlacing : MonoBehaviour, IDataPersistence
     {
+        private enum ControlScheme
+        {
+            KeyboardMouse,
+            Controller
+        }
+
+        [field: Header("References")]
         [field: SerializeField, Expandable] public TileDatabaseSO TileDatabase { get; private set; }
         [SerializeField] private PlayerInput _playerInput;
         [SerializeField] private VirtualMouseInput _virtualMouseInput;
         [SerializeField] private RectTransform _virtualCursor;
         [SerializeField] private EditorUIController _editorUI;
-        [SerializeField] private LayerMask _collisionCheckRoad;
-        [SerializeField] private LayerMask _collisionCheckObject;
-        [SerializeField] private LayerMask _collisionCheckArea;
+        [SerializeField] private StudioEventEmitter _tilePlaceSound, _tileDestroySound;
+        [SerializeField] private RectTransform _rotationKey;
+        [SerializeField] private RectTransform _rotationKeyParent;
+        [SerializeField] private Transform _testCollider;
+
+        [Header("Settings")]
+        [SerializeField] private float _rotationSpeed;
         [SerializeField] private LayerMask _editorRaycast;
         [ColorUsage(true, true), SerializeField]
         private Color _collidingColor, _notCollidingColor, _editingColor;
         [SerializeField] private Material _outlineMat, _tintMat;
-        private TileController _activeTile;
-        private Layer _activeTileDefaultLayer = Layer.Default;
-        private Vector3 _cursorPosition;
-        [SerializeField] private int _selectedId;
-        [SerializeField] private SerializableDictionary<string, GameObject> _placedTiles = new SerializableDictionary<string, GameObject>();
-        [SerializeField] private StudioEventEmitter _tilePlaceSound, _tileDestroySound;
-        private bool _isColliding;
+        [SerializeField] private int[] _startTileIds, _endTileIds, _lapTileIds;
+
+        [Header("Debug")]
+        [SerializeField, ReadOnly] private SerializableDictionary<string, GameObject> _placedTiles = new SerializableDictionary<string, GameObject>();
+        [SerializeField, ReadOnly] private TileController _startTile, _endTile, _lapTile;
+        [SerializeField, ReadOnly] private TileController _activeTile;
+
+        public bool EditorViewPressed { get; set; }
         private Quaternion _rotation;
         private EditorMode _editorMode = EditorMode.Place;
-        private readonly Collider[] _overlapBuffer = new Collider[10];
         private Camera _cameraMain;
-        [SerializeField] private TileController _startTile, _endTile;
         private TileController _lastDestroyTarget, _lastEditTarget;
+        private ControlScheme _controlScheme = ControlScheme.KeyboardMouse;
+        private Vector3 _cursorPosition;
+        private Vector2 _mousePosition;
+        private float _rotateInput;
         private static readonly int BaseColor = Shader.PropertyToID("_Color");
-        public bool EditorViewPressed { get; set; }
-        [SerializeField] private Transform _testCollider;
+        //private bool _canPlace = true;
+        private bool _isMouseOverUI;
+        private bool _clickHeld;
 
         public static event Action<EditorMode> OnEditorModeChanged;
         public static event Action OnResetObstacles;
@@ -56,94 +71,74 @@ namespace _game.Scripts
         {
             HandleInput();
 
-            if (_editorMode == EditorMode.Place)
-                HandlePlaceMode();
-            if (_editorMode == EditorMode.Destroy)
-                HandleDestroyMode();
-            if (_editorMode == EditorMode.Edit)
-                HandleEditMode();
-
-            EditorViewPressed = false;
-        }
-
-        private void HandleInput()
-        {
-            _cursorPosition = _controlScheme == ControlScheme.KeyboardMouse ? _mousePosition : _virtualCursor.position;
-            _cursorPosition.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
-
-            if (_activeTile)
-                _activeTile.Rotate(_rotateInput);
-        }
-
-        private enum ControlScheme
-        {
-            KeyboardMouse,
-            Controller
-        }
-        private ControlScheme _controlScheme = ControlScheme.KeyboardMouse;
-        public void OnControlsChange(PlayerInput playerInput)
-        {
-            switch (_playerInput.currentControlScheme)
+            switch (_editorMode)
             {
-                case "Keyboard&Mouse":
-                    _controlScheme = ControlScheme.KeyboardMouse;
-                    Mouse.current.WarpCursorPosition(_virtualCursor.position);
-                    Cursor.visible = true;
-                    _virtualCursor.gameObject.SetActive(false);
+                case EditorMode.Place:
+                    HandlePlaceModeHighlight();
                     break;
-                case "Controller":
-                    _controlScheme = ControlScheme.Controller;
-                    Cursor.visible = false;
-                    _virtualCursor.gameObject.SetActive(true);
-                    InputState.Change(_virtualMouseInput.virtualMouse, Mouse.current.position.ReadValue());
+                case EditorMode.Edit:
+                    HandleEditModeHighlight();
+                    break;
+                case EditorMode.Destroy:
+                    HandleDestroyModeHighlight();
                     break;
             }
         }
 
-        public void SetPlaceMode(InputAction.CallbackContext ctx)
+        private void FixedUpdate()
         {
-            if (ctx.performed) SetEditorMode(EditorMode.Place);
-        }
+            //Handle edit modes in fixed update as they require collision info
+            if (_clickHeld)
+                switch (_editorMode)
+                {
+                    case EditorMode.Place:
+                        TilePlace();
+                        break;
+                    case EditorMode.Destroy:
+                        TileDestroy();
+                        break;
+                }
 
-        public void SetEditMode(InputAction.CallbackContext ctx)
-        {
-            if (ctx.performed) SetEditorMode(EditorMode.Edit);
-        }
-        public void SetDestroyMode(InputAction.CallbackContext ctx)
-        {
-            if (ctx.performed) SetEditorMode(EditorMode.Destroy);
-        }
-
-        public void CancelTile(InputAction.CallbackContext ctx)
-        {
-            if (!ctx.performed || !_activeTile) return;
-
-            SetEditorMode(EditorMode.Place);
-            _activeTile.Destroy();
-            SetActiveTile(null);
-        }
-
-        private Vector2 _mousePosition;
-        public void GetMousePosition(InputAction.CallbackContext ctx) { _mousePosition = ctx.ReadValue<Vector2>(); }
-
-        private void HandleEditMode()
-        {
             if (_activeTile)
             {
                 SetTileToMousePos(_activeTile);
+                //_rotationSprite.position = new Vector3(_activeTile.Position.x, 45, _activeTile.Position.z);
+            }
 
-                if (EditorViewPressed)
-                {
-                    if (_isColliding)
-                        _editorUI.DisplayWarning(0);
-                    else
-                    {
-                        _activeTile.SetActiveArrows(false);
-                        _activeTile.ChangeCollisionAndRenderLayer((int)_activeTileDefaultLayer);
-                        SetActiveTile(null);
-                        _tilePlaceSound.Play();
-                    }
-                }
+            //EditorViewPressed = false;
+        }
+
+        private void HandleInput()
+        {
+            _isMouseOverUI = EventSystem.current.IsPointerOverGameObject();
+
+            _cursorPosition = _controlScheme == ControlScheme.KeyboardMouse ? _mousePosition : _virtualCursor.position;
+            _cursorPosition.z = _cameraMain.nearClipPlane + _cameraMain.transform.position.y;
+
+            if (!_activeTile)
+            {
+                _rotationKey.gameObject.SetActive(false);
+                return;
+            }
+
+            //Smoothly rotate tile
+            _activeTile.Rotate(_rotateInput * _rotationSpeed * Time.deltaTime);
+
+            //Set rotation key binds scale to work properly with different screen sizes
+            float canvasScale = transform.parent.localScale.x;
+            _rotationKeyParent.localScale = Vector3.one * 1f / canvasScale;
+            _rotationKey.localScale = Vector3.one * canvasScale;
+
+            //Show rotation key binds and move them to tile position
+            _rotationKey.gameObject.SetActive(true);
+            _rotationKeyParent.anchoredPosition = _cameraMain.WorldToScreenPoint(_activeTile.Position);
+        }
+
+        private void HandleEditModeHighlight()
+        {
+            if (_activeTile)
+            {
+                SetHighlightMaterialColor(_activeTile.IsColliding ? _collidingColor : _editingColor);
             }
             else
             {
@@ -160,14 +155,6 @@ namespace _game.Scripts
                     }
 
                     _lastEditTarget = hitTile;
-
-                    if (EditorViewPressed)
-                    {
-                        SetActiveTile(hitTile);
-                        hitTile.ChangeCollisionAndRenderLayer((int)Layer.NoCollision);
-                        _activeTile.SetActiveArrows(true);
-                        _tileDestroySound.Play();
-                    }
                 }
                 else
                 {
@@ -178,60 +165,129 @@ namespace _game.Scripts
             }
         }
 
-        private void HandlePlaceMode()
+        private void TileEdit()
+        {
+            if (_activeTile)
+            {
+                //SetTileToMousePos(_activeTile);
+                if (_activeTile.IsColliding)
+                {
+                    _editorUI.DisplayWarning(0);
+                }
+                else
+                {
+                    _activeTile.Place();
+                    SetActiveTile(null);
+                    _tilePlaceSound.Play();
+                }
+            }
+            else if (_lastEditTarget)
+            {
+                SetActiveTile(_lastEditTarget);
+                _activeTile.PickUp();
+                _tileDestroySound.Play();
+            }
+        }
+
+        private void HandlePlaceModeHighlight()
         {
             if (!_activeTile)
                 return;
 
-            SetTileToMousePos(_activeTile);
+            SetHighlightMaterialColor(_activeTile.IsColliding ? _collidingColor : _notCollidingColor);
+        }
 
-            if (!EditorViewPressed) return;
-            if (_isColliding)
+        private void TilePlace()
+        {
+            if (!_activeTile)
+                return;
+
+            if (_activeTile.IsColliding)
             {
                 _editorUI.DisplayWarning(0);
                 return;
             }
-            _activeTile.SetActiveArrows(false);
-            _activeTile.ChangeCollisionAndRenderLayer((int)_activeTileDefaultLayer);
-            if (_selectedId == 4) //4 is StartTileId
+
+            // Ray ray = _cameraMain.ScreenPointToRay(_cursorPosition);
+            // RaycastHit[] hits = Physics.RaycastAll(ray, 1000, _editorRaycast);
+            //
+            // string hitTargets = "";
+            // foreach (RaycastHit hit in hits)
+            // {
+            //     if (!hit.transform.GetComponent<TileController>().IsSelected)
+            //     {
+            //         _canPlace = false;
+            //         hitTargets += hit.transform.name;
+            //     }
+            // }
+            // if (!string.IsNullOrEmpty(hitTargets))
+            //     print(hitTargets);
+
+            //if (!_canPlace) return;
+
+            _activeTile.Place();
+
+            if (_startTileIds.Any(startTileId => _activeTile.TileID == startTileId))
             {
                 if (_startTile)
                 {
                     DestroyImmediate(_startTile.gameObject);
                     RemoveTileFromList(_startTile.Id);
+                    _startTile = null;
+                }
+                if (_lapTile)
+                {
+                    DestroyImmediate(_lapTile.gameObject);
+                    RemoveTileFromList(_lapTile.Id);
+                    _lapTile = null;
                 }
                 _startTile = _activeTile;
             }
-            if (_selectedId == 5) //5 is EndTileId
+
+            if (_endTileIds.Any(endTileId => _activeTile.TileID == endTileId))
             {
                 if (_endTile)
                 {
                     DestroyImmediate(_endTile.gameObject);
                     RemoveTileFromList(_endTile.Id);
+                    _endTile = null;
+                }
+                if (_lapTile)
+                {
+                    DestroyImmediate(_lapTile.gameObject);
+                    RemoveTileFromList(_lapTile.Id);
+                    _lapTile = null;
                 }
                 _endTile = _activeTile;
             }
-            AddTileToList(_activeTile, _selectedId);
-            SetActiveTile(Instantiate(GetTileById(_selectedId), _cameraMain.ViewportToWorldPoint(_cursorPosition), _rotation));
-            _activeTile.ChangeCollisionAndRenderLayer((int)Layer.NoCollision);
-            _tilePlaceSound.Play();
-        }
 
-        private float _rotateInput;
-        public void Rotate(InputAction.CallbackContext ctx)
-        {
-            if (!_activeTile) return;
-            if (ctx.started)
+            if (_lapTileIds.Any(lapTileId => _activeTile.TileID == lapTileId))
             {
-                if (_activeTileDefaultLayer is Layer.Road or Layer.RoadTrigger)
-                    _activeTile.Rotate(90 * ctx.ReadValue<float>());
-                if (_activeTileDefaultLayer is Layer.Object or Layer.ObjectTrigger)
-                    _rotateInput = ctx.ReadValue<float>();
+                if (_lapTile)
+                {
+                    DestroyImmediate(_lapTile.gameObject);
+                    RemoveTileFromList(_lapTile.Id);
+                    _lapTile = null;
+                }
+                if (_startTile)
+                {
+                    DestroyImmediate(_startTile.gameObject);
+                    RemoveTileFromList(_startTile.Id);
+                    _startTile = null;
+                }
+                if (_endTile)
+                {
+                    DestroyImmediate(_endTile.gameObject);
+                    RemoveTileFromList(_endTile.Id);
+                    _endTile = null;
+                }
+                _lapTile = _activeTile;
             }
-            if (ctx.canceled)
-                _rotateInput = 0;
 
-            _rotation = _activeTile.transform.rotation;
+            AddTileToList(_activeTile);
+            SetActiveTile(InstantiateNewTile(_activeTile.TileID));
+            _activeTile.PickUp();
+            _tilePlaceSound.Play();
         }
 
         private static void RoundRotation(TileController t)
@@ -243,7 +299,7 @@ namespace _game.Scripts
             t.Rotation = Quaternion.Euler(rotation);
         }
 
-        private void HandleDestroyMode()
+        private void HandleDestroyModeHighlight()
         {
             Ray ray = _cameraMain.ScreenPointToRay(_cursorPosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 1000, _editorRaycast))
@@ -259,13 +315,6 @@ namespace _game.Scripts
                 }
 
                 _lastDestroyTarget = hitTile;
-
-                if (EditorViewPressed)
-                {
-                    RemoveTileFromList(_lastDestroyTarget.Id);
-                    _lastDestroyTarget.Destroy();
-                    _tileDestroySound.Play();
-                }
             }
             else
             {
@@ -275,44 +324,16 @@ namespace _game.Scripts
             }
         }
 
-        private TileController GetTileById(int index) { return TileDatabase.AllTiles.Find(data => data.ID == index).Prefab.GetComponent<TileController>(); }
-
-        private void FixedUpdate() { MyCollisions(); }
-
-        private void MyCollisions()
+        private void TileDestroy()
         {
-            if (!_activeTile)
-                return;
+            if (!_lastDestroyTarget) return;
 
-            Vector3 worldCenter = _activeTile.transform.TransformPoint(_activeTile.BoxCollider.center);
-            Vector3 worldHalfExtents = /*_activeTileTransform.TransformVector*/(_activeTile.BoxCollider.size * 0.45f).Abs();
-            LayerMask layerMask = GetActiveTileCollisionCheck(_activeTileDefaultLayer);
-
-            if (_testCollider)
-            {
-                _testCollider.position = worldCenter;
-                _testCollider.localScale = worldHalfExtents * 2;
-                _testCollider.rotation = _activeTile.transform.rotation;
-            }
-
-            _isColliding = Physics.OverlapBoxNonAlloc(worldCenter, worldHalfExtents, _overlapBuffer, _activeTile.transform.rotation, layerMask, QueryTriggerInteraction.Ignore) > 0;
-            if (_editorMode == EditorMode.Edit)
-                SetHighlightMaterialColor(_isColliding ? _collidingColor : _editingColor);
-            if (_editorMode == EditorMode.Place)
-                SetHighlightMaterialColor(_isColliding ? _collidingColor : _notCollidingColor);
+            RemoveTileFromList(_lastDestroyTarget.Id);
+            _lastDestroyTarget.Destroy();
+            _tileDestroySound.Play();
         }
 
-        private LayerMask GetActiveTileCollisionCheck(Layer layer)
-        {
-            return layer switch
-            {
-                Layer.Object => _collisionCheckObject,
-                Layer.ObjectTrigger => _collisionCheckObject,
-                Layer.Road => _collisionCheckRoad,
-                Layer.RoadTrigger => _collisionCheckArea,
-                _ => (int)Layer.NoCollision
-            };
-        }
+        private TileController GetTilePrefabById(int index) { return TileDatabase.AllTiles.Find(data => data.ID == index).Prefab.GetComponent<TileController>(); }
 
         private void OnDrawGizmos()
         {
@@ -354,18 +375,24 @@ namespace _game.Scripts
             if (_activeTile)
                 _activeTile.Destroy();
             if (id == -1) return;
-            SetActiveTile(Instantiate(GetTileById(id), _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10), _rotation));
-            _selectedId = id;
-            _activeTile.ChangeCollisionAndRenderLayer((int)Layer.NoCollision);
+            SetActiveTile(InstantiateNewTile(id));
+            _activeTile.ChangeRenderLayer((int)Layer.PickedUpRender);
+        }
+
+        private TileController InstantiateNewTile(int tileId)
+        {
+            TileController newTile = Instantiate(GetTilePrefabById(tileId), _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10), _rotation);
+            SetTileToMousePos(newTile);
+            newTile.TileID = tileId;
+            return newTile;
         }
 
         private void SetActiveTile(TileController value)
         {
-            _activeTile = value;
-
-            if (_activeTile)
+            if (value != null)
             {
-                _activeTileDefaultLayer = (Layer)_activeTile.gameObject.layer;
+                _activeTile = value;
+                _activeTile.IsSelected = true;
                 RoundRotation(_activeTile);
             }
             else
@@ -374,13 +401,10 @@ namespace _game.Scripts
             }
         }
 
-        private void AddTileToList(TileController value, int tileId)
+        private void AddTileToList(TileController value)
         {
             string newId = Guid.NewGuid().ToString();
-
             value.Id = newId;
-            value.TileID = tileId;
-
             _placedTiles[newId] = value.gameObject;
         }
 
@@ -398,35 +422,134 @@ namespace _game.Scripts
 
         private void SetTileToMousePos(TileController tile)
         {
-            tile.Position = _activeTileDefaultLayer switch
-            {
-                Layer.Object => _cameraMain.ScreenToWorldPoint(_cursorPosition).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                Layer.ObjectTrigger => _cameraMain.ScreenToWorldPoint(_cursorPosition).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                Layer.RoadTrigger => _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
-                Layer.Road => _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10),
-                _ => tile.Position
-            };
+            if (_activeTile)
+                tile.Rb.MovePosition(_activeTile.gameObject.layer switch
+                {
+                    (int)Layer.Object => _cameraMain.ScreenToWorldPoint(_cursorPosition).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                    (int)Layer.ObjectTrigger => _cameraMain.ScreenToWorldPoint(_cursorPosition).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                    (int)Layer.RoadTrigger => _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10).MultiplyBy(new Vector3(1, 0, 1)) + Vector3.up,
+                    (int)Layer.Road => _cameraMain.ScreenToWorldPoint(_cursorPosition).RoundToMultiple(10),
+                    _ => tile.Position
+                });
         }
 
-        public bool CanStart() => _startTile && _endTile;
+        public bool CanStart() => (_startTile && _endTile) || _lapTile;
 
         private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
         private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
 
         public void ResetObstacles() { OnResetObstacles?.Invoke(); }
 
+        public void OnControlsChange(PlayerInput playerInput)
+        {
+            switch (_playerInput.currentControlScheme)
+            {
+                case "Keyboard&Mouse":
+                    _controlScheme = ControlScheme.KeyboardMouse;
+                    Mouse.current.WarpCursorPosition(_virtualCursor.position);
+                    Cursor.visible = true;
+                    _virtualCursor.gameObject.SetActive(false);
+                    break;
+                case "Controller":
+                    _controlScheme = ControlScheme.Controller;
+                    Cursor.visible = false;
+                    _virtualCursor.gameObject.SetActive(true);
+                    InputState.Change(_virtualMouseInput.virtualMouse, Mouse.current.position.ReadValue());
+                    break;
+            }
+        }
+
+        public void Rotate(InputAction.CallbackContext ctx)
+        {
+            if (!_activeTile) return;
+            if (ctx.started)
+            {
+                if (_activeTile.gameObject.layer is (int)Layer.Road or (int)Layer.RoadTrigger)
+                    _activeTile.Rotate(90 * ctx.ReadValue<float>());
+                if (_activeTile.gameObject.layer is (int)Layer.Object or (int)Layer.ObjectTrigger)
+                    _rotateInput = ctx.ReadValue<float>();
+            }
+            if (ctx.canceled)
+                _rotateInput = 0;
+
+            _rotation = _activeTile.transform.rotation;
+        }
+
+        public void SetPlaceMode(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) SetEditorMode(EditorMode.Place);
+        }
+
+        public void SetEditMode(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) SetEditorMode(EditorMode.Edit);
+        }
+        public void SetDestroyMode(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) SetEditorMode(EditorMode.Destroy);
+        }
+
+        public void GetMousePosition(InputAction.CallbackContext ctx) { _mousePosition = ctx.ReadValue<Vector2>(); }
+
+        public void CancelTile(InputAction.CallbackContext ctx)
+        {
+            if (!ctx.performed || !_activeTile) return;
+
+            SetEditorMode(EditorMode.Place);
+            _activeTile.Destroy();
+            SetActiveTile(null);
+        }
+
+        public void LeftClick(InputAction.CallbackContext ctx)
+        {
+            if (ctx.started && !_isMouseOverUI)
+            {
+                print("Started LeftClick");
+                switch (_editorMode)
+                {
+                    case EditorMode.Place:
+                        TilePlace();
+                        break;
+                    case EditorMode.Edit:
+                        TileEdit();
+                        break;
+                    case EditorMode.Destroy:
+                        TileDestroy();
+                        break;
+                }
+            }
+            if (ctx.performed && !_isMouseOverUI)
+            {
+                print("Holding LeftClick");
+                _clickHeld = true;
+            }
+            if (ctx.canceled)
+            {
+                print("Cancelled LeftClick");
+                if (_clickHeld && _editorMode == EditorMode.Edit)
+                    TileEdit();
+                _clickHeld = false;
+            }
+        }
+
         public void LoadLevel(LevelData data)
         {
             foreach (TileData tileData in data.TileMap)
             {
-                TileController newTile = Instantiate(GetTileById(tileData.ID), tileData.Position, tileData.Rotation).GetComponent<TileController>();
-                AddTileToList(newTile, tileData.ID);
+                TileController newTile = Instantiate(GetTilePrefabById(tileData.ID), tileData.Position, tileData.Rotation).GetComponent<TileController>();
+                newTile.TileID = tileData.ID;
+                AddTileToList(newTile);
 
                 newTile.SetActiveArrows(false);
-                if (tileData.ID == 4) //4 is StartTileId
+
+                if (_startTileIds.Any(startTileId => tileData.ID == startTileId))
                     _startTile = newTile;
-                else if (tileData.ID == 5) //5 is EndTileId
+
+                if (_endTileIds.Any(endTileId => tileData.ID == endTileId))
                     _endTile = newTile;
+                
+                if (_lapTileIds.Any(lapTileId => tileData.ID == lapTileId))
+                    _lapTile = newTile;
             }
         }
 
@@ -439,6 +562,31 @@ namespace _game.Scripts
             }
             data.TileMap = newTileMap;
         }
+
+        // private void SetCollisionMaterialColor()
+        // {
+        //     if (!_activeTile)
+        //         return;
+        //
+        //     // Vector3 worldCenter = _activeTile.transform.TransformPoint(_activeTile.BoxCollider.center);
+        //     // Vector3 worldHalfExtents = /*_activeTileTransform.TransformVector*/(_activeTile.BoxCollider.size * 0.45f).Abs();
+        //     // LayerMask layerMask = GetActiveTileCollisionCheck(_activeTileDefaultLayer);
+        //     //
+        //     // if (_testCollider)
+        //     // {
+        //     //     _testCollider.position = worldCenter;
+        //     //     _testCollider.localScale = worldHalfExtents * 2;
+        //     //     _testCollider.rotation = _activeTile.transform.rotation;
+        //     // }
+        //
+        //     //_isColliding = Physics.OverlapBoxNonAlloc(worldCenter, worldHalfExtents, _overlapBuffer, _activeTile.transform.rotation, layerMask, QueryTriggerInteraction.Ignore) > 0;
+        //     //_isColliding = _activeTile.IsColliding;
+        //
+        //     if (_editorMode == EditorMode.Edit)
+        //         SetHighlightMaterialColor(_activeTile.IsColliding ? _collidingColor : _editingColor);
+        //     if (_editorMode == EditorMode.Place)
+        //         SetHighlightMaterialColor(_activeTile.IsColliding ? _collidingColor : _notCollidingColor);
+        // }
     }
 
     [Serializable]
@@ -474,6 +622,7 @@ namespace _game.Scripts
         RoadTrigger = 9,
         ObjectTrigger = 10,
         NormalRender = 11,
-        PickedUpRender = 12
+        PickedUpRender = 12,
+        Tile = 13
     }
 }

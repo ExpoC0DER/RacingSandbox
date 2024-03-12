@@ -1,33 +1,37 @@
 using Cinemachine;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace _game.Scripts
 {
-    public class CameraControlls : MonoBehaviour
+    public class CameraControls : MonoBehaviour
     {
         [FormerlySerializedAs("_sensitivity")]
+        [SerializeField, MinMaxSlider(0, 1000)]
+        private Vector2 _zoomMinMax;
         [SerializeField] private float _mouseSensitivity = 1f;
         [SerializeField] private float _scrollSensitivity = 1f;
         [SerializeField] private float _keyboardSensitivity = 1f;
-        private CinemachineVirtualCamera _editorCam;
-
-        private void Awake() { _editorCam = GetComponent<CinemachineVirtualCamera>(); }
 
         private void Update()
         {
             if (GameManager.GameState != GameState.Editing) return;
-            
+
+            Vector3 newPosition = transform.position;
+
             if (_mouseCameraMoving)
             {
-                transform.position -= Time.deltaTime * _mouseSensitivity * new Vector3(_mouseDelta.x, 0, _mouseDelta.y);
+                newPosition -= Time.unscaledDeltaTime * _mouseSensitivity * new Vector3(_mouseDelta.x, 0, _mouseDelta.y);
             }
 
-            Vector2 keyboardInput = _cameraMoveDelta * _keyboardSensitivity;
+            Vector2 keyboardInput = _cameraMoveDelta * (_keyboardSensitivity * newPosition.y);
             float scrollInput = _zoomDelta * _scrollSensitivity;
-            
-            transform.position += new Vector3(keyboardInput.x, scrollInput, keyboardInput.y) * Time.unscaledDeltaTime;
+
+            newPosition += new Vector3(keyboardInput.x, scrollInput, keyboardInput.y) * Time.unscaledDeltaTime;
+            newPosition.y = Mathf.Clamp(newPosition.y, _zoomMinMax.x, _zoomMinMax.y);
+            transform.position = newPosition;
         }
 
         private Vector2 _mouseDelta;

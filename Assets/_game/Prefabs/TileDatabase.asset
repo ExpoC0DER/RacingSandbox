@@ -190,16 +190,21 @@ MonoBehaviour:
     <ID>k__BackingField: 7
     <Prefab>k__BackingField: {fileID: 3200110364214618664, guid: 76ff4a70b476264488cfc262667d8a99, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: 397c1283f1b37424a8931848d986df00, type: 3}
-  - <Name>k__BackingField: Start
+  - <Name>k__BackingField: Start2
     _errorMessage: 
     <ID>k__BackingField: 55
     <Prefab>k__BackingField: {fileID: 2403047715860921947, guid: 4c14f15f018f5fc40afcaec05c4c0b65, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: ffa0f179eeaf40b418f7a39c92828584, type: 3}
-  - <Name>k__BackingField: End
+  - <Name>k__BackingField: End2
     _errorMessage: 
     <ID>k__BackingField: 56
     <Prefab>k__BackingField: {fileID: 2403047715860921947, guid: 15a47db47229e9d468d274d1553de6c1, type: 3}
     <Sprite>k__BackingField: {fileID: 21300000, guid: 2810fea7aece2bd45b593510eba88146, type: 3}
+  - <Name>k__BackingField: Lap
+    _errorMessage: 
+    <ID>k__BackingField: 68
+    <Prefab>k__BackingField: {fileID: 2403047715860921947, guid: 17abe4242b327504c9f59a4c3a0b4a52, type: 3}
+    <Sprite>k__BackingField: {fileID: 0}
   <Obstacles>k__BackingField:
   - <Name>k__BackingField: SpeedBoost
     _errorMessage: 
