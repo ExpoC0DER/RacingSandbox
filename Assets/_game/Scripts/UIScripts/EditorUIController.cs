@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace _game.Scripts.UIScripts
         [SerializeField] private GameObject _settingsMenu;
         [SerializeField] private StudioEventEmitter _errorSound, _clickSound;
         [SerializeField] private GameObject _grid;
+        [SerializeField] private LinkedList<GameObject> _popupWindows = new LinkedList<GameObject>();
 
         private void Start() { _editorCanvas = GetComponent<Canvas>(); }
 
@@ -26,13 +28,26 @@ namespace _game.Scripts.UIScripts
             _editorCanvas.enabled = value;
         }
 
-
         public void DisplayWarning(int id)
         {
             _errorSound.Play();
             _warnings[id].DOKill();
             _warnings[id].alpha = 1;
             _warnings[id].DOFade(0, 2f);
+        }
+
+        public void OpenPopupWindow(GameObject window)
+        {
+            _popupWindows.Last?.Value.SetActive(false);
+            _popupWindows.AddLast(window);
+            window.SetActive(true);
+        }
+
+        public void ClosePopupWindow()
+        {
+            _popupWindows.Last?.Value.SetActive(false);
+            _popupWindows.RemoveLast();
+            _popupWindows.Last?.Value.SetActive(true);
         }
 
         public void HideTileMenu(bool value)
@@ -66,7 +81,10 @@ namespace _game.Scripts.UIScripts
         public void OpenSetting(InputAction.CallbackContext ctx)
         {
             if (ctx.performed)
-                _settingsMenu.SetActive(!_settingsMenu.activeSelf);
+                if (_popupWindows.Count > 0)
+                    ClosePopupWindow();
+                else
+                    OpenPopupWindow(_settingsMenu);
         }
     }
 }
