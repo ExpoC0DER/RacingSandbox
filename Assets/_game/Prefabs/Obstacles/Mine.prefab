@@ -146,7 +146,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 
   <TileID>k__BackingField: 0
-  <IsColliding>k__BackingField: 0
+  _isColliding: 0
+  _canBePlaced: 0
   <IsSelected>k__BackingField: 0
   _arrows: []
   _onRotate:
