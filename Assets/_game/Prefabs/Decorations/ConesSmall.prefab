@@ -74,9 +74,6 @@ MonoBehaviour:
   <Id>k__BackingField: 
   <TileID>k__BackingField: 0
   _arrows: []
-  _onRotate:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &2385545862755291164
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,11 +308,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
       propertyPath: m_LocalRotation.y
@@ -327,7 +324,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y

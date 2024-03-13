@@ -158,9 +158,6 @@ MonoBehaviour:
   <TileID>k__BackingField: 0
   _arrows:
   - {fileID: 2501658487421283221}
-  _onRotate:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!65 &3581117717245545507
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -200,15 +197,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
       propertyPath: m_LocalScale.x
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
       propertyPath: m_LocalScale.y
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
       propertyPath: m_LocalScale.z
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 54ba903e817459a4283252cab46e24a6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -289,10 +286,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startAutomatically: 1
-  _useRigidbody: 0
   _tweenType: 2
   _rotation: {x: 0, y: 0, z: 0}
-  _rotationOffset: {fileID: 0}
   _endValue: 10
   _duration: 0.3
   _ease: 0
