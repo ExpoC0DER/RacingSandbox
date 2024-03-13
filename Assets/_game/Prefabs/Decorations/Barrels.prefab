@@ -74,9 +74,6 @@ MonoBehaviour:
   <Id>k__BackingField: 
   <TileID>k__BackingField: 0
   _arrows: []
-  _onRotate:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &2152345216237175764
 GameObject:
   m_ObjectHideFlags: 0
