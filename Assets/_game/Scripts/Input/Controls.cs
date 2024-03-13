@@ -53,6 +53,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenEndScreen"",
+                    ""type"": ""Button"",
+                    ""id"": ""b039e320-df77-481b-9ce5-88a0c0f9f790"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -141,6 +150,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Brake"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f6c0d939-2716-408d-8ff2-d220ac173a2b"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenEndScreen"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -806,6 +826,24 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenSettings"",
+                    ""type"": ""Button"",
+                    ""id"": ""c59229a3-6491-407f-b87c-1cfd3976d9ca"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""0bf2edab-8cec-4e1c-96e5-d28cc197572e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1127,6 +1165,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""86a58ff1-618f-4e67-8474-179a7dfb329d"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenSettings"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ea05ea3-efef-4fc3-886c-34164f716563"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""LeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1171,6 +1231,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_RestartCheckpoint = m_Player.FindAction("RestartCheckpoint", throwIfNotFound: true);
         m_Player_Brake = m_Player.FindAction("Brake", throwIfNotFound: true);
+        m_Player_OpenEndScreen = m_Player.FindAction("OpenEndScreen", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1197,6 +1258,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Editor_CameraMoveMouse = m_Editor.FindAction("CameraMoveMouse", throwIfNotFound: true);
         m_Editor_Zoom = m_Editor.FindAction("Zoom", throwIfNotFound: true);
         m_Editor_CameraMove = m_Editor.FindAction("CameraMove", throwIfNotFound: true);
+        m_Editor_OpenSettings = m_Editor.FindAction("OpenSettings", throwIfNotFound: true);
+        m_Editor_LeftClick = m_Editor.FindAction("LeftClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1261,6 +1324,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_RestartCheckpoint;
     private readonly InputAction m_Player_Brake;
+    private readonly InputAction m_Player_OpenEndScreen;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -1268,6 +1332,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @RestartCheckpoint => m_Wrapper.m_Player_RestartCheckpoint;
         public InputAction @Brake => m_Wrapper.m_Player_Brake;
+        public InputAction @OpenEndScreen => m_Wrapper.m_Player_OpenEndScreen;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1286,6 +1351,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Brake.started += instance.OnBrake;
             @Brake.performed += instance.OnBrake;
             @Brake.canceled += instance.OnBrake;
+            @OpenEndScreen.started += instance.OnOpenEndScreen;
+            @OpenEndScreen.performed += instance.OnOpenEndScreen;
+            @OpenEndScreen.canceled += instance.OnOpenEndScreen;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1299,6 +1367,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Brake.started -= instance.OnBrake;
             @Brake.performed -= instance.OnBrake;
             @Brake.canceled -= instance.OnBrake;
+            @OpenEndScreen.started -= instance.OnOpenEndScreen;
+            @OpenEndScreen.performed -= instance.OnOpenEndScreen;
+            @OpenEndScreen.canceled -= instance.OnOpenEndScreen;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1450,6 +1521,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Editor_CameraMoveMouse;
     private readonly InputAction m_Editor_Zoom;
     private readonly InputAction m_Editor_CameraMove;
+    private readonly InputAction m_Editor_OpenSettings;
+    private readonly InputAction m_Editor_LeftClick;
     public struct EditorActions
     {
         private @Controls m_Wrapper;
@@ -1466,6 +1539,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @CameraMoveMouse => m_Wrapper.m_Editor_CameraMoveMouse;
         public InputAction @Zoom => m_Wrapper.m_Editor_Zoom;
         public InputAction @CameraMove => m_Wrapper.m_Editor_CameraMove;
+        public InputAction @OpenSettings => m_Wrapper.m_Editor_OpenSettings;
+        public InputAction @LeftClick => m_Wrapper.m_Editor_LeftClick;
         public InputActionMap Get() { return m_Wrapper.m_Editor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1511,6 +1586,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CameraMove.started += instance.OnCameraMove;
             @CameraMove.performed += instance.OnCameraMove;
             @CameraMove.canceled += instance.OnCameraMove;
+            @OpenSettings.started += instance.OnOpenSettings;
+            @OpenSettings.performed += instance.OnOpenSettings;
+            @OpenSettings.canceled += instance.OnOpenSettings;
+            @LeftClick.started += instance.OnLeftClick;
+            @LeftClick.performed += instance.OnLeftClick;
+            @LeftClick.canceled += instance.OnLeftClick;
         }
 
         private void UnregisterCallbacks(IEditorActions instance)
@@ -1551,6 +1632,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @CameraMove.started -= instance.OnCameraMove;
             @CameraMove.performed -= instance.OnCameraMove;
             @CameraMove.canceled -= instance.OnCameraMove;
+            @OpenSettings.started -= instance.OnOpenSettings;
+            @OpenSettings.performed -= instance.OnOpenSettings;
+            @OpenSettings.canceled -= instance.OnOpenSettings;
+            @LeftClick.started -= instance.OnLeftClick;
+            @LeftClick.performed -= instance.OnLeftClick;
+            @LeftClick.canceled -= instance.OnLeftClick;
         }
 
         public void RemoveCallbacks(IEditorActions instance)
@@ -1591,6 +1678,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnRestartCheckpoint(InputAction.CallbackContext context);
         void OnBrake(InputAction.CallbackContext context);
+        void OnOpenEndScreen(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
@@ -1619,5 +1707,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnCameraMoveMouse(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnCameraMove(InputAction.CallbackContext context);
+        void OnOpenSettings(InputAction.CallbackContext context);
+        void OnLeftClick(InputAction.CallbackContext context);
     }
 }

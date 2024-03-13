@@ -13,6 +13,7 @@ namespace _game.Scripts.Turret
         [SerializeField] private Rigidbody _bullet;
         [SerializeField, MinValue(0.5f)] private float _shootDelay;
         [SerializeField] private float _bulletForce;
+        [SerializeField] private ParticleSystem _waterParticles;
         private Transform _car;
         private SphereCollider _detectionRadius;
 
@@ -20,9 +21,17 @@ namespace _game.Scripts.Turret
 
         private void FixedUpdate()
         {
-            if (!_car) return;
-
-            _cannon.LookAt(_car);
+            if (!_car)
+            {
+                if (_waterParticles.isPlaying)
+                    _waterParticles.Stop();
+            }
+            else
+            {
+                _cannon.LookAt(_car);
+                if (!_waterParticles.isPlaying)
+                    _waterParticles.Play();
+            }
         }
 
         private void OnTriggerEnter(Collider other)

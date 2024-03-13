@@ -7,14 +7,9 @@ namespace _game.Prefabs
 {
     public class Mine : MonoBehaviour
     {
-        [SerializeField, ValidateInput("CallbackTest","Waning")] private float _strength;
+        [SerializeField] private float _strength;
         [SerializeField] private GameObject _model;
         private Collider _collider;
-
-        private bool CallbackTest(float value)
-        {
-            return value > 50;
-        }
 
         private void Awake()
         {

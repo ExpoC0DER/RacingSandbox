@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 862939618534722053}
   - component: {fileID: 537250334262992939}
   - component: {fileID: -6805646807215035603}
+  - component: {fileID: 1374340848417908810}
   m_Layer: 7
   m_Name: TestBasic4x4
   m_TagString: Tile
@@ -49,11 +50,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 40, y: 2, z: 40}
+  m_Size: {x: 39, y: 2, z: 39}
   m_Center: {x: 5, y: 0, z: 5}
 --- !u!114 &-6805646807215035603
 MonoBehaviour:
@@ -67,9 +68,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ef592132a645344ac7f507359e265f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 
+  <TileID>k__BackingField: 0
+  <IsColliding>k__BackingField: 0
+  <IsSelected>k__BackingField: 0
   _arrows: []
-  _overlays: []
-  _time: 0.5
+  _onRotate:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!54 &1374340848417908810
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2403047715860921947}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &3306950196508500669
 GameObject:
   m_ObjectHideFlags: 0

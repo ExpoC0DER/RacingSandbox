@@ -3,22 +3,29 @@ using TMPro;
 using UnityEngine;
 using FMOD;
 using FMODUnity;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace _game.Scripts.UIScripts
 {
     public class EditorUIController : MonoBehaviour
     {
-        [SerializeField] private Transform[] _toggles;
         private Canvas _editorCanvas;
         [SerializeField] private TMP_Text[] _warnings;
         [SerializeField] private TilePlacing _tilePlacing;
         [SerializeField] private RectTransform _tileMenu, _tileMenuHideArrow;
+        [SerializeField] private GameObject _settingsMenu;
         [SerializeField] private StudioEventEmitter _errorSound, _clickSound;
+        [SerializeField] private GameObject _grid;
 
         private void Start() { _editorCanvas = GetComponent<Canvas>(); }
 
-        public void EditorEnabled(bool value) => _editorCanvas.enabled = value;
+        public void EditorEnabled(bool value)
+        {
+            _grid.SetActive(value);
+            _editorCanvas.enabled = value;
+        }
+
 
         public void DisplayWarning(int id)
         {
@@ -41,19 +48,6 @@ namespace _game.Scripts.UIScripts
                 _tileMenuHideArrow.DORotate(new(0, 0, -180), 0.5f);
             }
         }
-        
-        public void PunchButtonBasic(bool value) { PunchToggle(value, _toggles[0]); }
-
-        public void PunchButtonControl(bool value) { PunchToggle(value, _toggles[1]); }
-
-        public void PunchButtonObstacles(bool value) { PunchToggle(value, _toggles[2]); }
-
-        private static void PunchToggle(bool value, Transform toggle)
-        {
-            toggle.DOKill(true);
-            if (value)
-                toggle.DOPunchScale(new(0f, 0.2f, 0f), 0.5f);
-        }
 
         public void OnPressPlay()
         {
@@ -68,5 +62,11 @@ namespace _game.Scripts.UIScripts
 
         public void GoToMenu() { SceneManager.LoadScene("Main Menu"); }
         public void ExitToDesktop() { Application.Quit(69); }
+
+        public void OpenSetting(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed)
+                _settingsMenu.SetActive(!_settingsMenu.activeSelf);
+        }
     }
 }

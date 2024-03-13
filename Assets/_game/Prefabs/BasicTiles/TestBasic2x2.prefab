@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 862939618534722053}
   - component: {fileID: 7639117714525377927}
   - component: {fileID: 6722516931722272194}
-  m_Layer: 7
+  m_Layer: 13
   m_Name: TestBasic2x2
   m_TagString: Tile
   m_Icon: {fileID: 0}
@@ -67,9 +67,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ef592132a645344ac7f507359e265f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 
+  <TileID>k__BackingField: 0
+  <IsColliding>k__BackingField: 0
+  <IsSelected>k__BackingField: 0
   _arrows: []
-  _overlays: []
-  _time: 0.5
+  _onRotate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5049465182402481995
 GameObject:
   m_ObjectHideFlags: 0
