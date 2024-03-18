@@ -39,6 +39,7 @@ namespace _game.Scripts.UIScripts
             if (value)
             {
                 TilePlacing.CreateTileById(TileId);
+                transform.SetAsFirstSibling();
             }
             if (_wasOn && !value)
                 TilePlacing.CreateTileById(-1);

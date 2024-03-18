@@ -18,7 +18,7 @@ namespace _game.Scripts.UIScripts
         [SerializeField] private GameObject _settingsMenu;
         [SerializeField] private StudioEventEmitter _errorSound, _clickSound;
         [SerializeField] private GameObject _grid;
-        [SerializeField] private LinkedList<GameObject> _popupWindows = new LinkedList<GameObject>();
+        private LinkedList<GameObject> _popupWindows = new LinkedList<GameObject>();
 
         private void Start() { _editorCanvas = GetComponent<Canvas>(); }
 
