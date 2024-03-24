@@ -5,11 +5,7 @@ using _game.Scripts.HelperScripts;
 using Cinemachine;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using NaughtyAttributes;
-using Unity.VisualScripting;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 namespace _game.Scripts
 {
@@ -48,7 +44,7 @@ namespace _game.Scripts
 
         private float _moveInput, _steerInput;
         private Rigidbody _rb;
-        [SerializeField] private TMP_Text _speedMeter, _lapCounterText;
+        [SerializeField] private TMP_Text _speedMeter;
 
         private CarTransform _restartPosition, _checkpointPosition;
         private bool _isPlaying, _isResetting, _isBreaking;
@@ -60,6 +56,7 @@ namespace _game.Scripts
         public static event Action<bool> SetTimerActive;
         public static event Action<CarController2> ShowEndScreen;
         public static event Action<int, float, Action> StartCountdown;
+        public static event Action<int> LapPassed;
         //private CarLights carLights;
 
         private void Start()
@@ -73,8 +70,6 @@ namespace _game.Scripts
             _countdownDelay = Camera.main!.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time;
 
             _speedMeter = GameObject.Find("Speed").GetComponent<TMP_Text>();
-            _lapCounterText = GameObject.Find("LapCounter").GetComponent<TMP_Text>();
-            _lapCounterText.text = "LAP: 0";
 
             if (_isTesting)
             {
@@ -268,6 +263,7 @@ namespace _game.Scripts
             _isPlaying = false;
             Reset(_restartPosition);
             StartCountdown?.Invoke(3, 0f, StartPlaying);
+            LapPassed?.Invoke(0);
         }
 
         //Enable playingF
@@ -306,7 +302,7 @@ namespace _game.Scripts
             if (other.CompareTag("Lap"))
             {
                 _lapCounter++;
-                _lapCounterText.text = $"LAP: {_lapCounter} {(_lapCounter == 3 ? "(LAST)" : string.Empty)}";
+                LapPassed?.Invoke(_lapCounter);
                 if (_lapCounter > 3)
                 {
                     _isPlaying = false;
@@ -314,7 +310,6 @@ namespace _game.Scripts
                     {
                         wheel.wheelCollider.brakeTorque = float.MaxValue;
                     }
-                    _lapCounterText.text = string.Empty;
                     SetTimerActive?.Invoke(false);
                     ShowEndScreen?.Invoke(this);
                 }

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _game.Scripts
 {
@@ -14,6 +15,7 @@ namespace _game.Scripts
             set
             {
                 gameState = value;
+                Cursor.visible = gameState != GameState.Playing; 
                 OnGameStateChanged?.Invoke(value);
             }
         }

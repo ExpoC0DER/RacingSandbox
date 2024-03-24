@@ -63,6 +63,8 @@ namespace _game.Scripts
         private bool _clickHeld;
         private RaycastHit[] _eyeDropperHits = new RaycastHit[5];
 
+        public bool IsLapping { get { return _lapTile; } }
+
         public static event Action<EditorMode> OnEditorModeChanged;
         public static event Action OnResetObstacles;
 

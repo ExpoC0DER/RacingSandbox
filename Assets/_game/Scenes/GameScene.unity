@@ -8197,6 +8197,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0bf2edab-8cec-4e1c-96e5-d28cc197572e
     m_ActionName: 'Editor/LeftClick[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1232624448}
+        m_TargetAssemblyTypeName: _game.Scripts.TilePlacing, Assembly-CSharp
+        m_MethodName: UseEyedropper
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: a3e65dd7-4e01-4625-a6d5-9f614cd42684
+    m_ActionName: 'Editor/EyeDropper[/Mouse/middleButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Editor
@@ -10492,6 +10508,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1428803775}
   - component: {fileID: 1428803777}
+  - component: {fileID: 1428803779}
   - component: {fileID: 1428803776}
   m_Layer: 5
   m_Name: LapCounter
@@ -10539,7 +10556,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'LAP: 0'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cee277c77bd587f498e83464bbf39f39, type: 2}
   m_sharedMaterial: {fileID: 6361152948437325933, guid: cee277c77bd587f498e83464bbf39f39, type: 2}
@@ -10616,6 +10633,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1428803774}
   m_CullTransparentMesh: 1
+--- !u!114 &1428803779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428803774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4aec308c0c333a42b16d38e81f20285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tilePlacing: {fileID: 1232624448}
+  _lapText: {fileID: 1428803776}
 --- !u!1 &1433289334
 GameObject:
   m_ObjectHideFlags: 0
