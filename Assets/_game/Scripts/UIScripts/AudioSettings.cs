@@ -19,6 +19,14 @@ namespace _game.Scripts
         [SerializeField] private Slider _musicVolumeSlider;
         [SerializeField] private Slider _sfxVolumeSlider;
 
+        private void Start()
+        {
+            _music = FMODUnity.RuntimeManager.GetBus("bus:/Music");
+            _sfx = FMODUnity.RuntimeManager.GetBus("bus:/SFX");
+            _master = FMODUnity.RuntimeManager.GetBus("bus:/");
+            LoadSettings();
+            print("pipik");
+        }
 
         private void Awake()
         {
@@ -51,7 +59,7 @@ namespace _game.Scripts
             PlayerPrefs.Save();
         }
 
-        public void LoadSettings()
+        private void LoadSettings()
         {
             _masterVolume = PlayerPrefs.GetFloat("MasterVolume", _masterVolume);
             _musicVolume = PlayerPrefs.GetFloat("MusicVolume", _musicVolume);
