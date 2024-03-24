@@ -17,6 +17,9 @@ public class AudioSettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _masterVolumeText;
     [SerializeField] private TextMeshProUGUI _musicVolumeText;
     [SerializeField] private TextMeshProUGUI _sfxVolumeText;
+    [SerializeField] private Slider _masterVolumeSlider;
+    [SerializeField] private Slider _musicVolumeSlider;
+    [SerializeField] private Slider _sfxVolumeSlider;
 
     
     private void Awake()
@@ -24,6 +27,7 @@ public class AudioSettings : MonoBehaviour
         _music = FMODUnity.RuntimeManager.GetBus("bus:/Music");
         _sfx = FMODUnity.RuntimeManager.GetBus("bus:/SFX");
         _master = FMODUnity.RuntimeManager.GetBus("bus:/");
+        LoadSettings();
     }
 
     private void Update()
@@ -47,5 +51,22 @@ public class AudioSettings : MonoBehaviour
         _sfxVolume = _newSFXVolume;
     }
 
-    
+    public void SaveSettings()
+    {
+        PlayerPrefs.SetFloat("MasterVolume", _masterVolume);
+        PlayerPrefs.SetFloat("MusicVolume", _musicVolume);
+        PlayerPrefs.SetFloat("SFXVolume", _sfxVolume);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadSettings()
+    {
+        _masterVolume = PlayerPrefs.GetFloat("MasterVolume", _masterVolume);
+        _musicVolume = PlayerPrefs.GetFloat("MusicVolume", _musicVolume);
+        _sfxVolume = PlayerPrefs.GetFloat("SFXVolume", _sfxVolume);
+
+        _masterVolumeSlider.value = _masterVolume;
+        _musicVolumeSlider.value = _musicVolume;
+        _sfxVolumeSlider.value = _sfxVolume;
+    }
 }
