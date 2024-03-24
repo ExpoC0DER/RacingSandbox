@@ -76,7 +76,10 @@ namespace _game.Scripts
         private void OnTriggerEnter(Collider other)
         {
             if (IsSelected)
+            {
                 _isColliding = true;
+                print(other.name);
+            }
         }
 
         private void OnTriggerStay(Collider other)

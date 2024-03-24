@@ -71,7 +71,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Id>k__BackingField: 
   <TileID>k__BackingField: 0
-  <IsColliding>k__BackingField: 0
+  _isColliding: 0
+  _canBePlaced: 0
   <IsSelected>k__BackingField: 0
   _arrows: []
   _onRotate:
@@ -220,6 +221,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: e54f4520045e5654d85d2541707e9aeb, type: 3}
       propertyPath: m_Name
       value: tiresBig4
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e54f4520045e5654d85d2541707e9aeb, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

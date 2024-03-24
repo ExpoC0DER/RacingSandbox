@@ -20,6 +20,8 @@ namespace _game.Scripts.UIScripts
         [SerializeField] private GameObject _grid;
         private LinkedList<GameObject> _popupWindows = new LinkedList<GameObject>();
 
+        public bool PopupOpen { get { return _popupWindows.Count > 0; } }
+
         private void Start() { _editorCanvas = GetComponent<Canvas>(); }
 
         public void EditorEnabled(bool value)
@@ -69,7 +71,7 @@ namespace _game.Scripts.UIScripts
             if (_tilePlacing.CanStart())
             {
                 _clickSound.Play();
-                GameManager.GameState = 0;
+                GameManager.GameState = GameState.Playing;
             }
             else
                 DisplayWarning(1);

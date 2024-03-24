@@ -822,6 +822,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "EyeDropper",
+                    "type": "Button",
+                    "id": "a3e65dd7-4e01-4625-a6d5-9f614cd42684",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1163,6 +1172,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "LeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1ba9fed-b101-4d3f-aaf5-111da3253b35",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "EyeDropper",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

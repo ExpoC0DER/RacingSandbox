@@ -12618,6 +12618,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4319651650072658259}
+  - component: {fileID: 2297379009532786994}
   m_Layer: 5
   m_Name: Audio Options Menu GameObject
   m_TagString: Untagged
@@ -12648,6 +12649,27 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1245, y: 750}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2297379009532786994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8487495630062900792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e86006d208cbf224cab3e023fe36680a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _musicVolume: 0.5
+  _sfxVolume: 0.5
+  _masterVolume: 1
+  _masterVolumeText: {fileID: 2301233557500181906}
+  _musicVolumeText: {fileID: 8865274431159791526}
+  _sfxVolumeText: {fileID: 3010222755981122599}
+  _masterVolumeSlider: {fileID: 7515684540440139453}
+  _musicVolumeSlider: {fileID: 1033258655589134803}
+  _sfxVolumeSlider: {fileID: 3031737387517322805}
 --- !u!1 &8577068178376064675
 GameObject:
   m_ObjectHideFlags: 0

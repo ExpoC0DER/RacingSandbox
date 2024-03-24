@@ -20,10 +20,10 @@ TagManager:
   - Water
   - UI
   - NoCollision
-  - Road
-  - Object
-  - RoadTrigger
-  - ObjectTrigger
+  - GridSnapLow
+  - FreePlace
+  - GridSnapHigh
+  - 
   - NormalRender
   - PickedUpRender
   - Tile

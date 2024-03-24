@@ -2111,6 +2111,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 585439989}
   m_CullTransparentMesh: 1
+--- !u!114 &643534791 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3031737387517322805, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+  m_PrefabInstance: {fileID: 2192557254068565782}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &654995845
 GameObject:
   m_ObjectHideFlags: 0
@@ -4302,6 +4313,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 600, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1262760334 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1033258655589134803, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+  m_PrefabInstance: {fileID: 2192557254068565782}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1276604908
 GameObject:
   m_ObjectHideFlags: 0
@@ -5186,6 +5208,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1501415028}
   m_CullTransparentMesh: 1
+--- !u!114 &1525692154 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7515684540440139453, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
+  m_PrefabInstance: {fileID: 2192557254068565782}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1534155781
 GameObject:
   m_ObjectHideFlags: 0
@@ -6165,6 +6198,9 @@ MonoBehaviour:
   _masterVolumeText: {fileID: 893645796}
   _musicVolumeText: {fileID: 797214858}
   _sfxVolumeText: {fileID: 1786464225}
+  _masterVolumeSlider: {fileID: 1525692154}
+  _musicVolumeSlider: {fileID: 1262760334}
+  _sfxVolumeSlider: {fileID: 643534791}
 --- !u!1 &1827558977
 GameObject:
   m_ObjectHideFlags: 0
@@ -6837,7 +6873,7 @@ GameObject:
   - component: {fileID: 2106521095}
   - component: {fileID: 2106521094}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6875,14 +6911,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 62abc3e751c34c043b0ee19928361767, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 285d8ac32ddc6014cba760f67f398e47, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7050,10 +7086,6 @@ PrefabInstance:
     - target: {fileID: 1174093277925934802, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: _game.Scripts.UIScripts.WindowManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 1264590038478913024, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
-      propertyPath: m_RaycastTarget
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1789560234816445242, guid: 18fb50c09a25fd74ebf8ec3f1386844c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size

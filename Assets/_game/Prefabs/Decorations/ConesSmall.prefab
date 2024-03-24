@@ -368,11 +368,27 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8380157826906577798, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6733177361254619370, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
       propertyPath: m_Name
       value: cons4
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8513859187771203891, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700725330082129686, guid: 7d8ea2563259a7f4392d33c14aee58d4, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}

@@ -33,6 +33,7 @@ namespace _game.Scripts
         [SerializeField] private StudioEventEmitter _tilePlaceSound, _tileDestroySound;
         [SerializeField] private RectTransform _rotationKey;
         [SerializeField] private RectTransform _rotationKeyParent;
+        [SerializeField] private EditorUIController _uiController;
         [SerializeField] private Transform _testCollider;
 
         [Header("Settings")]
@@ -48,7 +49,6 @@ namespace _game.Scripts
         [SerializeField, ReadOnly] private TileController _startTile, _endTile, _lapTile;
         [SerializeField, ReadOnly] private TileController _activeTile;
 
-        public bool EditorViewPressed { get; set; }
         private Quaternion _rotation;
         private EditorMode _editorMode = EditorMode.Place;
         private Camera _cameraMain;
@@ -61,6 +61,7 @@ namespace _game.Scripts
         //private bool _canPlace = true;
         private bool _isMouseOverUI;
         private bool _clickHeld;
+        private RaycastHit[] _eyeDropperHits = new RaycastHit[5];
 
         public static event Action<EditorMode> OnEditorModeChanged;
         public static event Action OnResetObstacles;
@@ -99,7 +100,7 @@ namespace _game.Scripts
                         break;
                 }
 
-            if (_activeTile)
+            if (_activeTile && !_uiController.PopupOpen)
             {
                 SetTileToMousePos(_activeTile);
                 //_rotationSprite.position = new Vector3(_activeTile.Position.x, 45, _activeTile.Position.z);
@@ -324,6 +325,24 @@ namespace _game.Scripts
             }
         }
 
+        private void TileEyedropper()
+        {
+            Ray ray = _cameraMain.ScreenPointToRay(_cursorPosition);
+            Physics.RaycastNonAlloc(ray, _eyeDropperHits, 1000, _editorRaycast);
+
+            foreach (RaycastHit hit in _eyeDropperHits)
+            {
+                if (!hit.transform || !hit.transform.TryGetComponent(out TileController hitTile))
+                    continue;
+
+                if (hitTile.IsSelected)
+                    continue;
+
+                CreateTileById(hitTile.TileID);
+                break;
+            }
+        }
+
         private void TileDestroy()
         {
             if (!_lastDestroyTarget) return;
@@ -489,22 +508,26 @@ namespace _game.Scripts
             if (ctx.performed) SetEditorMode(EditorMode.Destroy);
         }
 
+        public void UseEyedropper(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) TileEyedropper();
+        }
+
         public void GetMousePosition(InputAction.CallbackContext ctx) { _mousePosition = ctx.ReadValue<Vector2>(); }
 
         public void CancelTile(InputAction.CallbackContext ctx)
         {
             if (!ctx.performed || !_activeTile) return;
 
-            SetEditorMode(EditorMode.Place);
-            _activeTile.Destroy();
-            SetActiveTile(null);
+            // SetEditorMode(EditorMode.Place);
+            // _activeTile.Destroy();
+            // SetActiveTile(null);
         }
 
         public void LeftClick(InputAction.CallbackContext ctx)
         {
             if (ctx.started && !_isMouseOverUI)
             {
-                print("Started LeftClick");
                 switch (_editorMode)
                 {
                     case EditorMode.Place:
@@ -520,12 +543,10 @@ namespace _game.Scripts
             }
             if (ctx.performed && !_isMouseOverUI)
             {
-                print("Holding LeftClick");
                 _clickHeld = true;
             }
             if (ctx.canceled)
             {
-                print("Cancelled LeftClick");
                 if (_clickHeld && _editorMode == EditorMode.Edit)
                     TileEdit();
                 _clickHeld = false;
@@ -547,7 +568,7 @@ namespace _game.Scripts
 
                 if (_endTileIds.Any(endTileId => tileData.ID == endTileId))
                     _endTile = newTile;
-                
+
                 if (_lapTileIds.Any(lapTileId => tileData.ID == lapTileId))
                     _lapTile = newTile;
             }

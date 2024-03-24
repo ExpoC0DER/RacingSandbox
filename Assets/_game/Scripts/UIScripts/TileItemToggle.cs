@@ -11,13 +11,21 @@ namespace _game.Scripts.UIScripts
     {
         public int TileId { get; set; }
 
-        public string TileName { set { _nameText.text = value; } }
+        public string TileName
+        {
+            set
+            {
+                _nameText.text = value;
+                _nameTextHover.text = value;
+            }
+        }
 
         [field: SerializeField, ReadOnly] public TilePlacing TilePlacing { get; set; }
         [field: SerializeField, ReadOnly] public ToggleGroup ToggleGroup { get; set; }
         [SerializeField] private Image _image;
         [FormerlySerializedAs("_idText")]
         [SerializeField] private TMP_Text _nameText;
+        [SerializeField] private TMP_Text _nameTextHover;
         public Sprite Sprite
         {
             set
@@ -39,7 +47,7 @@ namespace _game.Scripts.UIScripts
             if (value)
             {
                 TilePlacing.CreateTileById(TileId);
-                transform.SetAsFirstSibling();
+                //transform.SetAsFirstSibling();
             }
             if (_wasOn && !value)
                 TilePlacing.CreateTileById(-1);

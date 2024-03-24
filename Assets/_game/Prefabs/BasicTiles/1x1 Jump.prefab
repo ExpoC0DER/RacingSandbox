@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8887071345804232057}
   - component: {fileID: 5344134298291228410}
+  - component: {fileID: 4631034358100115711}
   m_Layer: 0
   m_Name: RoadCollider
   m_TagString: Untagged
@@ -54,6 +55,33 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 5623617279465047434, guid: a9e387d96b220a149a2b6abb39fb35cf, type: 3}
+--- !u!54 &4631034358100115711
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3204645089875192924}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &1648688781216441810
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -166,6 +194,30 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 13400000, guid: 669d82fac81210d47950ad592f1d25a7, type: 2}
+    - target: {fileID: 4235545553855691279, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Size.x
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235545553855691279, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Size.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235545553855691279, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Size.z
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235545553855691279, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235545553855691279, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_Center.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235545553855691279, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 4458635149795709913, guid: 4655365256c29b34dba8abf5ae693b0f, type: 3}
@@ -373,6 +425,10 @@ PrefabInstance:
       value: steeproad
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a9e387d96b220a149a2b6abb39fb35cf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378922297957006227, guid: a9e387d96b220a149a2b6abb39fb35cf, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}

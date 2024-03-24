@@ -844,6 +844,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EyeDropper"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3e65dd7-4e01-4625-a6d5-9f614cd42684"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1187,6 +1196,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""LeftClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1ba9fed-b101-4d3f-aaf5-111da3253b35"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EyeDropper"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1260,6 +1280,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Editor_CameraMove = m_Editor.FindAction("CameraMove", throwIfNotFound: true);
         m_Editor_OpenSettings = m_Editor.FindAction("OpenSettings", throwIfNotFound: true);
         m_Editor_LeftClick = m_Editor.FindAction("LeftClick", throwIfNotFound: true);
+        m_Editor_EyeDropper = m_Editor.FindAction("EyeDropper", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1523,6 +1544,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Editor_CameraMove;
     private readonly InputAction m_Editor_OpenSettings;
     private readonly InputAction m_Editor_LeftClick;
+    private readonly InputAction m_Editor_EyeDropper;
     public struct EditorActions
     {
         private @Controls m_Wrapper;
@@ -1541,6 +1563,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @CameraMove => m_Wrapper.m_Editor_CameraMove;
         public InputAction @OpenSettings => m_Wrapper.m_Editor_OpenSettings;
         public InputAction @LeftClick => m_Wrapper.m_Editor_LeftClick;
+        public InputAction @EyeDropper => m_Wrapper.m_Editor_EyeDropper;
         public InputActionMap Get() { return m_Wrapper.m_Editor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1592,6 +1615,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @LeftClick.started += instance.OnLeftClick;
             @LeftClick.performed += instance.OnLeftClick;
             @LeftClick.canceled += instance.OnLeftClick;
+            @EyeDropper.started += instance.OnEyeDropper;
+            @EyeDropper.performed += instance.OnEyeDropper;
+            @EyeDropper.canceled += instance.OnEyeDropper;
         }
 
         private void UnregisterCallbacks(IEditorActions instance)
@@ -1638,6 +1664,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @LeftClick.started -= instance.OnLeftClick;
             @LeftClick.performed -= instance.OnLeftClick;
             @LeftClick.canceled -= instance.OnLeftClick;
+            @EyeDropper.started -= instance.OnEyeDropper;
+            @EyeDropper.performed -= instance.OnEyeDropper;
+            @EyeDropper.canceled -= instance.OnEyeDropper;
         }
 
         public void RemoveCallbacks(IEditorActions instance)
@@ -1709,5 +1738,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnCameraMove(InputAction.CallbackContext context);
         void OnOpenSettings(InputAction.CallbackContext context);
         void OnLeftClick(InputAction.CallbackContext context);
+        void OnEyeDropper(InputAction.CallbackContext context);
     }
 }

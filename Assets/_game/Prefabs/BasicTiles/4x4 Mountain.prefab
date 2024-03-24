@@ -211,6 +211,14 @@ PrefabInstance:
       propertyPath: '_arrows.Array.data[0]'
       value: 
       objectReference: {fileID: 2234744318861209443}
+    - target: {fileID: 537250334262992939, guid: 64cd99be9f09689428cb220f471dfac8, type: 3}
+      propertyPath: m_Size.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 537250334262992939, guid: 64cd99be9f09689428cb220f471dfac8, type: 3}
+      propertyPath: m_Center.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 862939618534722053, guid: 64cd99be9f09689428cb220f471dfac8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
