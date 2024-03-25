@@ -12,13 +12,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168b7bb1a13729641845f916749224ee, type: 3}
   m_Name: TestParams
   m_EditorClassIdentifier: 
+  DriveType: 2
   MaxAcceleration: 400
-  BrakeAccelaration: 600
+  BrakeAcceleration: 600
   TurnSensitivity: 0.4
   MaxSteerAngle: 60
   BoostPower: 10
-  CenterOfMass: {x: 0, y: 0, z: 0.3}
+  CenterOfMass: {x: 0, y: 0, z: 0.06}
   Weight: 1300
   AirDrag: 0.2
-  WheelForwardFriction: 3
-  WheelSidewaysFriction: 6
+  Mass: 15
+  WheelDampingRate: 0.25
+  SuspensionDistance: 0.3
+  ForceAppPointDistance: 0
+  FrontWheelSettings:
+    <ForwardFriction>k__BackingField:
+      <ExtremumSlip>k__BackingField: 0.4
+      <ExtremumValue>k__BackingField: 1
+      <AsymptoteSlip>k__BackingField: 0.8
+      <AsymptoteValue>k__BackingField: 0.5
+      <Stiffness>k__BackingField: 1
+    <SidewaysFriction>k__BackingField:
+      <ExtremumSlip>k__BackingField: 0.2
+      <ExtremumValue>k__BackingField: 1
+      <AsymptoteSlip>k__BackingField: 0.5
+      <AsymptoteValue>k__BackingField: 0.75
+      <Stiffness>k__BackingField: 1
+  RearWheelSettings:
+    <ForwardFriction>k__BackingField:
+      <ExtremumSlip>k__BackingField: 0.4
+      <ExtremumValue>k__BackingField: 1
+      <AsymptoteSlip>k__BackingField: 0.8
+      <AsymptoteValue>k__BackingField: 0.5
+      <Stiffness>k__BackingField: 1
+    <SidewaysFriction>k__BackingField:
+      <ExtremumSlip>k__BackingField: 0.2
+      <ExtremumValue>k__BackingField: 1
+      <AsymptoteSlip>k__BackingField: 0.5
+      <AsymptoteValue>k__BackingField: 0.75
+      <Stiffness>k__BackingField: 1

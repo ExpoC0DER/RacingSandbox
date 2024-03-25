@@ -25,6 +25,13 @@ namespace _game.Scripts
             Rear
         }
 
+        public enum DriveType
+        {
+            FourWheelDrive,
+            FrontWheelDrive,
+            RearWheelDrive
+        }
+
         [Serializable]
         public struct Wheel
         {
@@ -35,9 +42,10 @@ namespace _game.Scripts
             public Axel axel;
         }
 
-        [SerializeField] private ControlMode _controlScheme;
+        // [SerializeField] private ControlMode _controlScheme;
 
         [field: SerializeField, Expandable] public CarParameters CarParameters { get; private set; }
+        private DriveType _driveType;
         private float _maxAcceleration, _brakeAcceleration, _turnSensitivity, _maxSteerAngle, _boostPower;
         private FMODUnity.StudioEventEmitter _engineSound;
         [SerializeField] private bool _isTesting;
@@ -85,8 +93,6 @@ namespace _game.Scripts
 
         private void Update()
         {
-
-            GetInputs();
             AnimateWheels();
             HandleAudio();
             //WheelEffects();
@@ -106,20 +112,6 @@ namespace _game.Scripts
             Brake();
         }
 
-        public void MoveInput(float input) { _moveInput = input; }
-
-        public void SteerInput(float input) { _steerInput = input; }
-
-        private void GetInputs()
-        {
-            if (!_isPlaying) return;
-            if (_controlScheme == ControlMode.Keyboard)
-            {
-                // if (Input.GetKeyDown(KeyCode.LeftShift))
-                //     _rb.AddForce(transform.forward * 10, ForceMode.VelocityChange);
-            }
-        }
-
         private void HandleAudio()
         {
             float speed = (_rb.velocity.magnitude * 3.6f).Remap(0, 100, 0, 1);
@@ -131,6 +123,21 @@ namespace _game.Scripts
         {
             foreach (Wheel wheel in _wheels)
             {
+                switch (_driveType)
+                {
+                    case DriveType.FourWheelDrive:
+                        break;
+                    case DriveType.FrontWheelDrive:
+                        if(wheel.axel != Axel.Front)
+                            continue;
+                        break;
+                    case DriveType.RearWheelDrive:
+                        if(wheel.axel != Axel.Rear)
+                            continue;
+                        break;
+                    default:
+                        return;
+                }
                 wheel.wheelCollider.motorTorque = _moveInput * _maxAcceleration;
             }
         }
@@ -201,8 +208,9 @@ namespace _game.Scripts
 
         private void LoadParameters(CarParameters carParams)
         {
+            _driveType = carParams.DriveType;
             _maxAcceleration = carParams.MaxAcceleration;
-            _brakeAcceleration = carParams.BrakeAccelaration;
+            _brakeAcceleration = carParams.BrakeAcceleration;
             _turnSensitivity = carParams.TurnSensitivity;
             _maxSteerAngle = carParams.MaxSteerAngle;
             _boostPower = carParams.BoostPower;
@@ -213,13 +221,22 @@ namespace _game.Scripts
 
             foreach (Wheel wheel in _wheels)
             {
-                WheelFrictionCurve forwardFriction = wheel.wheelCollider.forwardFriction;
-                forwardFriction.stiffness = carParams.WheelForwardFriction;
-                wheel.wheelCollider.forwardFriction = forwardFriction;
+                wheel.wheelCollider.mass = carParams.Mass;
+                wheel.wheelCollider.wheelDampingRate = carParams.WheelDampingRate;
+                wheel.wheelCollider.suspensionDistance = carParams.SuspensionDistance;
+                wheel.wheelCollider.forceAppPointDistance = carParams.ForceAppPointDistance;
 
-                WheelFrictionCurve sidewaysFriction = wheel.wheelCollider.sidewaysFriction;
-                sidewaysFriction.stiffness = carParams.WheelSidewaysFriction;
-                wheel.wheelCollider.sidewaysFriction = sidewaysFriction;
+                if (wheel.axel == Axel.Front)
+                {
+                    wheel.wheelCollider.forwardFriction = carParams.FrontWheelSettings.ForwardFriction.WheelFrictionCurve;
+                    wheel.wheelCollider.sidewaysFriction = carParams.FrontWheelSettings.SidewaysFriction.WheelFrictionCurve;
+                }
+                
+                if (wheel.axel == Axel.Rear)
+                {
+                    wheel.wheelCollider.forwardFriction = carParams.RearWheelSettings.ForwardFriction.WheelFrictionCurve;
+                    wheel.wheelCollider.sidewaysFriction = carParams.RearWheelSettings.SidewaysFriction.WheelFrictionCurve;
+                }
             }
         }
         private IEnumerator ResetCoroutine(CarTransform pos)

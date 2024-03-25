@@ -6,6 +6,7 @@ namespace _game.Scripts
     public class WheelFrictionSetter : MonoBehaviour
     {
         [SerializeField] private CarController2 _carController;
+        [SerializeField] private CarController2.Axel _axel;
         private CarParameters _carParameters;
         private WheelCollider _wheel;
 
@@ -23,13 +24,26 @@ namespace _game.Scripts
             float hitMaterialStaticFriction = hit.collider.material.staticFriction;
 
             //multiply wheel friction by surface material
-            WheelFrictionCurve fFriction = _wheel.forwardFriction;
-            fFriction.stiffness = hitMaterialStaticFriction * _carParameters.WheelForwardFriction;
-            _wheel.forwardFriction = fFriction;
-            
-            WheelFrictionCurve sFriction = _wheel.sidewaysFriction;
-            sFriction.stiffness = hitMaterialStaticFriction * _carParameters.WheelSidewaysFriction;
-            _wheel.sidewaysFriction = sFriction;
+            if (_axel == CarController2.Axel.Front)
+            {
+                WheelFrictionCurve fFriction = _carParameters.FrontWheelSettings.ForwardFriction.WheelFrictionCurve;
+                fFriction.stiffness = hitMaterialStaticFriction * _carParameters.FrontWheelSettings.ForwardFriction.Stiffness;
+                _wheel.forwardFriction = fFriction;
+                
+                WheelFrictionCurve sFriction = _carParameters.FrontWheelSettings.SidewaysFriction.WheelFrictionCurve;
+                sFriction.stiffness = hitMaterialStaticFriction * _carParameters.FrontWheelSettings.SidewaysFriction.Stiffness;
+                _wheel.sidewaysFriction = sFriction;
+            }
+            if (_axel == CarController2.Axel.Rear)
+            {
+                WheelFrictionCurve fFriction = _carParameters.RearWheelSettings.ForwardFriction.WheelFrictionCurve;               
+                fFriction.stiffness = hitMaterialStaticFriction * _carParameters.RearWheelSettings.ForwardFriction.Stiffness;
+                _wheel.forwardFriction = fFriction;
+                
+                WheelFrictionCurve sFriction = _carParameters.RearWheelSettings.SidewaysFriction.WheelFrictionCurve;
+                sFriction.stiffness = hitMaterialStaticFriction * _carParameters.RearWheelSettings.SidewaysFriction.Stiffness;
+                _wheel.sidewaysFriction = sFriction;
+            }
         }
     }
 }
