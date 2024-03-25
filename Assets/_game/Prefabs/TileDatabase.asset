@@ -264,7 +264,7 @@ MonoBehaviour:
     _errorMessage: 
     <ID>k__BackingField: 68
     <Prefab>k__BackingField: {fileID: 2403047715860921947, guid: 17abe4242b327504c9f59a4c3a0b4a52, type: 3}
-    <Sprite>k__BackingField: {fileID: 0}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 18396d01c153b3f4c9a3776f990ca97c, type: 3}
   <Obstacles>k__BackingField:
   - <Name>k__BackingField: SpeedBoost
     _errorMessage: 
