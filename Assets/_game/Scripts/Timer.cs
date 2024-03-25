@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _game.Scripts.UIScripts;
 using TMPro;
 using UnityEngine;
 
@@ -20,6 +21,12 @@ namespace _game.Scripts
 
         private void Update()
         {
+            if (GameManager.GameState != GameState.Playing)
+            {
+                _timerText.text = string.Empty;
+                return;
+            }
+            
             if (!_isRunning) return;
             _time += Time.deltaTime;
             _timerText.text = GetStringTime();
@@ -47,7 +54,20 @@ namespace _game.Scripts
                 EndTimer();
         }
 
-        private void OnEnable() { CarController2.SetTimerActive += SetTimerActive; }
-        private void OnDisable() { CarController2.SetTimerActive -= SetTimerActive; }
+        private void PauseTimer(bool value)
+        {
+            _isRunning = !value;
+        }
+
+        private void OnEnable()
+        {
+            CarController2.SetTimerActive += SetTimerActive;
+            PauseScreen.OnGamePause += PauseTimer;
+        }
+        private void OnDisable()
+        {
+            CarController2.SetTimerActive -= SetTimerActive; 
+            PauseScreen.OnGamePause -= PauseTimer;
+        }
     }
 }

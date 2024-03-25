@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _game.Scripts.HelperScripts;
+using _game.Scripts.UIScripts;
 using Cinemachine;
 using TMPro;
 using UnityEngine;
 using NaughtyAttributes;
+using UnityEngine.InputSystem;
 
 namespace _game.Scripts
 {
@@ -289,31 +291,30 @@ namespace _game.Scripts
         private void OnTriggerExit(Collider other)
         {
             if (!_isPlaying) return;
+
             if (other.CompareTag("Finish"))
             {
-                _isPlaying = false;
-                foreach (Wheel wheel in _wheels)
-                {
-                    wheel.wheelCollider.brakeTorque = float.MaxValue;
-                }
-                SetTimerActive?.Invoke(false);
-                ShowEndScreen?.Invoke(this);
+                Finish();
             }
+
             if (other.CompareTag("Lap"))
             {
                 _lapCounter++;
                 LapPassed?.Invoke(_lapCounter);
                 if (_lapCounter > 3)
-                {
-                    _isPlaying = false;
-                    foreach (Wheel wheel in _wheels)
-                    {
-                        wheel.wheelCollider.brakeTorque = float.MaxValue;
-                    }
-                    SetTimerActive?.Invoke(false);
-                    ShowEndScreen?.Invoke(this);
-                }
+                    Finish();
             }
+        }
+
+        private void Finish()
+        {
+            _isPlaying = false;
+            foreach (Wheel wheel in _wheels)
+            {
+                wheel.wheelCollider.brakeTorque = float.MaxValue;
+            }
+            SetTimerActive?.Invoke(false);
+            ShowEndScreen?.Invoke(this);
         }
 
         private void SwitchCamera(bool value)
@@ -334,20 +335,6 @@ namespace _game.Scripts
 
         private void OnDrawGizmos() { Gizmos.DrawSphere(transform.TransformPoint(CarParameters.CenterOfMass), 0.1f); }
 
-        private void GetAxisInput(Vector2 vector2)
-        {
-            _steerInput = vector2.x;
-            _moveInput = vector2.y;
-        }
-
-        private void OnRestartCheckpointPerformed()
-        {
-            if (!_isResetting)
-                Reset(_checkpointPosition);
-        }
-
-        private void OnBreakingChanged(bool value) { _isBreaking = value; }
-
         private void ShowEndScreenShortcut()
         {
             if (!_isPlaying) return;
@@ -358,23 +345,46 @@ namespace _game.Scripts
             ShowEndScreen?.Invoke(this);
         }
 
+        private void OnPause(bool value)
+        {
+            //_isPlaying = !value;
+        }
+
         private void OnEnable()
         {
             GameManager.OnGameStateChanged += OnGameStateChanged;
+            PauseScreen.OnGamePause += OnPause;
+            PauseScreen.OnGameRestart += RestartLevel;
             CarParameters.OnChange += LoadParameters;
-            InputController.InputAxisChanged += GetAxisInput;
-            InputController.RestartCheckpointPerformed += OnRestartCheckpointPerformed;
-            InputController.BreakingChanged += OnBreakingChanged;
-            InputController.OnShowEndScreen += ShowEndScreenShortcut;
+            //InputController.OnShowEndScreen += ShowEndScreenShortcut;
         }
         private void OnDisable()
         {
             GameManager.OnGameStateChanged -= OnGameStateChanged;
-            CarParameters.OnChange -= LoadParameters;
-            InputController.InputAxisChanged -= GetAxisInput;
-            InputController.RestartCheckpointPerformed -= OnRestartCheckpointPerformed;
-            InputController.BreakingChanged -= OnBreakingChanged;
-            InputController.OnShowEndScreen -= ShowEndScreenShortcut;
+            PauseScreen.OnGamePause -= OnPause;
+            PauseScreen.OnGameRestart -= RestartLevel;
+            //InputController.OnShowEndScreen -= ShowEndScreenShortcut;
+        }
+
+        public void GetAxisInput(InputAction.CallbackContext ctx)
+        {
+            Vector2 input = ctx.ReadValue<Vector2>();
+            _steerInput = input.x;
+            _moveInput = input.y;
+        }
+
+        public void GetBreaking(InputAction.CallbackContext ctx)
+        {
+            if (ctx.started)
+                _isBreaking = true;
+            if (ctx.canceled)
+                _isBreaking = false;
+        }
+
+        public void GetRestartingFromCheckpoint(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed && !_isResetting)
+                Reset(_checkpointPosition);
         }
     }
     public struct CarTransform

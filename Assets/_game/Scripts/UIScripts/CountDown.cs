@@ -8,6 +8,7 @@ namespace _game.Scripts.UIScripts
     public class CountDown : MonoBehaviour
     {
         [SerializeField] private TMP_Text _countdownText;
+        private bool _countingDown;
 
         /// <summary>
         /// Shows and starts timer, runs action on 0
@@ -20,9 +21,20 @@ namespace _game.Scripts.UIScripts
             StopAllCoroutines();
             StartCoroutine(Countdown(seconds, delay, action));
         }
+        
+        private void Update()
+        {
+            if (_countingDown && GameManager.GameState == GameState.Editing)
+            {
+                StopAllCoroutines();
+                _countdownText.text = string.Empty;
+                _countingDown = false;
+            }
+        }
 
         private IEnumerator Countdown(int seconds, float delay, Action action)
         {
+            _countingDown = true;
             yield return new WaitForSeconds(delay);
             for(int i = seconds; i > 0; i--)
             {
@@ -34,6 +46,7 @@ namespace _game.Scripts.UIScripts
 
             yield return new WaitForSeconds(1f);
             _countdownText.text = string.Empty;
+            _countingDown = false;
         }
 
         private void OnEnable() { CarController2.StartCountdown += StartCountdown; }

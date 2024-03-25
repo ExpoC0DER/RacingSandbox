@@ -18,7 +18,9 @@ namespace _game.Scripts.UIScripts
         [SerializeField] private GameObject _settingsMenu;
         [SerializeField] private StudioEventEmitter _errorSound, _clickSound;
         [SerializeField] private GameObject _grid;
+
         private LinkedList<GameObject> _popupWindows = new LinkedList<GameObject>();
+        private GameState _gameState;
 
         public bool PopupOpen { get { return _popupWindows.Count > 0; } }
 
@@ -82,11 +84,16 @@ namespace _game.Scripts.UIScripts
 
         public void OpenSetting(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed)
+            if (_gameState == GameState.Editing && ctx.performed)
                 if (_popupWindows.Count > 0)
                     ClosePopupWindow();
                 else
                     OpenPopupWindow(_settingsMenu);
         }
+
+        private void OnGameStateChanged(GameState state) { _gameState = state; }
+
+        private void OnEnable() { GameManager.OnGameStateChanged += OnGameStateChanged; }
+        private void OnDisable() { GameManager.OnGameStateChanged -= OnGameStateChanged; }
     }
 }

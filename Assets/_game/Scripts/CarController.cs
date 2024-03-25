@@ -89,7 +89,7 @@ public class CarController : MonoBehaviour
         // Acceleration Input
         _verticalInput = Input.GetAxis("Vertical");
 
-        // Breaking Input
+        // GetBreaking Input
         _isBreaking = Input.GetKey(KeyCode.Space);
 
         _isRewinding = Input.GetKey(KeyCode.R);
