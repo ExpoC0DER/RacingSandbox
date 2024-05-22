@@ -353,7 +353,7 @@ MonoBehaviour:
   sourceProjectPath: Assets/_game/Audio/FMODProject/FMODProject.fspro
   sourceBankPath: Assets/_game/Assets/FMODBuilds
   sourceBankPathUnformatted: 
-  BankRefreshCooldown: 5
+  BankRefreshCooldown: 1
   ShowBankRefreshWindow: 1
   AutomaticEventLoading: 0
   BankLoadType: 0

@@ -28,7 +28,7 @@ public class CarParameters : ScriptableObject
     public event Action<CarParameters> OnChange;
 
     [Serializable]
-    public class WheelCurve
+    public struct WheelCurve
     {
         [field: SerializeField] public float ExtremumSlip { get; private set; }
         [field: SerializeField] public float ExtremumValue { get; private set; }

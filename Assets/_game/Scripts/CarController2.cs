@@ -380,6 +380,7 @@ namespace _game.Scripts
             GameManager.OnGameStateChanged -= OnGameStateChanged;
             PauseScreen.OnGamePause -= OnPause;
             PauseScreen.OnGameRestart -= RestartLevel;
+            CarParameters.OnChange -= LoadParameters;
             //InputController.OnShowEndScreen -= ShowEndScreenShortcut;
         }
 

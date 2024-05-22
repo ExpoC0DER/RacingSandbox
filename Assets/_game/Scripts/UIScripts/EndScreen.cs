@@ -17,6 +17,7 @@ namespace _game.Scripts.UIScripts
             _car = car;
             _timerText.text = _timer.GetStringTime();
             _child.SetActive(true);
+            Cursor.visible = true;
         }
 
         public void GoToEditor()
@@ -27,6 +28,7 @@ namespace _game.Scripts.UIScripts
 
         public void Restart()
         {
+            Cursor.visible = false;
             _child.SetActive(false);
             _car.RestartLevel();
         }

@@ -18,17 +18,20 @@ namespace _game.Scripts.UIScripts
             _pauseMenu.SetActive(_paused);
             Time.timeScale = 0;
             OnGamePause?.Invoke(true);
+            Cursor.visible = true;
         }
 
         public void UnPause()
         {
             CloseMenu();
+            Cursor.visible = false;
             OnGamePause?.Invoke(false);
         }
 
         public void Restart()
         {
             CloseMenu();
+            Cursor.visible = false;
             OnGameRestart?.Invoke();
         }
 

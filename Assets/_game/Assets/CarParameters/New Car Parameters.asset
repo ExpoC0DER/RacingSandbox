@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 168b7bb1a13729641845f916749224ee, type: 3}
-  m_Name: TestParams
+  m_Name: New Car Parameters
   m_EditorClassIdentifier: 
   DriveType: 2
   MaxAcceleration: 400
   BrakeAcceleration: 600
   TurnSensitivity: 0.4
-  MaxSteerAngle: 60
+  MaxSteerAngle: 30
   BoostPower: 10
   CenterOfMass: {x: 0, y: 0, z: 0.06}
   Weight: 1300
-  AirDrag: 0.2
+  AirDrag: 0.15
   Mass: 15
   WheelDampingRate: 0.25
   SuspensionDistance: 0.3
   ForceAppPointDistance: 0
   FrontWheelSettings:
     <ForwardFriction>k__BackingField:
-      <ExtremumSlip>k__BackingField: 0.5
+      <ExtremumSlip>k__BackingField: 0.4
       <ExtremumValue>k__BackingField: 1
       <AsymptoteSlip>k__BackingField: 0.8
       <AsymptoteValue>k__BackingField: 0.5
@@ -40,7 +40,7 @@ MonoBehaviour:
       <Stiffness>k__BackingField: 4
   RearWheelSettings:
     <ForwardFriction>k__BackingField:
-      <ExtremumSlip>k__BackingField: 0.5
+      <ExtremumSlip>k__BackingField: 0.4
       <ExtremumValue>k__BackingField: 1
       <AsymptoteSlip>k__BackingField: 0.8
       <AsymptoteValue>k__BackingField: 0.5
