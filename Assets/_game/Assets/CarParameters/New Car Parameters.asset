@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: New Car Parameters
   m_EditorClassIdentifier: 
   DriveType: 2
-  MaxAcceleration: 400
-  BrakeAcceleration: 600
+  MaxAcceleration: 700
+  BrakeAcceleration: 800
   TurnSensitivity: 0.4
   MaxSteerAngle: 30
   BoostPower: 10
@@ -44,10 +44,10 @@ MonoBehaviour:
       <ExtremumValue>k__BackingField: 1
       <AsymptoteSlip>k__BackingField: 0.8
       <AsymptoteValue>k__BackingField: 0.5
-      <Stiffness>k__BackingField: 4
+      <Stiffness>k__BackingField: 6
     <SidewaysFriction>k__BackingField:
       <ExtremumSlip>k__BackingField: 0.2
       <ExtremumValue>k__BackingField: 1
       <AsymptoteSlip>k__BackingField: 0.5
       <AsymptoteValue>k__BackingField: 0.75
-      <Stiffness>k__BackingField: 4
+      <Stiffness>k__BackingField: 6

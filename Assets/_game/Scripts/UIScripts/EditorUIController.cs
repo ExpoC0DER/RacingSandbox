@@ -42,6 +42,7 @@ namespace _game.Scripts.UIScripts
 
         public void OpenPopupWindow(GameObject window)
         {
+            _clickSound.Play();
             _popupWindows.Last?.Value.SetActive(false);
             _popupWindows.AddLast(window);
             window.SetActive(true);
@@ -49,6 +50,7 @@ namespace _game.Scripts.UIScripts
 
         public void ClosePopupWindow()
         {
+            _clickSound.Play();
             _popupWindows.Last?.Value.SetActive(false);
             _popupWindows.RemoveLast();
             _popupWindows.Last?.Value.SetActive(true);

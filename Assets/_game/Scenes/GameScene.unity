@@ -1843,11 +1843,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: -1348953125
-      Data2: 1300067333
-      Data3: -23227511
-      Data4: -1875109350
-    Path: event:/UI/Confirm
+      Data1: -1367135450
+      Data2: 1243655276
+      Data3: 989263237
+      Data4: 102280984
+    Path: event:/UI/Toggle
   Event: 
   PlayEvent: 0
   StopEvent: 0
@@ -4847,7 +4847,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!224 &628961721
 RectTransform:
